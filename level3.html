@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convolution - Demonlist</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="level1.css">
+</head>
+<body>
+    <header>
+        <a href="/" class="logo-container">
+            <img src="logo.webp" alt="Logo" style="height: 45px;">
+            <span>List</span>
+        </a>
+        <nav>
+            <a href="stats.html">Stats Viewer</a>
+            <a href="submit.html">Submit Record</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left"></aside>
+        <main class="content">
+            <div class="level-detail-container">
+                <div class="level-header">
+                    <div class="level-title-wrapper">
+                        <h1 class="level-title">#3 - im happy 4 you</h1>
+                        <div class="level-badges">
+                            <span class="badge extreme">Extreme Demon</span>
+                            <span class="badge featured">Jetpack</span>
+                            <span class="badge epic">Epic</span>
+                        </div>
+                    </div>
+                    <div class="creator-info">
+                        <div class="creator-avatar">
+                            <img src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=100&h=100&auto=format&fit=crop" alt="KEaliTgeo">
+                        </div>
+                        <div class="creator-details">
+                            <p class="creator-name">by No ob</p>
+                            <p class="verifier-name">Verified by Mikoshii
+
+
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-content">
+                    <div class="video-section">
+                        <div class="video-container">
+                            <iframe
+                                src="https://youtube.com/embed/rvdQE3EyG-k"
+                                title="Convolution Verification"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <div class="video-actions">
+                            <button class="action-btn copy-id" onclick="copyToClipboard('[Level ID]')">
+                                Copy Level ID
+                            </button>
+                            <button class="action-btn watch-raw">
+                                Watch Raw Footage
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="info-panel">
+                        <div class="info-section">
+                            <h3 class="section-title">Level Information</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Demonlist Score</span>
+                                    <span class="info-value score">258</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Level ID</span>
+                                    <span class="info-value">105724358</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Password</span>
+                                    <span class="info-value">Free</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Objects</span>
+                                    <span class="info-value">11132</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Version</span>
+                                    <span class="info-value">2.2</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Length</span>
+                                    <span class="info-value">1:19.795</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="records-section">
+                    <div class="records-header">
+                        <h2 class="records-title">Records</h2>
+                        <div class="records-filter">
+                            <button class="filter-btn active">All</button>
+                            <button class="filter-btn">Top 10</button>
+                            <button class="filter-btn">Recent</button>
+                        </div>
+                    </div>
+
+                    <div class="records-list">
+                        <div class="record-item diamond">
+                            <div class="record-rank">#1</div>
+                            <div class="record-player-info">
+                                <img src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=50&h=50&auto=format&fit=crop" alt="Player 1" class="player-avatar">
+                                <div class="player-details">
+                                    <span class="player-name">Ayumi</span>
+                                    <span class="player-progress">100%</span>
+                                </div>
+                            </div>
+                            <div class="record-time">1:56.562</div>
+                            <div class="record-proof">
+                                <button class="proof-btn">Watch</button>
+                            </div>
+                        </div>
+
+                        <!-- Add more record items as needed -->
+                    </div>
+
+                    <div class="records-pagination">
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <span class="page-dots">...</span>
+                        <button class="page-btn">12</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar-right"></aside>
+    </div>
+
+    <footer>
+        <p>© 2024 Demonlist - Created by Iker</p>
+    </footer>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Level ID copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
