@@ -8,20 +8,56 @@
     <link rel="stylesheet" href="level1.css">
 </head>
 <body>
+    <canvas id="particleCanvas"></canvas>
+    
     <header>
-     <a href="index.html" class="logo-container">
-    <img src="logo.webp" alt="Logo" style="height: 45px;">
-    <span>List</span>
-</a>
-
+        <a href="index.html" class="logo-container">
+            <img src="logo.webp" alt="Demonlist Logo" style="height: 40px;">
+            <span>List</span>
+        </a>
         <nav>
             <a href="stats.html">Stats Viewer</a>
             <a href="submit.html">Submit Record</a>
+            <a href="account.html" class="nav-highlight">Account</a>
         </nav>
     </header>
 
     <div class="container">
-        <aside class="sidebar-left"></aside>
+        <aside class="sidebar-left">
+            <div class="sidebar-content difficulty-chart">
+                <h3>Difficulty Analysis</h3>
+                <div class="chart-container">
+                    <div class="chart-bar" style="height: 85%;" data-label="Wave"></div>
+                    <div class="chart-bar" style="height: 95%;" data-label="Ship"></div>
+                    <div class="chart-bar" style="height: 75%;" data-label="Ball"></div>
+                    <div class="chart-bar" style="height: 90%;" data-label="UFO"></div>
+                    <div class="chart-bar" style="height: 80%;" data-label="Robot"></div>
+                </div>
+            </div>
+            <div class="sidebar-content completion-stats">
+                <h3>Completion Stats</h3>
+                <div class="stat-circle">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#444"
+                            stroke-width="2" />
+                        <path d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            fill="none"
+                            stroke="#00aaff"
+                            stroke-width="2"
+                            stroke-dasharray="75, 100" />
+                    </svg>
+                    <div class="stat-number">75%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+        </aside>
+
         <main class="content">
             <div class="level-detail-container">
                 <div class="level-header">
@@ -39,9 +75,7 @@
                         </div>
                         <div class="creator-details">
                             <p class="creator-name">by KEaliTgeo</p>
-                            <p class="verifier-name">Verified by GToast
-
-                            </p>
+                            <p class="verifier-name">Verified by GToast</p>
                         </div>
                     </div>
                 </div>
@@ -57,7 +91,7 @@
                             </iframe>
                         </div>
                         <div class="video-actions">
-                            <button class="action-btn copy-id" onclick="copyToClipboard('[Level ID]')">
+                            <button class="action-btn copy-id" onclick="copyToClipboard('105724358')">
                                 Copy Level ID
                             </button>
                             <button class="action-btn watch-raw">
@@ -124,8 +158,6 @@
                                 <button class="proof-btn">Watch</button>
                             </div>
                         </div>
-
-                        <!-- Add more record items as needed -->
                     </div>
 
                     <div class="records-pagination">
@@ -138,7 +170,6 @@
                 </div>
             </div>
         </main>
-        <aside class="sidebar-right"></aside>
     </div>
 
     <footer>
@@ -150,6 +181,101 @@
             navigator.clipboard.writeText(text);
             alert('Level ID copied to clipboard!');
         }
+
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = Math.random() * 2 + 1;
+                this.life = 0;
+                this.maxLife = Math.random() * 100 + 100;
+                this.angle = Math.random() * 360;
+                this.rotationSpeed = (Math.random() - 0.5) * 2;
+                this.color = `hsla(${195 + Math.random() * 30}, 100%, 70%, ${0.3 + Math.random() * 0.4})`;
+            }
+
+            update() {
+                this.x += Math.sin(this.angle * Math.PI / 180) * this.speedX;
+                this.y += this.speedY;
+                this.angle += this.rotationSpeed;
+                this.life++;
+
+                if (this.life >= this.maxLife || this.y > canvas.height) {
+                    this.reset();
+                }
+
+                this.opacity = 1 - (this.life / this.maxLife);
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle * Math.PI / 180);
+                ctx.fillStyle = this.color.replace(')', `, ${this.opacity})`);
+                
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size,
+                              Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
+                    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * this.size * 0.5,
+                              Math.sin((54 + i * 72) * Math.PI / 180) * this.size * 0.5);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const particles = Array(50).fill().map(() => new Particle());
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(0, 170, 255, ${0.2 * (1 - distance / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
     </script>
 </body>
 </html>
