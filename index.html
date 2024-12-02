@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Add Sortable.js -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
@@ -19,41 +21,92 @@
         <nav>
             <a href="stats.html">Stats Viewer</a>
             <a href="submit.html">Submit Record</a>
-            <a href="account.html" class="nav-highlight">Account</a>
+            <a href="cuenta.html" class="nav-highlight">Account</a>
+            <button id="adminButton" class="admin-button">
+                <i class="fas fa-shield"></i>
+                Admin Mode
+            </button>
         </nav>
     </header>
 
     <div class="container">
         <aside class="sidebar">
             <div class="sidebar-content ranking-stats">
-                <h3>Global Rankings</h3>
+                <h3>Web Stats</h3>
                 <div class="stat-item">
-                    <span>Total Players</span>
-                    <strong>12,456</strong>
+                    <a href="#">
+                        <div class="stat-info">
+                            <span>Total Users</span>
+                            <div class="stat-value">
+                                <i class="fas fa-users stat-icon"></i>
+                                <strong>12,456</strong>
+                            </div>
+                        </div>
+                        <div class="stat-change">+5.2%</div>
+                    </a>
                 </div>
                 <div class="stat-item">
-                    <span>Top Completions</span>
-                    <strong>387</strong>
+                    <a href="#">
+                        <div class="stat-info">
+                            <span>Online Users</span>
+                            <div class="stat-value">
+                                <i class="fas fa-signal stat-icon"></i>
+                                <strong>387</strong>
+                            </div>
+                        </div>
+                        <div class="stat-change">+2.1%</div>
+                    </a>
                 </div>
                 <div class="stat-item">
-                    <span>Hardest Level</span>
-                    <strong>Convolution</strong>
+                    <a href="#">
+                        <div class="stat-info">
+                            <span>Hardest Level</span>
+                            <div class="stat-value">
+                                <i class="fas fa-crown stat-icon"></i>
+                                <strong>Convolution</strong>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
 
             <div class="sidebar-content player-tracker">
-                <h3>Top Players</h3>
-                <div class="stat-item">
-                    <span>1. ProGamer</span>
-                    <strong>45 Levels</strong>
+                <h3>Recent Completions</h3>
+                <div class="update-item">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                        <div class="update-info">
+                            <span>IvanCrafter026</span>
+                            <div class="update-value">
+                                <i class="fas fa-trophy update-icon"></i>
+                                <strong>Null [2]</strong>
+                            </div>
+                        </div>
+                        <div class="update-change">+150 pts</div>
+                    </a>
                 </div>
-                <div class="stat-item">
-                    <span>2. LevelMaster</span>
-                    <strong>42 Levels</strong>
+                <div class="update-item">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                        <div class="update-info">
+                            <span>Nubot</span>
+                            <div class="update-value">
+                                <i class="fas fa-trophy update-icon"></i>
+                                <strong>The Abyss [15]</strong>
+                            </div>
+                        </div>
+                        <div class="update-change">+80 pts</div>
+                    </a>
                 </div>
-                <div class="stat-item">
-                    <span>3. DemonHunter</span>
-                    <strong>39 Levels</strong>
+                <div class="update-item">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                        <div class="update-info">
+                            <span>MrNexis</span>
+                            <div class="update-value">
+                                <i class="fas fa-trophy update-icon"></i>
+                                <strong>Void World [7]</strong>
+                            </div>
+                        </div>
+                        <div class="update-change">+120 pts</div>
+                    </a>
                 </div>
             </div>
 
@@ -70,157 +123,8 @@
 
         <main class="content">
             <h2 class="levels-title">Top 15 hardest rated Levels</h2>
-            <div class="levels-container">
-                <a href="level1.html" class="level" style="--i:1">
-                    <div class="level-inner">
-                        <img src="imagenes/convolution.jpg" alt="Convolution Level">
-                        <div class="level-details">
-                            <h4>#1 - Convolution</h4>
-                            <p>Creator: KEaliTgeo</p>
-                            <p class="rating">⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level2.html" class="level" style="--i:2">
-                    <div class="level-inner">
-                        <img src="imagenes/null.jpg" alt="Null Level">
-                        <div class="level-details">
-                            <h4>#2 - Null</h4>
-                            <p>Creator: RealMatter</p>
-                            <p class="rating">⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level3.html" class="level" style="--i:3">
-                    <div class="level-inner">
-                        <img src="imagenes/imhappy4u.jpg" alt="Im Happy for You Level">
-                        <div class="level-details">
-                            <h4>#3 - Im Happy for You</h4>
-                            <p>Creator: No ob</p>
-                            <p class="rating">⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level4.html" class="level" style="--i:4">
-                    <div class="level-inner">
-                        <img src="imagenes/proyectbuzzkill.jpg" alt="Project BUZZKILL Level">
-                        <div class="level-details">
-                            <h4>#4 - Project BUZZKILL</h4>
-                            <p>Creator: Superkobster</p>
-                            <p class="rating">⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level5.html" class="level" style="--i:5">
-                    <div class="level-inner">
-                        <img src="imagenes/crerrokaizoii.jpg" alt="Crerro Kaizo II Level">
-                        <div class="level-details">
-                            <h4>#5 - Crerro Kaizo II</h4>
-                            <p>Creator: Crerro</p>
-                            <p class="rating">⭐⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level6.html" class="level" style="--i:6">
-                    <div class="level-inner">
-                        <img src="imagenes/intervallum.jpg" alt="Intervallum Level">
-                        <div class="level-details">
-                            <h4>#6 - Intervallum</h4>
-                            <p>Creator: KEaliTgeo</p>
-                            <p class="rating">⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level7.html" class="level" style="--i:7">
-                    <div class="level-inner">
-                        <img src="imagenes/voidworld.jpg" alt="Void World Level">
-                        <div class="level-details">
-                            <h4>#7 - Void World</h4>
-                            <p>Creator: zYuko</p>
-                            <p class="rating">⭐⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level8.html" class="level" style="--i:8">
-                    <div class="level-inner">
-                        <img src="imagenes/crerrokaizoi.jpg" alt="Crerro Kaizo I Level">
-                        <div class="level-details">
-                            <h4>#8 - Crerro Kaizo I</h4>
-                            <p>Creator: Crerro</p>
-                            <p class="rating">⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level9.html" class="level" style="--i:9">
-                    <div class="level-inner">
-                        <img src="imagenes/theguardsmission.jpg" alt="The Guards Mission Level">
-                        <div class="level-details">
-                            <h4>#9 - the guards mission</h4>
-                            <p>Creator: 2ItalianCats</p>
-                            <p class="rating">⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level10.html" class="level" style="--i:10">
-                    <div class="level-inner">
-                        <img src="imagenes/freesolo.jpg" alt="Free Solo Level">
-                        <div class="level-details">
-                            <h4>#10 - Free Solo</h4>
-                            <p>Creator: MeowMasterer</p>
-                            <p class="rating">⭐⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level11.html" class="level" style="--i:11">
-                    <div class="level-inner">
-                        <img src="imagenes/wh3lv5.jpg" alt="Whg3 Lv5 Level">
-                        <div class="level-details">
-                            <h4>#11 - Whg3 Lv5</h4>
-                            <p>Creator: FakeHATETAG</p>
-                            <p class="rating">⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level12.html" class="level" style="--i:12">
-                    <div class="level-inner">
-                        <img src="imagenes/nuclearalarm.jpg" alt="Nuclear Alarm Level">
-                        <div class="level-details">
-                            <h4>#12 - Nuclear Alarm</h4>
-                            <p>Creator: GabestGD</p>
-                            <p class="rating">⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level13.html" class="level" style="--i:13">
-                    <div class="level-inner">
-                        <img src="imagenes/jetpacktrials.jpg" alt="Jetpack Trials Level">
-                        <div class="level-details">
-                            <h4>#13 - Jetpack Trials</h4>
-                            <p>Creator: Eefy77</p>
-                            <p class="rating">⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level14.html" class="level" style="--i:14">
-                    <div class="level-inner">
-                        <img src="imagenes/casio.jpg" alt="CASIO HELLBURST Level">
-                        <div class="level-details">
-                            <h4>#14 - CASIO HELLBURST</h4>
-                            <p>Creator: MVXgameS</p>
-                            <p class="rating">⭐</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="level15.html" class="level" style="--i:15">
-                    <div class="level-inner">
-                        <img src="imagenes/theabyss.jpg" alt="The Abyss Level">
-                        <div class="level-details">
-                            <h4>#15 - The Abyss</h4>
-                            <p>Creator: zYuko</p>
-                            <p class="rating">⭐⭐⭐⭐⭐</p>
-                        </div>
-                    </div>
-                </a>
+            <div id="levelsContainer" class="levels-container">
+                <!-- Levels will be dynamically loaded here -->
             </div>
         </main>
 
@@ -228,16 +132,37 @@
             <div class="sidebar-content recent-updates">
                 <h3>Recent Changelogs</h3>
                 <div class="update-item">
-                    <span>Convolution [#1]</span>
-                    <small>2 hours ago</small>
+                    <a href="#">
+                        <div class="update-info">
+                            <span>Convolution [#1]</span>
+                            <div class="update-value">
+                                <i class="fas fa-clock update-icon"></i>
+                                <strong>2 hours ago</strong>
+                            </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="update-item">
-                    <span>Free Solo [#2]</span>
-                    <small>1 day ago</small>
+                    <a href="#">
+                        <div class="update-info">
+                            <span>Free Solo [#2]</span>
+                            <div class="update-value">
+                                <i class="fas fa-clock update-icon"></i>
+                                <strong>1 day ago</strong>
+                            </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="update-item">
-                    <span>Whg3 Lv5 [#11]</span>
-                    <small>3 days ago</small>
+                    <a href="#">
+                        <div class="update-info">
+                            <span>Whg3 Lv5 [#11]</span>
+                            <div class="update-value">
+                                <i class="fas fa-clock update-icon"></i>
+                                <strong>3 days ago</strong>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
 
@@ -259,12 +184,52 @@
                 </div>
             </div>
 
-            <div class="sidebar-content quick-actions">
-                <h3>Quick Actions</h3>
-                <div class="action-buttons">
-                    <a href="#" class="action-button">Submit Record</a>
-                    <a href="#" class="action-button">View Stats</a>
-                    <a href="#" class="action-button">Join Discord</a>
+            <div class="sidebar-content list-leaders">
+                <h3>Staff Team</h3>
+                <div class="leaders-container">
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="avatar.png" alt="extatica profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Chenii</span>
+                            <span class="leader-role">Owner</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                    
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="nubot.jpg" alt="Voiddle profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Nubot</span>
+                            <span class="leader-role">Manager</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                    
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="ivan.jpg" alt="Megu profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Ivan</span>
+                            <span class="leader-role">Mod</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                    
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="posdha.jpg" alt="IvanCrafter026 profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Posdha</span>
+                            <span class="leader-role">Helper</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -274,82 +239,6 @@
         <p>© 2024 Demonlist - Created by Iker</p>
     </footer>
 
-    <script>
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        const particles = [];
-        const particleCount = 100;
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.color = `hsla(${195 + Math.random() * 30}, 100%, 70%, ${0.3 + Math.random() * 0.4})`;
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.x > canvas.width) this.x = 0;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                if (this.y < 0) this.y = canvas.height;
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-
-            particles.forEach((a, i) => {
-                particles.slice(i + 1).forEach(b => {
-                    const dx = a.x - b.x;
-                    const dy = a.y - b.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        const opacity = (1 - distance / 100) * 0.3;
-                        ctx.strokeStyle = `rgba(0, 170, 255, ${opacity})`;
-                        ctx.beginPath();
-                        ctx.moveTo(a.x, a.y);
-                        ctx.lineTo(b.x, b.y);
-                        ctx.stroke();
-                    }
-                });
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
