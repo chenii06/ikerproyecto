@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demonlist - Top 15 Most Difficult Levels</title>
+    <title>PlatformerWorld</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="home.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Add Sortable.js -->
@@ -16,229 +17,41 @@
     <header>
         <a href="index.html" class="logo-container">
             <img src="logo.webp" alt="Demonlist Logo">
-            <span>List</span>
+            <span>Home</span>
         </a>
         <nav>
             <a href="stats.html">Stats Viewer</a>
             <a href="submit.html">Submit Record</a>
             <a href="cuenta.html" class="nav-highlight">Account</a>
-            <button id="adminButton" class="admin-button">
-                <i class="fas fa-shield"></i>
-                Admin Mode
-            </button>
         </nav>
     </header>
 
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-content ranking-stats">
-                <h3>Web Stats</h3>
-                <div class="stat-item">
-                    <a href="#">
-                        <div class="stat-info">
-                            <span>Total Users</span>
-                            <div class="stat-value">
-                                <i class="fas fa-users stat-icon"></i>
-                                <strong>12,456</strong>
-                            </div>
-                        </div>
-                        <div class="stat-change">+5.2%</div>
-                    </a>
-                </div>
-                <div class="stat-item">
-                    <a href="#">
-                        <div class="stat-info">
-                            <span>Online Users</span>
-                            <div class="stat-value">
-                                <i class="fas fa-signal stat-icon"></i>
-                                <strong>387</strong>
-                            </div>
-                        </div>
-                        <div class="stat-change">+2.1%</div>
-                    </a>
-                </div>
-                <div class="stat-item">
-                    <a href="#">
-                        <div class="stat-info">
-                            <span>Hardest Level</span>
-                            <div class="stat-value">
-                                <i class="fas fa-crown stat-icon"></i>
-                                <strong>Convolution</strong>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+        <section class="content">
+            <h1 class="main-title">Welcome to PlatformerWorld</h1>
+            <div class="lists-container">
+                <a href="rated.html" class="list-card">
+                    <h2>Rated List</h2>
+                    <p>All Platformer Demons list.</p>
+                    <span class="view-button">Ver Lista</span>
+                </a>
+                <a href="unrated.html" class="list-card">
+                    <h2>Unrated List</h2>
+                    <p>Unrated levels that are very cool.</p>
+                    <span class="view-button">Ver Lista</span>
+                </a>
+                <a href="challenge.html" class="list-card">
+                    <h2>Tiny List</h2>
+                    <p>Levels under 10 seconds.</p>
+                    <span class="view-button">Ver Lista</span>
+                </a>
             </div>
-
-            <div class="sidebar-content player-tracker">
-                <h3>Recent Completions</h3>
-                <div class="update-item">
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
-                        <div class="update-info">
-                            <span>IvanCrafter026</span>
-                            <div class="update-value">
-                                <i class="fas fa-trophy update-icon"></i>
-                                <strong>Null [2]</strong>
-                            </div>
-                        </div>
-                        <div class="update-change">+150 pts</div>
-                    </a>
-                </div>
-                <div class="update-item">
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
-                        <div class="update-info">
-                            <span>Nubot</span>
-                            <div class="update-value">
-                                <i class="fas fa-trophy update-icon"></i>
-                                <strong>The Abyss [15]</strong>
-                            </div>
-                        </div>
-                        <div class="update-change">+80 pts</div>
-                    </a>
-                </div>
-                <div class="update-item">
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
-                        <div class="update-info">
-                            <span>MrNexis</span>
-                            <div class="update-value">
-                                <i class="fas fa-trophy update-icon"></i>
-                                <strong>Void World [7]</strong>
-                            </div>
-                        </div>
-                        <div class="update-change">+120 pts</div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="sidebar-content social-links">
-                <h3>Community</h3>
-                <div class="social-icons">
-                    <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-twitch"></i></a>
-                </div>
-            </div>
-        </aside>
-
-        <main class="content">
-            <h2 class="levels-title">Top 15 hardest rated Levels</h2>
-            <div id="levelsContainer" class="levels-container">
-                <!-- Levels will be dynamically loaded here -->
-            </div>
-        </main>
-
-        <aside class="sidebar">
-            <div class="sidebar-content recent-updates">
-                <h3>Recent Changelogs</h3>
-                <div class="update-item">
-                    <a href="#">
-                        <div class="update-info">
-                            <span>Convolution [#1]</span>
-                            <div class="update-value">
-                                <i class="fas fa-clock update-icon"></i>
-                                <strong>2 hours ago</strong>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="update-item">
-                    <a href="#">
-                        <div class="update-info">
-                            <span>Free Solo [#2]</span>
-                            <div class="update-value">
-                                <i class="fas fa-clock update-icon"></i>
-                                <strong>1 day ago</strong>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="update-item">
-                    <a href="#">
-                        <div class="update-info">
-                            <span>Whg3 Lv5 [#11]</span>
-                            <div class="update-value">
-                                <i class="fas fa-clock update-icon"></i>
-                                <strong>3 days ago</strong>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="sidebar-content level-tracker">
-                <h3>Level Progress</h3>
-                <div class="progress-bar">
-                    <div class="progress-item">
-                        <span>Convolution</span>
-                        <div class="bar">
-                            <div class="fill" style="width: 65%;"></div>
-                        </div>
-                    </div>
-                    <div class="progress-item">
-                        <span>Null</span>
-                        <div class="bar">
-                            <div class="fill" style="width: 45%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-content list-leaders">
-                <h3>Staff Team</h3>
-                <div class="leaders-container">
-                    <div class="leader-item">
-                        <div class="leader-avatar">
-                            <img src="avatar.png" alt="extatica profile">
-                        </div>
-                        <div class="leader-info">
-                            <span class="leader-name">Chenii</span>
-                            <span class="leader-role">Owner</span>
-                        </div>
-                        <button class="view-profile-btn">Profile</button>
-                    </div>
-                    
-                    <div class="leader-item">
-                        <div class="leader-avatar">
-                            <img src="nubot.jpg" alt="Voiddle profile">
-                        </div>
-                        <div class="leader-info">
-                            <span class="leader-name">Nubot</span>
-                            <span class="leader-role">Manager</span>
-                        </div>
-                        <button class="view-profile-btn">Profile</button>
-                    </div>
-                    
-                    <div class="leader-item">
-                        <div class="leader-avatar">
-                            <img src="ivan.jpg" alt="Megu profile">
-                        </div>
-                        <div class="leader-info">
-                            <span class="leader-name">Ivan</span>
-                            <span class="leader-role">Mod</span>
-                        </div>
-                        <button class="view-profile-btn">Profile</button>
-                    </div>
-                    
-                    <div class="leader-item">
-                        <div class="leader-avatar">
-                            <img src="posdha.jpg" alt="IvanCrafter026 profile">
-                        </div>
-                        <div class="leader-info">
-                            <span class="leader-name">Posdha</span>
-                            <span class="leader-role">Helper</span>
-                        </div>
-                        <button class="view-profile-btn">Profile</button>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </div>
+        </section>
+    </main>
 
     <footer>
-        <p>© 2024 Demonlist - Created by Iker</p>
+        <p>&copy; 2024 PlatformerWorld - Creado por Chenii</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="home.js"></script>
 </body>
 </html>

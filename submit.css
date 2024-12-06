@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
     background: radial-gradient(circle at 50% -20%, #2d3748, #1a202c);
     color: #ffffff;
@@ -9,61 +9,157 @@ body {
 }
 
 /* Header styles remain unchanged as requested */
+/* Modern Reset & Base Styles */
+:root {
+    --primary: #00aaff;
+    --primary-dark: #0088cc;
+    --bg-dark: #2d3748;
+    --bg-darker: #1a202c;
+    --text: #ffffff;
+    --text-secondary: #888;
+    --card-bg: #292929;
+    --header-bg: #222222;
+    --gradient: linear-gradient(135deg, var(--primary) 0%, #0099dd 100%);
+    --glow: 0 0 20px rgba(0, 170, 255, 0.3);
+    --card-border: 1px solid rgba(255, 255, 255, 0.1);
+    --card-hover-border: 1px solid var(--primary);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: radial-gradient(circle at 50% -20%, var(--bg-dark), var(--bg-darker));
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header Styles */
 header {
-    background-color: #222222;
-    padding: 15px 25px;
+    background: rgba(34, 34, 34, 0.8);
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    border-bottom: 3px solid #00aaff;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid var(--primary);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
-header .logo-container {
+.logo-container {
     display: flex;
     align-items: center;
     text-decoration: none;
-    background-color: #292929;
-    padding: 12px 25px;
-    border-radius: 10px;
-    transition: background-color 0.4s ease, transform 0.4s ease;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: var(--card-border);
+    position: relative;
+    overflow: hidden;
 }
 
-header .logo-container:hover {
-    background-color: #00aaff;
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+}
+
+.logo-container:hover::before {
+    left: 100%;
+}
+
+.logo-container:hover {
+    background: var(--gradient);
+    transform: translateY(-2px);
+    border-color: transparent;
+    box-shadow: var(--glow);
+}
+
+.logo-container img {
+    height: 40px;
+    margin-right: 1rem;
+    filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.logo-container:hover img {
     transform: scale(1.1) rotate(5deg);
 }
 
-header img {
-    height: 45px;
-    margin-right: 12px;
+.logo-container .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
 }
 
-header .logo-text {
-    font-size: 2.2em;
-    font-weight: bold;
-    color: #ffffff;
-    letter-spacing: 1px;
-}
-
-header nav {
+nav {
     display: flex;
-    gap: 30px;
+    gap: 1.5rem;
 }
 
-header nav a {
-    color: #00aaff;
+nav a {
+    color: var(--primary);
     text-decoration: none;
-    font-size: 1.2em;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: var(--card-border);
+    position: relative;
+    overflow: hidden;
 }
 
-header nav a:hover {
-    background-color: #00aaff;
-    color: #1b1b1b;
-    transform: translateY(-3px);
+nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+}
+
+nav a:hover::before {
+    left: 100%;
+}
+
+nav a:hover {
+    background: var(--gradient);
+    color: var(--text);
+    transform: translateY(-2px);
+    border-color: transparent;
+    box-shadow: var(--glow);
 }
 
 /* Enhanced Main Form Styling */

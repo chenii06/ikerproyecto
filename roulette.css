@@ -1,0 +1,187 @@
+/* Roulette Specific Styles */
+.roulette-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.roulette-title {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+}
+
+.wheel-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    margin: 0 auto 3rem;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 50%;
+    border: 10px solid var(--primary);
+    overflow: hidden;
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    box-shadow: 0 0 50px rgba(0, 170, 255, 0.3),
+                inset 0 0 50px rgba(0, 170, 255, 0.2);
+}
+
+.wheel-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-origin: center;
+}
+
+.wheel-segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.wheel-segment img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+    transform: rotate(-60deg);
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    z-index: 10;
+    filter: drop-shadow(0 0 10px rgba(0, 170, 255, 0.5));
+}
+
+.spin-button {
+    background: var(--gradient);
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    color: var(--text);
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    margin: 2rem 0;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.spin-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 170, 255, 0.3);
+}
+
+.spin-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.selected-level {
+    margin-top: 4rem;
+}
+
+.level-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: 2rem auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.level-card.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.level-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.level-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.level-info p {
+    color: var(--text-secondary);
+    margin: 0.5rem 0;
+}
+
+.play-button {
+    display: inline-block;
+    background: var(--gradient);
+    color: var(--text);
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    margin-top: 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.play-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 170, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .wheel-container {
+        width: 300px;
+        height: 300px;
+    }
+
+    .wheel-segment img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .roulette-title {
+        font-size: 2rem;
+    }
+}
+
+/* Add nav highlight style */
+.nav-highlight {
+    background: var(--gradient) !important;
+    color: var(--text) !important;
+    border-color: transparent !important;
+}
