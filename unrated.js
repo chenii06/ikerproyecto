@@ -180,20 +180,16 @@ function createNewLevelForm() {
 }
 
 function renderLevels() {
-    let content = isAdminMode ? createNewLevelForm() : '';
+    let content = '';
+    if (isAdminMode) {
+        content += `<div class="admin-controls">
+            <a href="addrated.html" class="add-level-btn">Add New Level</a>
+        </div>`;
+    }
     content += levels.map((level, index) => createLevelHTML(level, index)).join('');
     levelsContainer.innerHTML = content;
     
-    if (!isAdminMode) {
-        document.querySelectorAll('.level').forEach((level, index) => {
-            level.addEventListener('click', () => {
-                const levelId = level.dataset.id;
-                const levelIndex = levels.findIndex(l => l.id === levelId);
-                window.location.href = `rated/level${levelIndex + 1}.html`;
-            });
-        });
-    } else {
-        document.getElementById('newLevelForm').addEventListener('submit', addNewLevel);
+    if (isAdminMode) {
         document.querySelectorAll('.delete-level').forEach(button => {
             button.addEventListener('click', deleteLevel);
         });
@@ -258,6 +254,19 @@ adminButton.addEventListener('click', toggleAdminMode);
 // Initialize
 loadSavedLevelData();
 renderLevels();
+
+// Cargar niveles desde localStorage al inicio
+function loadLevelsFromStorage() {
+    const storedLevels = localStorage.getItem('levels');
+    if (storedLevels) {
+        levels = JSON.parse(storedLevels);
+        renderLevels();
+    }
+}
+
+// Llamar a esta función al cargar la página
+loadLevelsFromStorage();
+
 
 // Particle animation
 const canvas = document.getElementById('particleCanvas');
@@ -334,4 +343,3 @@ function animate() {
 }
 
 animate();
-
