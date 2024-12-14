@@ -1,0 +1,35 @@
+{% extends 'users/base.html' %}
+{% load socialaccount %}
+{% load static %}
+
+{% block head_content %}
+<title>Login | DemonList</title>
+<link rel="stylesheet" href="{% static 'css/login.css' %}?v=1.24">
+{% endblock %}
+
+
+{% block container %}
+
+    {% if form.errors %}
+        <p class="login-text text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> Your username and password didn't match. Please try again.</p>
+    {% endif%}
+
+    <form class="login-form text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" method="POST" action="{% url "users:login" %}">
+
+        {% csrf_token %}
+        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="username" id="username" placeholder="Username/Email">
+        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="password" name="password" id="password" placeholder="Password">
+
+        <div class="login-options-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+            <p>Did you forget your password? <a href="{% url 'reset_password' %}" class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Recover password</a></p>
+            <p>Don't have an account yet? <a href="{% url 'users:signup' %}" class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Sign up here</a></p>
+
+        </div>
+
+        <button class="log-in-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+            Log in
+        </button>
+
+    </form>
+{% endblock%}

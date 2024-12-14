@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>Coming Soon</title>
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+        <article class="text-countdown-container">
+            <h2 class="text-coming-soon">DEMONLIST UPDATE 1.2</h2>
+            <h2 class="text-coming-soon">COMING SOON!</h2>
+        </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+{% endblock %}

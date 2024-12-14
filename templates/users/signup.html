@@ -1,0 +1,35 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block head_content %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}?v=1.24">
+{% endblock %}
+
+{% block container %}
+
+    <form class="signup-form text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" action="{% url "users:signup" %}" method="POST">
+        {% csrf_token %}
+
+        {% if form.errors.1 %}
+            <p class="login-text text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> {{form.errors.1}}</p>
+        {% endif %}
+
+        {{form}}
+
+        {{help_text}}
+        
+        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Do you have an account? <a href="{% url 'users:login' %}" class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Log in here</a></p>
+
+        <button type="submit" class="signup-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+            Register!
+        </button>
+
+    </form>
+
+    <script>
+
+        function without_space(e) {
+            e.value = e.value.replace(/ /g, '').replace(/\//g, '');
+        }
+    </script>
+{% endblock%}

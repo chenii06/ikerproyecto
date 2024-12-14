@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<title>{{list_words.records_status}}</title>
+<link rel="stylesheet" href="{% static 'css/records_status.css' %}?v=1.24" />
+{% endblock %}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="records-status-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.records_status|upper}}</h2>
+
+            <table class="records-table card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                <thead>
+                  <tr class="records-header card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    <th>{{list_words.demon}}</th>
+                    <th>{{list_words.video_proof}}</th>
+                    <th>{{list_words.status}}</th>
+                    <th>{{list_words.mod_notes}}</th>
+                    <th>{{list_words.rating_stars}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if records %}
+                  {% for record in records %}
+                  <tr class="records-body">
+                    <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><a class="demon-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:level_id_detail' record.demon.level_id %}"> {{record.demon}}</td>
+                    <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                      {% if record.video_platform == "Drive" %}
+                      <a href="{{ record.video }}" class="drive-button">
+                          Drive
+                          <img src="{% static 'img/drive-icon--table.svg' %}" alt="drive-icon">
+                      </a>
+                      {% elif record.video_platform == "Facebook" %}
+                      <a href="{{ record.video }}" class="facebook-button">
+                          Facebook
+                          <img src="{% static 'img/facebook-icon--table.svg' %}" alt="facebook-icon">
+                      </a>
+                      {% elif record.video_platform == "YouTube" %}
+                      <a href="{{ record.video }}" class="youtube-button">
+                          YouTube
+                          <img src="{% static 'img/youtube-icon--table.svg' %}" alt="youtube-icon">
+                      </a>
+                      {% elif record.video_platform == "Twitch" %}
+                      <a href="{{ record.video }}" class="twitch-button">
+                          Twitch
+                          <img src="{% static 'img/twitch-icon--table.svg' %}" alt="twitch-icon">
+                      </a>
+                      {% else %}
+                      {% endif %}
+                    </td>
+                    <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                      {% if record.accepted %}
+                      <i class="fas fa-check-circle" style="font-size: 24px; color: green;"></i>
+                      {% elif record.under_consideration %}
+                      <i class="fas fa-clock" style="font-size: 24px; color: #176ee0;"></i>
+                      {% elif record.accepted is none %}
+                      <i class="fas fa-clock" style="font-size: 24px; color: gray;"></i>
+                      {% else %}
+                      <i class="fas fa-times-circle" style="font-size: 24px; color: red;"></i>
+                      {% endif %}
+                    </td>
+                    <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{% if record.mod_notes and record.mod_notes != "None" %}{{record.mod_notes}}{% else %}-{% endif %}</td>
+                    <td class="rating-stars-container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                      {% if record.accepted %}
+                        <a class="demon-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:vote_stars' record.id %}">{{list_words.vote}}</a>
+                        {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  {% endif %}
+
+                </tbody>
+            </table>
+              
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+
+</main>
+
+<script>
+    function updateYoutubeValue(input) {
+        const userValue = input.value.substring("https://www.youtube.com/@".length);
+    
+        input.value = "https://www.youtube.com/@" + userValue;
+      }
+      function updateTwitterValue(input) {
+        const userValue = input.value.substring("https://twitter.com/".length);
+    
+        input.value = "https://twitter.com/" + userValue;
+      }
+      function updateTwitchValue(input) {
+        const userValue = input.value.substring("https://twitch.tv/".length);
+    
+        input.value = "https://twitch.tv/" + userValue;
+      }
+      function updateFacebookValue(input) {
+        const userValue = input.value.substring("https://facebook.com/".length);
+    
+        input.value = "https://facebook.com/" + userValue;
+      }
+</script>
+{% endblock %}
+
+{% block footer_margin %}600{% endblock %}

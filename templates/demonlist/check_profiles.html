@@ -1,0 +1,512 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>Check Profiles</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/check_profiles.css' %}?v=1.24">
+
+    <!-- Incluye jQuery (asegúrate de que esté incluido antes de Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Incluye las hojas de estilo de Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Incluye la biblioteca Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="check-records-container" id="table-content">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Check Profiles</h2>
+
+            <div class="col-lg-3 col-md-4 ml-auto mt-2 text-right">
+                <div>
+                    <p class="records-label text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="records-count">{{paginator.count}} {% if status_filter == "Verifiers" or status_filter == "Creators" %}demons{% else %}records{% endif %}</p>
+                </div>
+            </div>
+
+            <form class="form-filters" method="GET" action="{% url 'demonlist:check_profiles' %}">
+                <div style="display: flex; align-items: center; width: 100%; padding: 0 10px; justify-content: center; margin-bottom: 50px;">
+                    <select class="form-control select-status card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="status" name="status">
+                        <option value="Records" {% if status_filter == "Records" %}selected{% endif %}>Records</option>
+                        <option value="Verifiers" {% if status_filter == "Verifiers" %}selected{% endif %}>Verifiers</option>
+                        <option value="Creators" {% if status_filter == "Creators" %}selected{% endif %}>Creators</option>
+                    </select>
+                    <select class="form-control select-status card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="assigned" name="assigned" hidden>
+                        <option value="Not Assigned" {% if assigned_filter == "Not Assigned" %}selected{% endif %}>Not Assigned</option>
+                        <option value="Assigned" {% if assigned_filter == "Assigned" %}selected{% endif %}>Assigned</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center; width: 100%; padding: 0 10px; justify-content: center; margin-bottom: 50px;">
+                    <div style="flex-grow: 1; position: relative; max-width: 300px; max-height: 20px; margin: 0 10px;">
+                        <input class="card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="search" name="search" placeholder="Search player/demon..." value="{% if search_filter %}{{search_filter}}{% endif %}">
+                        <i style="position: absolute; right: 15px; top: 130%; transform: translateY(-50%); color: gray;" class="fas fa-search"></i>
+                    </div>
+                    <div class="form-group" style="flex-grow: 1; position: relative; max-width: 300px; max-height: 20px; margin: 0 10px;">
+                        <select class="form-control other-select card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="mode" name="mode" required >
+                            <option selected disabled="disabled" value="">-- Mode --</option>
+                            {% if request.global_context.is_classic_list_helper %}
+                            <option value="classic" {% if mode_filter == "classic" %}selected{% endif %}>Classic</option>
+                            {% endif %}
+                            {% if request.global_context.is_platformer_list_helper %}
+                            <option value="platformer" {% if mode_filter == "platformer" %}selected{% endif %}>Platformer</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex-grow: 1; position: relative; max-width: 300px; max-height: 20px; margin: 0 10px;">
+                        <select class="form-control other-select card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="category" name="category" required>
+                            <option selected disabled="disabled" value="">-- Category --</option>
+                            {% if request.global_context.is_rated_list_helper %}
+                            <option value="rated" {% if category_filter == "rated" %}selected{% endif %}>Rated list</option>
+                            {% endif %}
+                            {% if request.global_context.is_challenge_list_helper %}
+                            <option value="challenge" {% if category_filter == "challenge" %}selected{% endif %}>Challenge list</option>
+                            {% endif %}
+                            {% if request.global_context.is_tiny_list_helper %}
+                            <option value="tiny" {% if category_filter == "tiny" %}selected{% endif %}>Tiny list</option>
+                            {% endif %}
+                            {% if request.global_context.is_deathless_list_helper %}
+                            <option value="deathless" {% if category_filter == "deathless" %}selected{% endif %}>Deathless list</option>
+                            {% endif %}
+                            {% if request.global_context.is_impossible_list_helper %}
+                            <option value="impossible" {% if category_filter == "impossible" %}selected{% endif %}>Impossible list</option>
+                            {% endif %}
+                            {% if request.global_context.is_spam_list_helper %}
+                            <option value="spam" {% if category_filter == "spam" %}selected{% endif %}>Spam list</option>
+                            {% endif %}
+                            {% if request.global_context.is_impossible_tiny_list_helper %}
+                            <option value="impossible_tiny" {% if category_filter == "impossible_tiny" %}selected{% endif %}>Impossible Tiny list</option>
+                            {% endif %}
+                            {% if request.global_context.is_all_list_helper %}
+                            <option value="all" {% if category_filter == "all" %}selected{% endif %}>TPL</option>
+                            {% endif %}
+                        </select>
+                    </div>
+    
+                </div>
+            </form>
+
+            <table class="check-records-table card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="tableRecords">
+                <thead>
+                    <tr class="records-header card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        {% if status_filter == "Records" %}
+                        <th>Record Holder</th>
+                        <th>Player</th>
+                        {% elif status_filter == "Verifiers" %}
+                        <th>Verifier</th>
+                        <th>Verifier Profile</th>
+                        {% elif status_filter == "Creators" %}
+                        <th>Creator</th>
+                        <th>Creator Profile</th>
+                        {% endif %}
+                        <th>Demon</th>
+                        {% if status_filter == "Records" %}
+                        <th>Video Proof</th>
+                        <th>Raw Footage</th>
+                        {% endif %}
+                        <th>Send</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if objects %}
+                    {% for object in objects %}
+                        <tr class="records-body content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            {% if status_filter == "Records" %}
+                            <td>
+                                <p>{{object.tentative_player}}</p>
+                            </td>
+                            {% elif status_filter == "Verifiers" %}
+                            <td>
+                                <p>{{object.verifier}}</p>
+                            </td>
+                            {% elif status_filter == "Creators" %}
+                            <td>
+                                <p>{{object.creator}}</p>
+                            </td>
+                            {% endif %}
+                            <td>
+                                <select class="player-select content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="player_{{object.id}}">
+                                    <option value="" selected>-- Player --</option>
+                                </select>
+                            </td>
+                            {% if status_filter == "Records" %}
+                            <td><a href="{% url 'demonlist:level_id_detail' object.demon.level_id %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" target="_blank">#{{object.order_position}} - {{object.demon}}</a></td>
+                            {% elif status_filter == "Verifiers" or status_filter == "Creators" %}
+                            <td><a href="{% url 'demonlist:level_id_detail' object.level_id %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" target="_blank">#{{object.order_position}} - {{object.level}}</a></td>
+                            {% endif %}
+                            {% if status_filter == "Records" %}
+                            <td class="button-table">
+                                <a class="alter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{{object.video}}" title="{{object.video}}" target="_blank">YouTube</a>
+                            </td>
+                            <td class="button-table">
+                                <a class="alter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{{object.raw_footage}}" target="_blank">Raw Footage</a>
+                            </td>
+                            {% endif %}
+                            <td class="button-table">
+                                {% if status_filter == "Records" %}
+                                <button type="button" class="delete-button alter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="warning_message({{object.id}}); event.stopPropagation();">Delete</button>
+                                {% endif %}
+                                <button type="button" class="alter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="send_{% if status_filter == "Records" %}player{% elif status_filter == "Verifiers" %}verifier{% elif status_filter == "Creators" %}creator{% endif %}({{object.id}}); event.stopPropagation();">Send</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% else %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            {% if has_other_pages %}
+            <div class="pagination">
+                <div id="pagination-links">
+                        <ul class="pagination">
+                            {% if has_previous %}
+                                <li><a class="page-link" href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&demon={{demon_filter_url}}&search={{search_filter}}&page=1">&laquo;</a></li>
+                                <li><a class="page-link" href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&demon={{demon_filter_url}}&search={{search_filter}}&page={{previous_page_number}}">‹</a></li>
+                            {% endif %}
+                            {% for page in paginator.page_range %}
+                                {% if number == page %}
+                                    <li class="page-link active main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><span>{{ page }}</span></li>
+                                {% elif page > number|add:'-3' and page < number|add:'3' %}
+                                    <li><a class="page-link" href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&demon={{demon_filter_url}}&search={{search_filter}}&page={{ page }}">{{ page }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if has_next %}
+                                <li><a class="page-link" href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&demon={{demon_filter_url}}&search={{search_filter}}&page={{ next_page_number }}">›</a></li>
+                                <li><a class="page-link" href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&demon={{demon_filter_url}}&search={{search_filter}}&page={{ page_max }}">&raquo;</a></li>
+                            {% endif %}
+                        </ul>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+    <script>
+        function limitInput(element, maxLength) {
+            if (element.value.length > maxLength) {
+                element.value = element.value.slice(0, maxLength);
+            }
+        }
+
+        function run_select2() {
+            $('.player-select').select2({
+                dropdownCssClass: 'contain-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode',
+                containerCssClass: 'card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode',
+                ajax: {
+                    type: 'POST',
+                    dataType: 'json',
+                    delay: 250,
+                    headers: {
+                        "X-CSRFToken": Cookies.get("csrftoken")
+                    },
+                    data: function(params) {
+                        return {
+                        option: "search",
+                        search: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        var results = [];
+                        for (var i = 0; i < data.results.length; i++) {
+                            results.push({
+                                id: data.results[i].id,
+                                text: data.results[i].text
+                            });
+                        }
+                        return {
+                            results: results
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Selecciona un jugador',
+                minimumInputLength: 1 // Número mínimo de caracteres antes de hacer la búsqueda
+            });
+        }
+
+        $(document).ready(function() {
+
+            run_select2();
+
+            $(document).on('change', '#status', function() {
+
+                var form = $(this).closest('form');
+                var url = form.attr('action');
+                var data = form.serialize();
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'html',
+                    data: data,
+                    success: function(response) {
+                        $('#table-content').html($(response).find('#table-content').html());
+                        $('#pagination-links').html($(response).find('#pagination-links').html());
+                        $('#records-count').html($(response).find('#records-count').html());
+                        if ($("#status").val() == "Records") {
+                            $("#assigned").hide()
+                        }
+                        else {
+                            $("#assigned").show()
+                        }
+                        run_select2();
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error:', errorThrown);
+                    }
+                });
+            });
+
+            $(document).on('change', '#assigned', function() {
+
+                var form = $(this).closest('form');
+                var url = form.attr('action');
+                var data = form.serialize();
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'html',
+                    data: data,
+                    success: function(response) {
+                        $('#table-content').html($(response).find('#table-content').html());
+                        $('#pagination-links').html($(response).find('#pagination-links').html());
+                        $('#records-count').html($(response).find('#records-count').html());
+                        if ($("#status").val() == "Records") {
+                            $("#assigned").hide()
+                        }
+                        else {
+                            $("#assigned").show()
+                        }
+                        run_select2();
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error:', errorThrown);
+                    }
+                });
+            });
+
+            $(document).on('click', '.pagination a', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                $('#table-content').load(url + ' #table-content', function() {
+                    $('#pagination-links').load(url + ' #pagination-links', function() {
+                        run_select2();
+                    });
+                });
+            });
+
+            $(document).on('input', '#search', function() {
+                var form = $(this).closest('form');
+                var url = form.attr('action');
+                var data = form.serialize();
+                
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'html',
+                    data: data,
+                    success: function(response) {
+                        $('#tableRecords').html($(response).find('#tableRecords').html());
+                        $('#pagination-links').html($(response).find('#pagination-links').html());
+                        $('#records-count').html($(response).find('#records-count').html());
+                        run_select2();
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error:', errorThrown);
+                    }
+                });
+            });
+            $(document).on('change', '#mode', function() {
+                $("#search").val("");
+                var form = $(this).closest('form');
+                var url = form.attr('action');
+                var data = form.serialize();
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'html',
+                    data: data,
+                    success: function(response) {
+                        $('#table-content').html($(response).find('#table-content').html());
+                        $('#pagination-links').html($(response).find('#pagination-links').html());
+                        $('#records-count').html($(response).find('#records-count').html());
+                        if ($('#mode').val() == "classic") {
+                            $("#category option[value='rated']").remove();
+                            $("#category option[value='challenge']").remove();
+                            $("#category option[value='deathless']").remove();
+                            $("#category option[value='impossible']").remove();
+                            $("#category option[value='all']").remove();
+                        }
+                        else if ($('#mode').val() == "platformer") {
+                            $("#category option[value='spam']").remove();
+                            $("#category option[value='impossible_tiny']").remove();
+                        }
+                        run_select2();
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error:', errorThrown);
+                    }
+                });
+            });
+            $(document).on('change', '#category', function() {
+                $("#search").val("");
+                var form = $(this).closest('form');
+                var url = form.attr('action');
+                var data = form.serialize();
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'html',
+                    data: data,
+                    success: function(response) {
+                        $('#table-content').html($(response).find('#table-content').html());
+                        $('#pagination-links').html($(response).find('#pagination-links').html());
+                        $('#records-count').html($(response).find('#records-count').html());
+                        if ($('#mode').val() == "classic") {
+                            $("#category option[value='rated']").remove();
+                            $("#category option[value='challenge']").remove();
+                            $("#category option[value='deathless']").remove();
+                            $("#category option[value='impossible']").remove();
+                            $("#category option[value='all']").remove();
+                        }
+                        else if ($('#mode').val() == "platformer") {
+                            $("#category option[value='spam']").remove();
+                            $("#category option[value='impossible_tiny']").remove();
+                        }
+                        run_select2();
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error:', errorThrown);
+                    }
+                });
+            });
+        });
+
+
+    function warning_message(id) {
+        $('body').append(`<div class="delete-modal-container open-modal">
+
+            <div class="delete-modal">
+
+                <div class="modal-text">
+                    <p>Are you sure to delete this record?</p>
+                </div>
+
+
+                <div class="modal-buttons-container">
+
+                    <button class="modal-delete-button" onclick="delete_player(` + id + `);">Delete</button>
+                    <button class="modal-cancel-button" onclick="hide_player()">Cancel</button>
+
+                </div>
+
+            </div>
+
+        </div>`);
+    }
+
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('.delete-modal').length) {
+            $('.delete-modal-container').remove();
+        }
+    });
+
+    function hide_player() {
+        $('.delete-modal-container').remove();
+    }
+
+    function delete_player(id)
+        {
+        data = {}
+        data.option = "delete";
+        data.record_id = id;
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            dataType: 'html',
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+            "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+            location.reload()
+            }
+        })
+    }
+
+    function send_player(id) {
+        var player = document.querySelector(`select[name="player_${id}"]`);
+        data = {}
+        data.option = "send_player";
+        data.record_id = id;
+        data.player_id = player.value
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            dataType: 'html',
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+            "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+            location.reload()
+            }
+        })
+    }
+
+    function send_verifier(id) {
+        var player = document.querySelector(`select[name="player_${id}"]`);
+        data = {}
+        data.option = "send_verifier";
+        data.demon_id = id;
+        data.player_id = player.value
+        data.assigned = $("#assigned").val()
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            dataType: 'html',
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+            "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+            location.reload()
+            }
+        })
+    }
+
+    function send_creator(id) {
+        var player = document.querySelector(`select[name="player_${id}"]`);
+        data = {}
+        data.option = "send_creator";
+        data.demon_id = id;
+        data.player_id = player.value
+        data.assigned = $("#assigned").val()
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            dataType: 'html',
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+            "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+            location.reload()
+            }
+        })
+    }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<title>{{list_words.vote_stars}}</title>
+<link rel="stylesheet" href="{% static 'css/vote_stars.css' %}?v=1.24">
+
+{% endblock %}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="vote-stars-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.vote_stars|upper}}</h2>
+
+            <form method="POST" enctype="multipart/form-data" class="vote-stars-form card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="PATCH">
+                <div class="vote-stars-rating-container">
+                    <div class="new-record-enjoyment-container vote-stars-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.enjoyment}}:</p>
+                        <div class="rate1 star-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" style="display: table;">
+                            <input type="radio" id="enjoymentStar5" name="enjoyment_stars" value="5" {% if record.enjoyment_stars == 5 %}checked{% endif %}>
+                            <label for="enjoymentStar5">&#9733;</label>
+                            <input type="radio" id="enjoymentStar4" name="enjoyment_stars" value="4" {% if record.enjoyment_stars == 4 %}checked{% endif %}>
+                            <label for="enjoymentStar4">&#9733;</label>
+                            <input type="radio" id="enjoymentStar3" name="enjoyment_stars" value="3" {% if record.enjoyment_stars == 3 %}checked{% endif %}>
+                            <label for="enjoymentStar3">&#9733;</label>
+                            <input type="radio" id="enjoymentStar2" name="enjoyment_stars" value="2" {% if record.enjoyment_stars == 2 %}checked{% endif %}>
+                            <label for="enjoymentStar2">&#9733;</label>
+                            <input type="radio" id="enjoymentStar1" name="enjoyment_stars" value="1" {% if record.enjoyment_stars == 1 %}checked{% endif %}>
+                            <label for="enjoymentStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-gameplay-container vote-stars-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.gameplay}}:</p>
+
+                        <div class="rate1 star-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" style="display: table;">
+                            <input type="radio" id="gameplayStar5" name="gameplay_stars" value="5" {% if record.gameplay_stars == 5 %}checked{% endif %}>
+                            <label for="gameplayStar5">&#9733;</label>
+                            <input type="radio" id="gameplayStar4" name="gameplay_stars" value="4" {% if record.gameplay_stars == 4 %}checked{% endif %}>
+                            <label for="gameplayStar4">&#9733;</label>
+                            <input type="radio" id="gameplayStar3" name="gameplay_stars" value="3" {% if record.gameplay_stars == 3 %}checked{% endif %}>
+                            <label for="gameplayStar3">&#9733;</label>
+                            <input type="radio" id="gameplayStar2" name="gameplay_stars" value="2" {% if record.gameplay_stars == 2 %}checked{% endif %}>
+                            <label for="gameplayStar2">&#9733;</label>
+                            <input type="radio" id="gameplayStar1" name="gameplay_stars" value="1" {% if record.gameplay_stars == 1 %}checked{% endif %}>
+                            <label for="gameplayStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-decoration-container vote-stars-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.decoration}}:</p>
+                        <div class="rate1 star-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" style="display: table;">
+                            <input type="radio" id="decorationStar5" name="decoration_stars" value="5" {% if record.decoration_stars == 5 %}checked{% endif %}>
+                            <label for="decorationStar5">&#9733;</label>
+                            <input type="radio" id="decorationStar4" name="decoration_stars" value="4" {% if record.decoration_stars == 4 %}checked{% endif %}>
+                            <label for="decorationStar4">&#9733;</label>
+                            <input type="radio" id="decorationStar3" name="decoration_stars" value="3" {% if record.decoration_stars == 3 %}checked{% endif %}>
+                            <label for="decorationStar3">&#9733;</label>
+                            <input type="radio" id="decorationStar2" name="decoration_stars" value="2" {% if record.decoration_stars == 2 %}checked{% endif %}>
+                            <label for="decorationStar2">&#9733;</label>
+                            <input type="radio" id="decorationStar1" name="decoration_stars" value="1" {% if record.decoration_stars == 1 %}checked{% endif %}>
+                            <label for="decorationStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-balanced-container vote-stars-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.balanced}}:</p>
+                        <div class="rate1 star-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" style="display: table;">
+                            <input type="radio" id="balancedStar5" name="balanced_stars" value="5" {% if record.balanced_stars == 5 %}checked{% endif %}>
+                            <label for="balancedStar5">&#9733;</label>
+                            <input type="radio" id="balancedStar4" name="balanced_stars" value="4" {% if record.balanced_stars == 4 %}checked{% endif %}>
+                            <label for="balancedStar4">&#9733;</label>
+                            <input type="radio" id="balancedStar3" name="balanced_stars" value="3" {% if record.balanced_stars == 3 %}checked{% endif %}>
+                            <label for="balancedStar3">&#9733;</label>
+                            <input type="radio" id="balancedStar2" name="balanced_stars" value="2" {% if record.balanced_stars == 2 %}checked{% endif %}>
+                            <label for="balancedStar2">&#9733;</label>
+                            <input type="radio" id="balancedStar1" name="balanced_stars" value="1" {% if record.balanced_stars == 1 %}checked{% endif %}>
+                            <label for="balancedStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-atmosphere-container vote-stars-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.atmosphere}}:</p>
+                        <div class="rate1 star-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" style="display: table;">
+                            <input type="radio" id="atmosphereStar5" name="atmosphere_stars" value="5" {% if record.atmosphere_stars == 5 %}checked{% endif %}>
+                            <label for="atmosphereStar5">&#9733;</label>
+                            <input type="radio" id="atmosphereStar4" name="atmosphere_stars" value="4" {% if record.atmosphere_stars == 4 %}checked{% endif %}>
+                            <label for="atmosphereStar4">&#9733;</label>
+                            <input type="radio" id="atmosphereStar3" name="atmosphere_stars" value="3" {% if record.atmosphere_stars == 3 %}checked{% endif %}>
+                            <label for="atmosphereStar3">&#9733;</label>
+                            <input type="radio" id="atmosphereStar2" name="atmosphere_stars" value="2" {% if record.atmosphere_stars == 2 %}checked{% endif %}>
+                            <label for="atmosphereStar2">&#9733;</label>
+                            <input type="radio" id="atmosphereStar1" name="atmosphere_stars" value="1" {% if record.atmosphere_stars == 1 %}checked{% endif %}>
+                            <label for="atmosphereStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">
+                    {{list_words.submit}}
+                </button>
+
+            </form>
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+{% endblock %}
+
+{% block footer_margin %}600{% endblock  %}

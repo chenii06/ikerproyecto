@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>Add / Edit Profile</title>
+    <link rel="stylesheet" href="{% static 'css/add_edit_profile.css' %}?v=1.24">
+
+    <!-- Incluye jQuery (asegúrate de que esté incluido antes de Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Incluye las hojas de estilo de Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Incluye la biblioteca Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        {% comment %} Contenedor de el titulo y bloque de submit {% endcomment %}
+        <section class="add-edit-demon-container">
+
+            {% comment %} TITULO {% endcomment %}
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Add / Edit Profile</h2>
+
+            <form class="add-edit-demon-form card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="option" name="option" onchange="change_option(this);">
+                    <option value="Add" selected>Add</option>
+                    <option value="Edit">Edit</option>
+                </select>
+
+                <div class="update-social-data-container update-data-container">
+
+                    <div class="update-username-container update-input-container">
+
+                        <div class="update-username-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.5 19C2.5 19 1 19 1 17.5001C1 16.0001 2.5 11.5 10 11.5C17.5 11.5 19 16.0001 19 17.5001C19 19 17.5 19 17.5 19H2.5ZM10 9.99999C11.1934 9.99999 12.3381 9.52591 13.1819 8.682C14.0259 7.83808 14.5001 6.69348 14.5001 5.50001C14.5001 4.30654 14.0259 3.16194 13.1819 2.31802C12.3381 1.47411 11.1934 1 10 1C8.80652 1 7.66194 1.47411 6.81802 2.31802C5.97411 3.16194 5.5 4.30654 5.5 5.50001C5.5 6.69348 5.97411 7.83808 6.81802 8.682C7.66194 9.52591 8.80652 9.99999 10 9.99999Z" fill="#9494A8" />
+                              </svg>
+
+                            Username
+
+                        </div>
+
+                        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="username" id="username" placeholder="Username" value="">
+
+                        <div id="previous_profile_container" class="border content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="previous_profile" id="previous_profile">
+                                <option value="" disabled selected>Username</option>
+                            </select>
+                        </div>
+
+                        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="new_username" id="new_username" placeholder="New Username" value="">
+
+                    </div>
+
+                    <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="file" id="profile-picture-input" name="picture" style="display:none;" onchange="displayImage(this)"/>
+
+                    <button class="profile-picture-changer-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="button" onclick="document.getElementById('profile-picture-input').click();">
+
+                        Change profile picture
+                        <svg class="button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.5 19C2.5 19 1 19 1 17.5001C1 16.0001 2.5 11.5 10 11.5C17.5 11.5 19 16.0001 19 17.5001C19 19 17.5 19 17.5 19H2.5ZM10 9.99999C11.1934 9.99999 12.3381 9.52591 13.1819 8.682C14.0259 7.83808 14.5001 6.69348 14.5001 5.50001C14.5001 4.30654 14.0259 3.16194 13.1819 2.31802C12.3381 1.47411 11.1934 1 10 1C8.80652 1 7.66194 1.47411 6.81802 2.31802C5.97411 3.16194 5.5 4.30654 5.5 5.50001C5.5 6.69348 5.97411 7.83808 6.81802 8.682C7.66194 9.52591 8.80652 9.99999 10 9.99999Z" fill="#9494A8" />
+                          </svg>
+
+                    </button>
+
+                    <div class="update-country-container update-input-container">
+
+                        <div class="update-country-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 19C5.05 19 1 14.95 1 10C1 5.05 5.05 1 10 1C14.95 1 19 5.05 19 10C19 14.95 14.95 19 10 19ZM8.125 13.75C8.575 16.075 9.4 17.5 10 17.5C10.6 17.5 11.425 16.075 11.875 13.75H8.125ZM13.45 13.75C13.225 15.025 12.85 16.225 12.4 17.125C14.125 16.525 15.625 15.325 16.525 13.75H13.45ZM3.475 13.75C4.375 15.325 5.875 16.525 7.6 17.125C7.15 16.225 6.775 15.025 6.55 13.75H3.475ZM13.675 12.25H17.2C17.35 11.575 17.5 10.75 17.5 10C17.5 9.25 17.35 8.425 17.125 7.75H13.6C13.75 8.5 13.75 9.25 13.75 10C13.75 10.75 13.75 11.5 13.675 12.25ZM7.9 12.25H12.175C12.25 11.575 12.325 10.825 12.325 10C12.325 9.175 12.25 8.425 12.175 7.75H7.9C7.825 8.425 7.75 9.175 7.75 10C7.75 10.825 7.825 11.575 7.9 12.25ZM2.875 12.25H6.4C6.325 11.5 6.325 10.75 6.325 10C6.325 9.25 6.325 8.5 6.4 7.75H2.875C2.65 8.425 2.5 9.25 2.5 10C2.5 10.75 2.65 11.575 2.875 12.25ZM13.45 6.25H16.525C15.625 4.675 14.125 3.475 12.4 2.875C12.85 3.775 13.225 4.975 13.45 6.25ZM8.125 6.25H11.95C11.5 3.925 10.675 2.5 10.075 2.5C9.475 2.5 8.575 3.925 8.125 6.25ZM3.475 6.25H6.55C6.775 4.975 7.15 3.775 7.6 2.875C5.875 3.475 4.45 4.675 3.475 6.25Z" fill="#C0C0D1" />
+                              </svg>
+
+                            Country
+
+                        </div>
+
+                        <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="country" id="country">
+                            <option value="" disabled selected>Country</option>
+                            {% for country in countries %}
+                            <option value="{{country}}">{% if request.user.profile.language == "English" %}{{country}}{% elif request.user.profile.language == "Spanish" %}{{country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{country.country_russian}}{% elif request.user.profile.language == "German" %}{{country.country_german}}{% elif request.user.profile.language == "Czech" %}{{country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{country.country_french}}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+
+                    <div class="update-youtube-container update-input-container">
+
+                        <div class="update-youtube-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.1896 12.0816V6.76513C9.98255 7.65322 11.3713 8.51113 13.0137 9.43607C11.659 10.2268 9.98255 11.1141 8.1896 12.0816ZM18.1819 4.121C17.8727 3.69207 17.3455 3.35819 16.7843 3.24765C15.1348 2.91792 4.8439 2.91698 3.19524 3.24765C2.7452 3.33646 2.34446 3.55111 2.0002 3.88462C0.549674 5.30179 1.0042 12.9016 1.35383 14.1327C1.50086 14.6655 1.69092 15.0499 1.93029 15.3021C2.23868 15.6356 2.66093 15.8653 3.14593 15.9682C4.50411 16.2639 11.5012 16.4292 16.7556 16.0126C17.2397 15.9238 17.6682 15.6868 18.0062 15.3391C19.3473 13.9276 19.2559 5.90096 18.1819 4.121Z" fill="#9494A8" />
+                              </svg>
+
+                            Youtube channel
+
+                        </div>
+
+                        <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="youtube_channel" id="youtube_channel" value="https://www.youtube.com/@" oninput="updateYoutubeValue(this)">
+
+                    </div>
+
+                    <div class="update-twitch-container update-input-container">
+
+                        <div class="update-twitch-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.3684 10H14.2632V5.5H12.3684V10ZM7.63158 10H9.52632V5.5H7.63158V10ZM17.1053 11.1764V2.8H3.84211V13.6H7.63158V16.2578L10.0568 13.6H14.5853L17.1053 11.1764ZM14.1751 16.3H10.4671L7.99821 19H5.73684V16.3H1V4.13198L2.23158 1H19V11.9556L14.1751 16.3Z" fill="#9494A8" />
+                              </svg>
+
+                            Twitch
+
+                        </div>
+
+                        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="twitch" id="twitch" placeholder="Twitch" value="https://twitch.tv/" oninput="updateTwitchValue(this)">
+
+                    </div>
+
+                    <div class="update-twitter-container update-input-container">
+
+                        <div class="update-twitter-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.661 17.1198C13.4533 17.1198 17.1685 11.302 17.1685 6.25739C17.1685 6.09178 17.1685 5.92741 17.1577 5.76366C17.8804 5.22403 18.5041 4.55401 19 3.78737C18.3268 4.09627 17.6113 4.29884 16.8796 4.38815C17.65 3.91086 18.2269 3.16101 18.5032 2.27621C17.7778 2.72093 16.9849 3.03479 16.1578 3.2032C14.7592 1.66619 12.4201 1.59172 10.9324 3.03755C9.9739 3.96981 9.5662 5.35978 9.8641 6.68559C6.895 6.53114 4.1284 5.08162 2.2528 2.69702C1.2727 4.4415 1.774 6.67235 3.3967 7.79255C2.809 7.77487 2.2339 7.6113 1.72 7.31544V7.36389C1.7209 9.18095 2.9602 10.7455 4.6828 11.1055C4.1392 11.2591 3.5686 11.2813 3.016 11.1707C3.4993 12.7262 4.8862 13.7917 6.4657 13.8224C5.158 14.885 3.5425 15.4619 1.8793 15.46C1.5859 15.4592 1.2925 15.4414 1 15.4051C2.6893 16.5253 4.654 17.1198 6.661 17.1171" fill="#9494A8" />
+                              </svg>
+
+                            Twitter
+
+                        </div>
+
+                        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="twitter" id="twitter" placeholder="Twitter" value="https://twitter.com/" oninput="updateTwitterValue(this)"/>
+
+                    </div>
+
+                    <div class="update-facebook-container update-input-container">
+
+                        <div class="update-facebook-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.4262 5.57403C11.8251 5.1859 12.4425 5.2282 12.4878 5.23031L15.0713 5.22926L15.1277 1.31516L14.738 1.21469C14.4882 1.15019 13.7237 1 12.0386 1C9.03811 1 7.02165 3.20505 7.02165 6.48566V7.36663H4V11.597H7.02165V19H11.0505V11.597H14.2353L14.7893 7.36663H11.0505V6.71833C11.0505 6.2033 11.1774 5.81728 11.4262 5.57403Z" fill="#9494A8" />
+                              </svg>
+
+                            Facebook
+
+                        </div>
+
+                        <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="facebook" id="facebook" placeholder="Facebook" value="https://facebook.com/" oninput="updateFacebookValue(this)">
+
+                    </div>
+                </div>
+
+                <button  type="submit" class="add-edit-demon-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Submit!</button>
+            </form>
+
+            </div>
+        </section>
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+        
+
+    <script>
+
+        function updateYoutubeValue(input) {
+            const userValue = input.value.substring("https://www.youtube.com/@".length);
+        
+            input.value = "https://www.youtube.com/@" + userValue;
+          }
+          function updateTwitterValue(input) {
+            const userValue = input.value.substring("https://twitter.com/".length);
+        
+            input.value = "https://twitter.com/" + userValue;
+          }
+          function updateTwitchValue(input) {
+            const userValue = input.value.substring("https://twitch.tv/".length);
+        
+            input.value = "https://twitch.tv/" + userValue;
+          }
+          function updateFacebookValue(input) {
+            const userValue = input.value.substring("https://facebook.com/".length);
+        
+            input.value = "https://facebook.com/" + userValue;
+          }
+    
+          // Script to change the image while clicking on Picture
+          function displayImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var profileImage = document.querySelector('.picture_update');
+                    profileImage.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function change_option(option){
+        if (option.value == "Add"){
+            $('#username').show()
+            $('#username').attr("required", true);
+            $('#previous_profile_container').hide();
+            $('#previous_profile').attr("required", false);
+            $('#new_username').hide();
+        }
+        else {
+            $('#username').hide();
+            $('#username').attr("required", false);
+            $('#previous_profile_container').show()
+            $('#previous_profile').attr("required", true);
+            $('#new_username').show()
+        }
+        $('#picture').val("");
+        $('#country').val("");
+        $('#youtube_channel').val("https://www.youtube.com/@");
+        $('#twitch').val("https://twitch.tv/");
+        $('#twitter').val("https://twitter.com/");
+        $('#facebook').val("https://facebook.com/");
+    }
+
+    function change_user(user){
+        if (user.value == ""){
+            $('#username').val("");
+            $('#previous_profile').val("");
+            $('#new_username').val("");
+            $('#picture').val("");
+            $('#country').val("");
+            $('#youtube_channel').val("");
+            $('#twitch').val("");
+            $('#twitter').val("");
+            $('#facebook').val("");
+        }
+    }
+
+    $(document).ready(function() {
+
+        $('#previous_profile').select2({
+            dropdownCssClass: 'contain-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode',
+            containerCssClass: 'card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode',
+            ajax: {
+                type: 'POST',
+                dataType: 'json',
+                delay: 250,
+                headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                data: function(params) {
+                    return {
+                        option: "Search",
+                        search: params.term
+                    };
+                },
+                processResults: function(data) {
+                    var results = [];
+                    for (var i = 0; i < data.results.length; i++) {
+                        results.push({
+                            id: data.results[i].id,
+                            text: data.results[i].text
+                        });
+                    }
+                    return {
+                        results: results
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Selecciona un jugador',
+            minimumInputLength: 1 // Número mínimo de caracteres antes de hacer la búsqueda
+        });
+
+
+        $("#previous_profile_container").on("change", "#previous_profile", function() {
+            var previous_profile = $("#previous_profile").val()
+            data = {}
+            data.option = "Get";
+            data.previous_profile = previous_profile;
+            $.ajax({
+                type: "post", // "post" "get" "delete" "put"
+                data: data, // PREFERIBLEMENTE JSON
+                cache: false,
+                headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                success: function (response) {
+                    $('#picture').val(response.results[0].picture);
+                    $('#country').val(response.results[0].country__country);
+                    $('#youtube_channel').val(response.results[0].youtube_channel);
+                    $('#twitch').val(response.results[0].twitch);
+                    $('#twitter').val(response.results[0].twitter);
+                    $('#facebook').val(response.results[0].facebook);
+                }
+            })
+        });
+
+    })
+
+    </script>
+{% endblock %}

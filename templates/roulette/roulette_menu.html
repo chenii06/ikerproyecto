@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<title>{{list_words.roulette_menu}}</title>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/roulette-menu.css' %}?v=1.24">
+
+{% endblock %}
+
+{% block container %}
+    
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="roulette-menu-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.roulette_menu|upper}}</h2>
+
+            {% if not request.user.profile %}
+            <p class="advertise-text text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> {{list_words.register_account_1}}<a href="{% url "users:signup" %}" class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.register_account_2}}</a>{{list_words.register_account_3}}</p>
+            {% else %}
+            <div class="roulettes-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                {% comment %} Ruleta que se agrega al tocar el boton de agregar (la mantengo comentada por las dudas) {% endcomment %}
+
+                {% for roulette in roulettes %}
+                <div class="roulette-card content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="roulette-card-name_icon-container">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{roulette.name}}</p>
+
+                        <button class="roulette-share-button " value="{{roulette.id}}" onclick="share_function(this); event.stopPropagation();">
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17.3262 10.5062C17.5296 10.3318 17.6312 10.2446 17.6686 10.1409C17.7012 10.0498 17.7012 9.95021 17.6686 9.85913C17.6312 9.75538 17.5296 9.66821 17.3262 9.49379L10.2672 3.44331C9.917 3.14314 9.74192 2.99306 9.59367 2.98939C9.46483 2.98619 9.34175 3.04279 9.26033 3.14269C9.16667 3.25764 9.16667 3.48825 9.16667 3.94948V7.52886C7.38777 7.84007 5.75966 8.74146 4.54976 10.0949C3.23068 11.5705 2.50103 13.48 2.5 15.4591V15.9691C3.37445 14.9157 4.46626 14.0638 5.70063 13.4716C6.78892 12.9495 7.96535 12.6403 9.16667 12.5588V16.0505C9.16667 16.5117 9.16667 16.7424 9.26033 16.8573C9.34175 16.9572 9.46483 17.0138 9.59367 17.0106C9.74192 17.007 9.917 16.8569 10.2672 16.5567L17.3262 10.5062Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                        </button>
+                        
+                    </div>
+
+                    <img src="{% static 'img/roulette.png' %}" alt="roulette" class="roulette-image">
+
+                    {% comment %} Contenedor del boton de eliminar y el boton de abrir (abre la ruleta) {% endcomment %}
+                    <div class="roulette-card-options-container">
+
+                        {% comment %} Boton de borrar ruleta {% endcomment %}
+                        {% if roulette.player == request.user.profile %}
+                        <button class="roulette-delete-button" value="{{roulette.id}}" onclick="warning_message(this); event.stopPropagation();">
+                            <img src="{% static 'img/trash-icon.svg' %}" alt="trash-icon">
+                        </button>
+                        {% else %}
+                        <button class="roulette-exit-button" value="{{roulette.id}}" onclick="warning_message2(this); event.stopPropagation();">
+                            <svg width="25px" height="25px" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                                
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                                
+                                <g id="SVGRepo_iconCarrier"> <g clip-path="url(#clip0_429_11067)"> <path d="M15 4.00098H5V18.001C5 19.1055 5.89543 20.001 7 20.001H15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/> <path d="M16 15.001L19 12.001M19 12.001L16 9.00098M19 12.001H9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/> </g> <defs> <clipPath id="clip0_429_11067"> <rect width="24" height="24" fill="white" transform="translate(0 0.000976562)"/> </clipPath> </defs> </g>
+                                
+                                </svg>
+                        </button>
+                        {% endif %}
+                        {% comment %} Boton de abrir ruleta {% endcomment %}
+                        <a href="{% url 'demonlist:roulette' roulette.id %}" class="open-roulette-link main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            {{list_words.open}}
+                        </a>
+
+                    </div>
+                    
+
+                </div>
+                {% endfor %}
+
+                {% if request.global_context.is_gd_lucky_leader %}
+
+                    {% if roulettes.count < 50 %}
+                        {% comment %} Boton para agregar una ruleta {% endcomment %}
+                        <a class="roulette-add-button border-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode {% if roulettes|length|divisibleby:3 %}mod-width{% endif %}" href="{% url 'demonlist:create_roulette' %}">
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 19C14.9706 19 19 14.9706 19 10C19 5.02943 14.9706 1 10 1C5.02943 1 1 5.02943 1 10C1 14.9706 5.02943 19 10 19ZM10.675 7.3C10.675 6.92721 10.3728 6.625 10 6.625C9.62722 6.625 9.325 6.92721 9.325 7.3V9.325H7.3C6.92721 9.325 6.625 9.62721 6.625 10C6.625 10.3728 6.92721 10.675 7.3 10.675H9.325V12.7C9.325 13.0728 9.62722 13.375 10 13.375C10.3728 13.375 10.675 13.0728 10.675 12.7V10.675H12.7C13.0728 10.675 13.375 10.3728 13.375 10C13.375 9.62721 13.0728 9.325 12.7 9.325H10.675V7.3Z" fill="#C0C0D1" />
+                              </svg>
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.create_roulette}}</p>
+                        </a>
+                    {% endif %}
+                {% elif request.global_context.is_subscriber %}
+
+                    {% if roulettes.count < 20 %}
+                        {% comment %} Boton para agregar una ruleta {% endcomment %}
+                        <a class="roulette-add-button border-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode {% if roulettes|length|divisibleby:3 %}mod-width{% endif %}" href="{% url 'demonlist:create_roulette' %}">
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 19C14.9706 19 19 14.9706 19 10C19 5.02943 14.9706 1 10 1C5.02943 1 1 5.02943 1 10C1 14.9706 5.02943 19 10 19ZM10.675 7.3C10.675 6.92721 10.3728 6.625 10 6.625C9.62722 6.625 9.325 6.92721 9.325 7.3V9.325H7.3C6.92721 9.325 6.625 9.62721 6.625 10C6.625 10.3728 6.92721 10.675 7.3 10.675H9.325V12.7C9.325 13.0728 9.62722 13.375 10 13.375C10.3728 13.375 10.675 13.0728 10.675 12.7V10.675H12.7C13.0728 10.675 13.375 10.3728 13.375 10C13.375 9.62721 13.0728 9.325 12.7 9.325H10.675V7.3Z" fill="#C0C0D1" />
+                              </svg>
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.create_roulette}}</p>
+                        </a>
+                    {% endif %}
+                {% else %}
+                    {% if roulettes.count < 2 %}
+                        {% comment %} Boton para agregar una ruleta {% endcomment %}
+                        <a class="roulette-add-button border-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:create_roulette' %}">
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 19C14.9706 19 19 14.9706 19 10C19 5.02943 14.9706 1 10 1C5.02943 1 1 5.02943 1 10C1 14.9706 5.02943 19 10 19ZM10.675 7.3C10.675 6.92721 10.3728 6.625 10 6.625C9.62722 6.625 9.325 6.92721 9.325 7.3V9.325H7.3C6.92721 9.325 6.625 9.62721 6.625 10C6.625 10.3728 6.92721 10.675 7.3 10.675H9.325V12.7C9.325 13.0728 9.62722 13.375 10 13.375C10.3728 13.375 10.675 13.0728 10.675 12.7V10.675H12.7C13.0728 10.675 13.375 10.3728 13.375 10C13.375 9.62721 13.0728 9.325 12.7 9.325H10.675V7.3Z" fill="#C0C0D1" />
+                              </svg>
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.create_roulette}}</p>
+
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+<script src="{% static 'js/roulette-menu.js' %}?v=1.24"></script>
+
+    <script>
+        function limitInput(element, maxLength) {
+            if (element.value.length > maxLength) {
+                element.value = element.value.slice(0, maxLength);
+            }
+        }
+
+        $(document).ready(function() {
+            // Agrega un escuchador de eventos a todos los elementos con la clase '.delete-button'
+            $('.delete-button').on('click', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+              // Puedes agregar más lógica aquí si es necesario
+            });
+            $('.share-button').on('click', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+              // Puedes agregar más lógica aquí si es necesario
+            });
+          });
+
+        function warning_message(id) {
+            document.body.classList.add('popup-open_message');
+            $('body').append(`<div class="roulette-modal-container open-modal">
+
+                <div class="roulette-modal card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="modal-text">
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.are_you_sure_1}}</p>
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.are_you_sure_2}}</p>
+                    </div>
+
+
+                    <div class="modal-buttons-container">
+
+                        <button class="modal-delete-button filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="delete_roulette(` + id.value + `);">{{list_words.delete}}</button>
+                        <button class="modal-cancel-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="hide_roulettes()">{{list_words.cancel}}</button>
+
+                    </div>
+
+                </div>
+
+            </div>`);
+        }
+
+        function warning_message2(id) {
+            document.body.classList.add('popup-open_message');
+            $('body').append(`<div class="roulette-modal-container open-modal">
+
+                <div class="roulette-modal card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="modal-text">
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.are_you_sure_3}}</p>
+                    </div>
+
+
+                    <div class="modal-buttons-container">
+
+                        <button class="modal-delete-button filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="get_out_roulette(` + id.value + `);">{{list_words.get_out}}</button>
+                        <button class="modal-cancel-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="hide_roulettes()">{{list_words.cancel}}</button>
+
+                    </div>
+
+                </div>
+
+            </div>`);
+        }
+
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.roulette-modal').length && $('.roulette-modal-container').hasClass('open-modal')) {
+                hide_roulettes();
+            }
+        });
+
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.modal-data').length && $('.share-modal-container').hasClass('open-modal')) {
+                hide_modal();
+            }
+        });
+
+        function hide_roulettes() {
+            $('.roulette-modal-container').remove();
+            document.body.classList.remove('popup-open_message');
+          }
+
+          function hide_modal() {
+            $('.share-modal-container').remove();
+            document.body.classList.remove('popup-open_message');
+          }
+
+        function delete_roulette(id) {
+            data = {}
+            data.id = id;
+            data.option = "delete";
+            $.ajax({
+                type: "post", // "post" "get" "delete" "put"
+                data: data, // PREFERIBLEMENTE JSON
+                cache: false,
+                headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+                    },
+                    success: function (response) {
+                        location.reload()
+                    }
+            })
+        }
+
+        function get_out_roulette(id) {
+            data = {}
+            data.id = id;
+            data.option = "get_out";
+            $.ajax({
+                type: "post", // "post" "get" "delete" "put"
+                data: data, // PREFERIBLEMENTE JSON
+                cache: false,
+                headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+                    },
+                    success: function (response) {
+                        location.reload()
+                    }
+            })
+        }
+
+        function search_user(id, user)
+        {
+        data = {}
+        data.id = id;
+        data.user = user.value;
+        data.option = "filter_followers";
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+            "X-CSRFToken": Cookies.get("csrftoken")
+                    },
+                    success: function (response) {
+                    $(".data-container").empty();
+
+                    pop_up = ""
+
+                    $(response).each(function (index, player) {
+                        if (player.picture) {
+                            photo = `<img src="` + player.picture + `" width="50" height="50" alt="player-picture" class="d-inline-block align-top rounded-circle user-picture"/>`
+                        }
+                        else {
+                            photo = `<img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="default-picture" class="d-inline-block align-top rounded-circle user-picture"/>`
+                        }
+                        if (player.in_roulette) {
+                            option = "unshare"
+                            text_option = "{{list_words.unshare}}"
+                        }
+                        else {
+                            option = "share"
+                            text_option = "{{list_words.share}}"
+                        }
+                        pop_up += `<div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="user_` + player.user__id + `">
+                                    <div class="data-name-icon-container">
+                                    ` + photo + `
+
+                                    <p><a href="{% url 'demonlist:category_or_username' 1234 %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">`.replace(/1234/, player.user__username) + player.user__username + `</a></p>
+                                    </div>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="option" name="option" value="` + option + `" required>
+                                        <input type="hidden" id="id" name="id" value="` + id + `" required>
+                                        <input type="hidden" id="follower" name="follower" value="` + player.id + `" required>
+                                        <button type="submit" class="data-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">` + text_option + `</button>
+                                    </form>
+                                </div>`
+                            })
+                    $('.data-container').append(pop_up);
+                }
+            })
+        }
+
+        function share_function(id) {
+            data = {}
+            data.id = id.value;
+            data.option = "filter_followers";
+            $.ajax({
+                type: "post", // "post" "get" "delete" "put"
+                data: data, // PREFERIBLEMENTE JSON
+                cache: false,
+                headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+                    },
+                    success: function (response) {
+                        document.body.classList.add('popup-open_message');
+                        pop_up = `<div class="share-modal-container open-modal">
+
+                            <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+            
+                                <div class="close-modal-button-container">
+            
+                                    <button class="close-modal-button" onclick="hide_modal()">
+                                        <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0.553449 0.553432C-0.184483 1.29136 -0.184483 2.48775 0.553449 3.22568L7.32776 9.99996L0.553449 16.7744C-0.184483 17.5123 -0.184483 18.7087 0.553449 19.4466C1.29135 20.1845 2.48776 20.1845 3.22567 19.4466L10 12.6722L16.7744 19.4466C17.5123 20.1845 18.7087 20.1845 19.4466 19.4466C20.1845 18.7087 20.1845 17.5123 19.4466 16.7744L12.6722 9.99996L19.4466 3.2257C20.1845 2.48779 20.1845 1.29138 19.4466 0.553469C18.7085 -0.184458 17.5123 -0.184458 16.7744 0.553469L10 7.32775L3.22567 0.553432C2.48776 -0.184477 1.29135 -0.184477 0.553449 0.553432Z" fill="#C0C0D1" />
+</svg>
+                                    </button>
+            
+                                </div>
+            
+                                <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.share_your_roulette}}</p>
+            
+                                <span>
+                                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.3737 13.8876L18 18.5M15.3333 9.16667C15.3333 12.8485 12.3485 15.8333 8.66667 15.8333C4.98476 15.8333 2 12.8485 2 9.16667C2 5.48476 4.98476 2.5 8.66667 2.5C12.3485 2.5 15.3333 5.48476 15.3333 9.16667Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+                                    <input class="button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="search_follower" placeholder="{{list_words.search_user}}..." oninput="search_user(` + id.value + `, this);">
+                                </span>
+                                <div class="data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">`
+                        $(response).each(function (index, player) {
+                            if (player.picture) {
+                                photo = `<img src="` + player.picture + `" width="50" height="50" alt="player-picture" class="d-inline-block align-top rounded-circle user-picture"/>`
+                            }
+                            else {
+                                photo = `<img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="default-picture" class="d-inline-block align-top rounded-circle user-picture"/>`
+                            }
+                            if (player.in_roulette) {
+                                option = "unshare"
+                                text_option = "{{list_words.unshare}}"
+                            }
+                            else {
+                                option = "share"
+                                text_option = "{{list_words.share}}"
+                            }
+                            pop_up += `<div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="user_` + player.user__id + `">
+                                        <div class="data-name-icon-container">
+                                            ` + photo + `
+                                            <p><a href="{% url 'demonlist:category_or_username' 1234 %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">`.replace(/1234/, player.user__username) + player.user__username + `</a></p>
+                                        </div>
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="option" name="option" value="` + option + `" required>
+                                            <input type="hidden" id="id" name="id" value="` + id.value + `" required>
+                                            <input type="hidden" id="follower" name="follower" value="` + player.id + `" required>
+                                            <button type="submit" class="data-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">` + text_option + `</button>
+                                        </form>
+            
+                                    </div>`
+                                })
+                        pop_up += `</div>
+                                    </div>
+                    
+                                </div>`
+                        $('body').append(pop_up)
+                        
+                    }
+            })
+        }
+
+    </script>
+
+{% endblock %}
+
+{% block footer_margin %}600{% endblock  %}

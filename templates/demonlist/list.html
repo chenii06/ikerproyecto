@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block container %}
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-content ranking-stats">
+                <h3>Web Stats</h3>
+                <div class="stat-item">
+                    <a href="#">
+                        <div class="stat-info">
+                            <span>Total Users</span>
+                            <div class="stat-value">
+                                <i class="fas fa-users stat-icon"></i>
+                                <strong>12,456</strong>
+                            </div>
+                        </div>
+                        <div class="stat-change">+5.2%</div>
+                    </a>
+                </div>
+                <div class="stat-item">
+                    <a href="#">
+                        <div class="stat-info">
+                            <span>Online Users</span>
+                            <div class="stat-value">
+                                <i class="fas fa-signal stat-icon"></i>
+                                <strong>387</strong>
+                            </div>
+                        </div>
+                        <div class="stat-change">+2.1%</div>
+                    </a>
+                </div>
+                <div class="stat-item">
+                    <a href="#">
+                        <div class="stat-info">
+                            <span>Staff Members</span>
+                            <div class="stat-value">
+                                <i class="fas fa-crown stat-icon"></i>
+                                <strong>25</strong>
+                            </div>
+                        </div>
+                        <div class="stat-change">+1.4%</div>
+
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-content player-tracker">
+                <h3>Recent Completions</h3>
+                <div class="update-item">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                        <div class="update-info">
+                            <span>IvanCrafter026</span>
+                            <div class="update-value">
+                                <i class="fas fa-trophy update-icon"></i>
+                                <strong>Null [2]</strong>
+                            </div>
+                        </div>
+                        <div class="update-change">+150 pts</div>
+                    </a>
+                </div>
+                <div class="update-item">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                        <div class="update-info">
+                            <span>Nubot</span>
+                            <div class="update-value">
+                                <i class="fas fa-trophy update-icon"></i>
+                                <strong>The Abyss [15]</strong>
+                            </div>
+                        </div>
+                        <div class="update-change">+80 pts</div>
+                    </a>
+                </div>
+                <div class="update-item">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+                        <div class="update-info">
+                            <span>MrNexis</span>
+                            <div class="update-value">
+                                <i class="fas fa-trophy update-icon"></i>
+                                <strong>Void World [7]</strong>
+                            </div>
+                        </div>
+                        <div class="update-change">+120 pts</div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-content social-links">
+                <h3>Community</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitch"></i></a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h2 class="levels-title">Top Hardest Rated Levels</h2>
+            <div id="levelsContainer" class="levels-container">
+                <!-- Levels will be dynamically loaded here -->
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="sidebar-content recent-updates">
+                <h3>Recent Changelogs</h3>
+                <div class="update-item">
+                    <a href="#">
+                        <div class="update-info">
+                            <span>Convolution [#1]</span>
+                            <div class="update-value">
+                                <i class="fas fa-clock update-icon"></i>
+                                <strong>2 hours ago</strong>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="update-item">
+                    <a href="#">
+                        <div class="update-info">
+                            <span>Free Solo [#2]</span>
+                            <div class="update-value">
+                                <i class="fas fa-clock update-icon"></i>
+                                <strong>1 day ago</strong>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="update-item">
+                    <a href="#">
+                        <div class="update-info">
+                            <span>Whg3 Lv5 [#11]</span>
+                            <div class="update-value">
+                                <i class="fas fa-clock update-icon"></i>
+                                <strong>3 days ago</strong>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-content achievement-tracker">
+                    <h3>Your Last Achievement</h3>
+                    <div class="achievement">
+                        <div class="achievement-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="achievement-info">
+                            <h4>First Victor</h4>
+                            <p>Be the first one to complete a level</p>
+                        </div>
+                    </div>
+                </div>
+            
+                </div>
+
+            <div class="sidebar-content list-leaders">
+                <h3>Staff Team</h3>
+                <div class="leaders-container">
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="./staff/avatar.png" alt="extatica profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Chenii</span>
+                            <span class="leader-role">Owner</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                    
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="./staff/nubot.jpg" alt="Voiddle profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Nubot</span>
+                            <span class="leader-role">Manager</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                    
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="./staff/ivan.jpg" alt="Megu profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Ivan</span>
+                            <span class="leader-role">Mod</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                    
+                    <div class="leader-item">
+                        <div class="leader-avatar">
+                            <img src="./staff/posdha.jpg" alt="IvanCrafter026 profile">
+                        </div>
+                        <div class="leader-info">
+                            <span class="leader-name">Posdha</span>
+                            <span class="leader-role">Helper</span>
+                        </div>
+                        <button class="view-profile-btn">Profile</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+      let levels = [
+        {% for demon in demons %}
+          {
+              id: '{{demon.id}}',
+              level_id: '{{demon.level_id}}',
+              name: '{{demon.level}}',
+              creator: '{{demon.creator}}',
+              rating: 2,
+              image: '{% if demon.photo %}{{demon.photo.url}}{% elif demon.uuid %}https://i1.ytimg.com/vi/{{demon.uuid}}/maxresdefault.jpg{% endif %}'
+          },
+        {% endfor %}
+      ];
+              
+    let isAdminMode = false;
+    let sortableInstance = null;
+
+    const levelsContainer = document.getElementById('levelsContainer');
+
+    function createStarRating(rating) {
+        return '⭐'.repeat(rating);
+    }
+
+    function createLevelHTML(level, index) {
+        return `
+            <a href="{% url 'demonlist:level_id_detail' 1234 %}">
+              <div class="level ${isAdminMode ? 'draggable' : ''}" data-id="${level.id}">
+                  <div class="level-inner">
+                      <img src="${level.image}" alt="${level.name} Level">
+                      <div class="level-details">
+                          <h4>#${index + 1} - ${level.name}</h4>
+                          <p>Creator: ${level.creator}</p>
+                          <p class="rating">${createStarRating(level.rating)}</p>
+                      </div>
+                      ${isAdminMode ? `
+                          <div class="admin-controls">
+                              <button class="delete-level" data-id="${level.id}">
+                                  <i class="fas fa-trash-alt"></i>
+                              </button>
+                          </div>
+                      ` : ''}
+                  </div>
+              </div>
+            </a>
+        `.replace(/1234/, level.level_id);
+    }
+
+    function renderLevels() {
+        let content = '';
+        if (isAdminMode) {
+            content += `<div class="admin-controls">
+                <a href="addrated.html" class="add-level-btn">Add New Level</a>
+            </div>`;
+        }
+        content += levels.map((level, index) => createLevelHTML(level, index)).join('');
+        levelsContainer.innerHTML = content;
+        
+        if (isAdminMode) {
+            document.querySelectorAll('.delete-level').forEach(button => {
+                button.addEventListener('click', deleteLevel);
+            });
+        }
+    }
+
+    function initializeSortable() {
+        if (sortableInstance) {
+            sortableInstance.destroy();
+        }
+        
+        if (isAdminMode) {
+            sortableInstance = new Sortable(levelsContainer, {
+                animation: 150,
+                ghostClass: 'dragging',
+                onEnd: function(evt) {
+                    const item = levels.splice(evt.oldIndex - 1, 1)[0]; // -1 to account for the new level form
+                    levels.splice(evt.newIndex - 1, 0, item);
+                    renderLevels();
+                }
+            });
+        }
+    }
+
+
+
+    function addNewLevel(event) {
+        event.preventDefault();
+        const newLevel = {
+            id: Date.now().toString(), // Using timestamp as a simple unique ID
+            name: document.getElementById('newLevelName').value,
+            creator: document.getElementById('newLevelCreator').value,
+            rating: parseInt(document.getElementById('newLevelRating').value),
+            image: document.getElementById('newLevelImage').value
+        };
+        levels.unshift(newLevel);
+        renderLevels();
+        initializeSortable();
+    }
+
+    function deleteLevel(event) {
+        const levelId = event.currentTarget.dataset.id;
+        levels = levels.filter(level => level.id !== levelId);
+        renderLevels();
+        initializeSortable();
+    }
+
+
+    // Initialize
+    renderLevels();
+
+    // Particle animation
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const particleCount = 100;
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = Math.random() * 2 - 1;
+            this.color = `hsla(${195 + Math.random() * 30}, 100%, 70%, ${0.3 + Math.random() * 0.4})`;
+        }
+
+        update() {
+            this.x += this.speedX;this.y += this.speedY;
+
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0;
+            if (this.y < 0) this.y = canvas.height;
+        }
+
+        draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+
+        particles.forEach((a, i) => {
+            particles.slice(i + 1).forEach(b => {
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) {
+                    const opacity = (1 - distance / 100) * 0.3;
+                    ctx.strokeStyle = `rgba(0, 170, 255, ${opacity})`;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            });
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+
+    </script>
+
+
+
+{% endblock%}

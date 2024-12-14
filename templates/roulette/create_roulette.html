@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<title>{{list_words.create_roulette}}</title>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/create-roulette.css' %}?v=1.241">
+{% endblock %}
+
+{% block container %}
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="create-roulette-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.create_roulette|upper}}</h2>
+
+            {% if not request.user.profile %}
+            <p class="advertise-text text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> {{list_words.register_account_1}}<a href="{% url "users:signup" %}">{{list_words.register_account_2}}</a>{{list_words.register_account_3}}</p>
+            {% else %}
+
+            <form class="create-roulette card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="roulette-inputs-container">
+
+                    <div class="roulette-name-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <label for="name">{{list_words.name}}:</label>
+                        <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="name" id="name" placeholder="{{list_words.name}}" required>
+
+                    </div>
+
+                    {% if request.global_context.is_gd_lucky_leader %}
+                    <input type="hidden" id="mode" name="mode" value="classic">
+                    {% else %}
+                    <div class="roulette-demons-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <label for="mode">{{list_words.mode}}:</label>
+                        <select class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="mode" name="mode">
+                            <option value="" disabled="disabled" selected>{{list_words.mode}}</option>
+                            <option value="classic">Classic</option>
+                            <option value="platformer">Platformer (Normal)</option>
+                            <option value="platformer_best_time">Platformer (Best time)</option>
+                        </select>
+
+                    </div>
+                    {% endif %}
+
+                    {% if request.global_context.is_gd_lucky_leader %}
+                    <div class="roulette-demons-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <label for="ronda">Ronda:</label>
+                        <select class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="ronda" name="ronda">
+                            <option value="" disabled="disabled" selected>Ronda</option>
+                            <option value="Octavos">Octavos</option>
+                            <option value="Cuartos">Cuartos</option>
+                            <option value="Semis">Semis</option>
+                            <option value="Final">Final</option>
+                        </select>
+
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="roulette-demons-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="number_demons_div">
+
+                    <label for="number_demons">{{list_words.n_of_demons}}:</label>
+                    <select class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="number_demons" name="number_demons" required>
+                        <option value="" disabled="disabled" selected>{{list_words.n_of_demons}}</option>
+                        {% for num in "12345678" %}
+                        <option value="{{num}}">{{num}}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+                <div class="rating_demon_filter-container" style="display: none;">
+
+                    <div class="rating_filter-container">
+        
+                      <div class="rated_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="category" id="category" value="rated">
+                        <label for="rated">Rated</label>
+                      </div>
+                      
+                      <div class="unrated_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="category" id="category" value="unrated">
+                        <label for="unrated">Unrated</label>
+                      </div>
+        
+                    </div>
+        
+                </div>
+        
+                <div class="demon_difficulty_filter-container">
+        
+                    <div class="easy_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="demon_difficulty" id="demon_difficulty" value="Easy demon">
+                        <label for="Easy demon">Easy demon</label>
+                    </div>
+    
+                    <div class="medium_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="demon_difficulty" id="demon_difficulty" value="Medium demon">
+                        <label for="Medium demon">Medium demon</label>
+                    </div>
+                    
+                    <div class="hard_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="demon_difficulty" id="demon_difficulty" value="Hard demon">
+                        <label for="Hard demon">Hard demon</label>
+                    </div>
+    
+                    <div class="insane_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="demon_difficulty" id="demon_difficulty" value="Insane demon">
+                        <label for="Insane demon">Insane demon</label>
+                    </div>
+                    
+                    <div class="extreme_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="demon_difficulty" id="demon_difficulty" value="Extreme demon">
+                        <label for="Extreme demon">Extreme demon</label>
+                    </div>
+        
+                </div>
+
+                <div class="extreme_demon_filter-container">
+
+                    {% if request.global_context.is_gd_lucky_leader %}
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="div-range-25" style="display: none;">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="1-25">
+                        <label for="1-25">1-25</label>
+                    </div>
+
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="div-range-50" style="display: none;">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="1-50">
+                        <label for="1-50">1-50</label>
+                    </div>
+
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="div-range-75" style="display: none;">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="1-75">
+                        <label for="1-75">1-75</label>
+                    </div>
+
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="1-150">
+                        <label for="1-150">1-150</label>
+                    </div>
+
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="1-250">
+                        <label for="1-250">1-250</label>
+                    </div>
+
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="1-500">
+                        <label for="1-500">1-500</label>
+                    </div>
+                    {% else %}
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="Main List">
+                        <label for="Main List">Main List</label>
+                    </div>
+    
+                    <div class="extended_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="Extended List">
+                        <label for="Extended List">Extended List</label>
+                    </div>
+                    {% endif %}
+
+                    <div class="main_filter-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <input class="span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="checkbox" name="extreme_filter" id="extreme_filter" value="All Extremes">
+                        <label for="All Extremes">All Extremes</label>
+                    </div>
+
+                </div>
+
+                <div class="instructios-container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="instructions text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="instructions_1">
+                        <h1>{{list_words.instructions}}</h1>
+                        <p>{{list_words.instructions_1_1}}</p>
+                        <p>{{list_words.instructions_1_2}}</p>
+                    </div>
+
+                    <div class="instructions text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="instructions_2">
+                        <h1>{{list_words.instructions}}</h1>
+                        <p>{{list_words.instructions_2_1}}</p>
+
+                        <p>{{list_words.instructions_2_2}}</p>
+                        <p>{{list_words.instructions_2_3}}</p>
+                        
+                        <p>{{list_words.instructions_2_4}}</p>
+                        <p>{{list_words.instructions_2_5}}</p>
+                        <p>{{list_words.instructions_2_6}}</p>
+                        <p>{{list_words.instructions_2_7}}</p>
+                        <p>{{list_words.instructions_2_8}}</p>
+
+                    </div>
+                    <div class="instructions text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="instructions_3">
+                        <h1>{{list_words.instructions}}</h1>
+                        <p>{{list_words.instructions_3_1}}</p>
+
+                        <p>{{list_words.instructions_2_2}}</p>
+                        <p>{{list_words.instructions_2_3}}</p>
+                        
+                        <p>{{list_words.instructions_2_4}}</p>
+                        <p>{{list_words.instructions_2_5}}</p>
+                        <p>{{list_words.instructions_2_6}}</p>
+                        <p>{{list_words.instructions_2_7}}</p>
+                        <p>{{list_words.instructions_2_8}}</p>
+                        
+                    </div>
+                </div>
+
+                <button type="submit" class="create-roulette-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {{list_words.start}}
+                </button>
+
+            </form>
+            
+            {% endif %}
+
+        </section>
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+<script>
+    function limitInput(element, maxLength) {
+        if (element.value.length > maxLength) {
+            element.value = element.value.slice(0, maxLength);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modeSelect = document.getElementById('mode');
+        const rondaSelect = document.getElementById('ronda');
+        const numberDemonsDiv = document.getElementById('number_demons_div');
+        const numberDemonsSelect = document.getElementById('number_demons');
+    
+        // Función para mostrar u ocultar el campo number_demons y quitarle el required
+        function toggleNumberDemonsVisibility() {
+            if (modeSelect.value === 'classic') {
+                $("#instructions_1").show()
+                $("#instructions_2").hide()
+                $("#instructions_3").hide()
+                numberDemonsDiv.style.display = 'none';
+                numberDemonsSelect.removeAttribute('required');
+                $('.rating_demon_filter-container').css('display', 'none');
+                $('input[name="category"][value="rated"]').prop('checked', true);
+            } else {
+                if (modeSelect.value === 'platformer') {
+                    $("#instructions_2").show()
+                    $("#instructions_1").hide()
+                    $("#instructions_3").hide()
+                }
+                else if (modeSelect.value === 'platformer_best_time') {
+                    $("#instructions_3").show()
+                    $("#instructions_1").hide()
+                    $("#instructions_2").hide()
+                }
+                numberDemonsDiv.style.display = 'block';
+                numberDemonsSelect.setAttribute('required', 'required');
+                $('input[name="demon_difficulty"]').prop('checked', false);
+                $('input[name="extreme_filter"]').prop('checked', false);
+                $('.rating_demon_filter-container').css('display', 'flex');
+                $('input[name="category"][value="rated"]').prop('checked', false);
+            }
+
+            if ($('input[name="category"][value="rated"]').is(':checked') && !($('input[name="category"][value="unrated"]').is(':checked')) && $("#mode").val() == "classic"){
+                $('.demon_difficulty_filter-container').css('display', 'flex');
+            }
+            else {
+                $('.demon_difficulty_filter-container').hide()
+            }
+
+            if ($('input[name="category"][value="rated"]').is(':checked') && !($('input[name="category"][value="unrated"]').is(':checked')) && $("#mode").val() == "classic" && $('input[name="demon_difficulty"][value="Extreme demon"]').is(':checked') && $('input[name="demon_difficulty"][value="Extreme demon"]').is(':checked') && !($('input[name="demon_difficulty"][value="Insane demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Hard demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Medium demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Easy demon"]').is(':checked'))){
+                $('.extreme_demon_filter-container').css('display', 'flex');
+                {% if not request.global_context.is_gd_lucky_leader %}
+                $('input[name="extreme_filter"]').prop('checked', true);
+                {% endif %}
+            }
+            else {
+                $('.extreme_demon_filter-container').hide()
+                $('input[name="extreme_filter"]').prop('checked', false);
+            }
+            validateCheckboxes();
+        }
+
+        function toggleRangeDemons() {
+            if (rondaSelect.value === 'Octavos') {
+                $("#div-range-75").hide()
+                $("#div-range-50").hide()
+                $("#div-range-25").hide()
+            }
+            else if (rondaSelect.value === 'Cuartos') {
+                $("#div-range-75").show()
+                $("#div-range-50").hide()
+                $("#div-range-25").hide()
+            }
+            else if (rondaSelect.value === 'Semis') {
+                $("#div-range-75").show()
+                $("#div-range-50").show()
+                $("#div-range-25").hide()
+            }
+            else if (rondaSelect.value === 'Final') {
+                $("#div-range-75").show()
+                $("#div-range-50").show()
+                $("#div-range-25").show()
+            }
+
+        }
+    
+        // Agregar un event listener para detectar cambios en el campo mode
+        modeSelect.addEventListener('change', toggleNumberDemonsVisibility);
+        rondaSelect.addEventListener('change', toggleRangeDemons);
+        {% if request.global_context.is_gd_lucky_leader %}
+        toggleNumberDemonsVisibility()
+        {% endif %}
+
+        const form = document.querySelector('.create-roulette');
+        const category_checkboxes = form.querySelectorAll('input[name="category"]');
+        const demon_difficulty_checkboxes = form.querySelectorAll('input[name="demon_difficulty"]');
+        const extreme_filter_checkboxes = form.querySelectorAll('input[name="extreme_filter"]');
+        const createButton = form.querySelector('.create-roulette-button');
+    
+        function validateCheckboxes() {
+            let is_checked = false;
+            category_checkboxes.forEach(function(category_checkbox) {
+                if (category_checkbox.checked) {
+                    is_checked = true;
+                    if (category_checkbox.value == "rated" && modeSelect.value == "classic") {
+                        is_checked = false;
+                        demon_difficulty_checkboxes.forEach(function(demon_difficulty_checkbox) {
+                            if (demon_difficulty_checkbox.checked) {
+                                is_checked = true;
+                                if (demon_difficulty_checkbox.value == "Extreme demon" && !($('input[name="demon_difficulty"][value="Insane demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Hard demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Medium demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Easy demon"]').is(':checked'))) {
+                                    is_checked = false;
+                                    extreme_filter_checkboxes.forEach(function(extreme_filter_checkbox) {
+                                        if (extreme_filter_checkbox.checked) {
+                                            is_checked = true;
+                                        }
+                                    })
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+    
+            if (is_checked) {
+                createButton.removeAttribute('disabled');
+            } else {
+                createButton.setAttribute('disabled', 'disabled');
+            }
+        }
+    
+        category_checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', validateCheckboxes);
+        });
+
+        demon_difficulty_checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', validateCheckboxes);
+        });
+
+        extreme_filter_checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', validateCheckboxes);
+        });
+
+        validateCheckboxes();
+
+    });
+
+    $('input[name="category"]').change(function() {
+        if ($(this).is(':checked')) {
+            if ($(this).val() == "challenge"){
+                $('input[name="category"][value="rated"]').prop('checked', false);
+                $('input[name="category"][value="unrated"]').prop('checked', false);
+                $('input[name="category"][value="all"]').prop('checked', false);
+            }
+            else if ($('input[name="category"][value="rated"]').is(':checked') && $('input[name="category"][value="unrated"]').is(':checked')){
+              $('input[name="category"][value="all"]').prop('checked', true);
+            }
+            else {
+                $('input[name="category"][value="challenge"]').prop('checked', false);
+            }
+        }
+        else {
+            if ($(this).val() == "rated" || $(this).val() == "unrated"){
+                $('input[name="category"][value="all"]').prop('checked', false);
+            }
+        }
+
+        if ($('input[name="category"][value="rated"]').is(':checked') && !($('input[name="category"][value="unrated"]').is(':checked')) && $("#mode").val() == "classic"){
+            $('.demon_difficulty_filter-container').css('display', 'flex');
+        }
+        else {
+            $('.demon_difficulty_filter-container').hide()
+        }
+        
+        if ($('input[name="category"][value="rated"]').is(':checked') && !($('input[name="category"][value="unrated"]').is(':checked')) && $("#mode").val() == "classic" && $('input[name="demon_difficulty"][value="Extreme demon"]').is(':checked') && $('input[name="demon_difficulty"][value="Extreme demon"]').is(':checked') && !($('input[name="demon_difficulty"][value="Insane demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Hard demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Medium demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Easy demon"]').is(':checked'))){
+            $('.extreme_demon_filter-container').css('display', 'flex');
+            {% if not request.global_context.is_gd_lucky_leader %}
+            $('input[name="extreme_filter"]').prop('checked', true);
+            {% endif %}
+        }
+        else {
+            $('.extreme_demon_filter-container').hide()
+            $('input[name="extreme_filter"]').prop('checked', false);
+        }
+    })
+
+    $('input[name="demon_difficulty"]').change(function() {
+        
+        if ($('input[name="category"][value="rated"]').is(':checked') && !($('input[name="category"][value="unrated"]').is(':checked')) && $("#mode").val() == "classic" && $('input[name="demon_difficulty"][value="Extreme demon"]').is(':checked') && !($('input[name="demon_difficulty"][value="Insane demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Hard demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Medium demon"]').is(':checked')) && !($('input[name="demon_difficulty"][value="Easy demon"]').is(':checked'))){
+            $('.extreme_demon_filter-container').css('display', 'flex');
+            {% if not request.global_context.is_gd_lucky_leader %}
+            $('input[name="extreme_filter"]').prop('checked', true);
+            {% endif %}
+        }
+        else {
+            $('.extreme_demon_filter-container').hide()
+            $('input[name="extreme_filter"]').prop('checked', false);
+        }
+    })
+
+    $('input[name="extreme_filter"]').change(function() {
+
+        if ($(this).val() == "All Extremes" && $(this).is(':checked')){
+            $('input[name="extreme_filter"][value="Main List"]').prop('checked', true);
+            $('input[name="extreme_filter"][value="Extended List"]').prop('checked', true);
+        }
+        else if (($(this).val() == "Main List" || $(this).val() == "Extended List") && !($(this).is(':checked'))){
+            $('input[name="extreme_filter"][value="All Extremes"]').prop('checked', false);
+        }
+    })
+
+</script>
+{% endblock%} 
+
+
+{% block footer_margin %}600{% endblock %}

@@ -1,0 +1,331 @@
+{% extends "base.html" %} 
+{% load static %} 
+
+{% block head_content %}
+<head>
+  <title>Settings</title>
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/settings.css' %}?v=1.24" />
+</head>
+{% endblock %} {% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+  <div id="cube-icon-container-left" class="left-bg"></div>
+  <article>
+    <section class="settings-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+      <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" >{{list_words.settings|upper}}</h2>
+
+      <form
+        method="POST"
+        action="{% url 'demonlist:change_language' %}"
+        class="language-options"
+      >
+        {% csrf_token %}
+
+        <button value="English" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img
+            src="{{ request.global_context.MEDIA_URL }}countries/pictures/United_Kingdom_KOW1vUe.svg"
+            alt="country-flag"
+          />
+          English
+        </button>
+
+        <button value="Spanish" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/Spain_yve2hhX.svg" alt="country-flag" />
+          Spanish
+        </button>
+
+        <button value="Russian" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/Russia_eBgjgU7.svg" alt="country-flag" />
+          Russian
+        </button>
+
+        <button value="German" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/Germany_zWVqhFF.svg" alt="country-flag" />
+          German
+        </button>
+
+        <button value="Czech" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img
+            src="{{ request.global_context.MEDIA_URL }}countries/pictures/Czech_Republic_pD2nQvh.svg"
+            alt="country-flag"
+          />
+          Czech
+        </button>
+
+        <button value="Turkish" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/Turkey_5iH50Cs.svg" alt="country-flag" />
+          Turkish
+        </button>
+
+        <button value="Danish" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/Denmark_pLZ1r2j.svg" alt="country-flag" />
+          Danish
+        </button>
+
+        <button value="Portuguese" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/Portugal_ERYOXvB.svg" alt="country-flag" />
+          Portuguese
+        </button>
+
+        <button value="French" name="language" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+          <img src="{{ request.global_context.MEDIA_URL }}countries/pictures/France_OIxGrA0.svg" alt="country-flag" />
+          French
+        </button>
+
+      </form>
+
+      <form
+        class="settings-banner-container"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        {% csrf_token %}
+
+        <div class="settings-data-container">
+          <div class="settings-div-container">
+            <div class="settings-buttons-container">
+
+              <a class="change-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'reset_email' %}">
+                {{list_words.change_email}}
+                <svg  width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.63723 14.7087C7.43744 14.8952 7.28282 15.0201 7.1248 15.1113C6.35129 15.5579 5.3983 15.5579 4.6248 15.1113C4.33976 14.9467 4.06577 14.6727 3.51778 14.1248C2.96978 13.5768 2.69578 13.3028 2.53123 13.0177C2.08464 12.2442 2.08464 11.2912 2.53123 10.5177C2.69578 10.2327 2.96978 9.95873 3.51778 9.41073L5.8748 7.05372C6.42279 6.50572 6.69678 6.23172 6.98182 6.06717C7.75533 5.62058 8.70833 5.62058 9.48183 6.06716C9.76683 6.23172 10.0408 6.50572 10.5888 7.05372C11.1368 7.60171 11.4108 7.8757 11.5754 8.16073C12.022 8.93423 12.022 9.88723 11.5754 10.6607C11.4842 10.8187 11.3593 10.9734 11.1728 11.1731M8.82642 8.82682C8.63983 9.02657 8.515 9.18123 8.42375 9.33923C7.9772 10.1127 7.9772 11.0657 8.42375 11.8392C8.58833 12.1243 8.86233 12.3983 9.41033 12.9462C9.95833 13.4942 10.2323 13.7682 10.5173 13.9328C11.2908 14.3794 12.2438 14.3794 13.0173 13.9328C13.3024 13.7682 13.5764 13.4942 14.1244 12.9462L16.4814 10.5892C17.0294 10.0412 17.3034 9.76723 17.4679 9.48223C17.9145 8.70873 17.9145 7.75572 17.4679 6.98222C17.3034 6.69719 17.0294 6.42319 16.4814 5.8752C15.9334 5.32721 15.6594 5.05322 15.3744 4.88865C14.6008 4.44207 13.6479 4.44207 12.8744 4.88865C12.7163 4.97988 12.5618 5.10474 12.3619 5.29127" stroke-linecap="round"/>
+                  </svg>
+              </a>
+
+              <a class="change-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'reset_password' %}">
+                {{list_words.change_password}}
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7.63723 14.7087C7.43744 14.8952 7.28282 15.0201 7.1248 15.1113C6.35129 15.5579 5.3983 15.5579 4.6248 15.1113C4.33976 14.9467 4.06577 14.6727 3.51778 14.1248C2.96978 13.5768 2.69578 13.3028 2.53123 13.0177C2.08464 12.2442 2.08464 11.2912 2.53123 10.5177C2.69578 10.2327 2.96978 9.95873 3.51778 9.41073L5.8748 7.05372C6.42279 6.50572 6.69678 6.23172 6.98182 6.06717C7.75533 5.62058 8.70833 5.62058 9.48183 6.06716C9.76683 6.23172 10.0408 6.50572 10.5888 7.05372C11.1368 7.60171 11.4108 7.8757 11.5754 8.16073C12.022 8.93423 12.022 9.88723 11.5754 10.6607C11.4842 10.8187 11.3593 10.9734 11.1728 11.1731M8.82642 8.82682C8.63983 9.02657 8.515 9.18123 8.42375 9.33923C7.9772 10.1127 7.9772 11.0657 8.42375 11.8392C8.58833 12.1243 8.86233 12.3983 9.41033 12.9462C9.95833 13.4942 10.2323 13.7682 10.5173 13.9328C11.2908 14.3794 12.2438 14.3794 13.0173 13.9328C13.3024 13.7682 13.5764 13.4942 14.1244 12.9462L16.4814 10.5892C17.0294 10.0412 17.3034 9.76723 17.4679 9.48223C17.9145 8.70873 17.9145 7.75572 17.4679 6.98222C17.3034 6.69719 17.0294 6.42319 16.4814 5.8752C15.9334 5.32721 15.6594 5.05322 15.3744 4.88865C14.6008 4.44207 13.6479 4.44207 12.8744 4.88865C12.7163 4.97988 12.5618 5.10474 12.3619 5.29127" stroke-linecap="round" fill="none" />
+                  </svg>
+              </a>
+
+            </div>
+
+            <div class="checkbox-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+              <div class="icon_text-container roulette-animation-container">
+                <input
+                  type="checkbox"
+                  class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"
+                  name="dark_mode"
+                  id="dark_mode"
+                  value="True"
+                  {% if request.user.profile.dark_mode %}checked{% endif %}
+                  />
+                  Dark mode
+              </div>
+
+              <div class="icon_text-container roulette-animation-container">
+                <input
+                  type="checkbox"
+                  class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"
+                  name="roulette_animation"
+                  id="roulette_animation"
+                  value="True"
+                  {% if request.user.profile.roulette_animation %}checked{% endif %}/>
+
+                {{list_words.roulette_animation}}
+              </div>
+
+              <div
+                class="icon_text-container fast-animation-container "
+                id="fast-animation-container"
+                {% if not request.user.profile.roulette_animation %}style="display: none"{% endif%}>
+                <input
+                  type="checkbox"
+                  class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"
+                  name="fast_animation"
+                  id="fast_animation"
+                  value="True"
+                  {% if request.user.profile.fast_animation %}checked{% endif %}{% if not request.user.profile.roulette_animation %}style="display: none"{% endif %}
+                />
+
+                {{list_words.fast_animation}}
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-div-container default-settings-container">
+            <div class="settings-input-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+              <div class="icon_text-container center text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.default_settings}}</div>
+            </div>
+
+            <div class="settings-input-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+              <div class="icon_text-container">
+                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M9.5 20C14.7467 20 19 15.7467 19 10.5C19 5.25329 14.7467 1 9.5 1C4.25329 1 0 5.25329 0 10.5C0 15.7467 4.25329 20 9.5 20ZM10.2125 7.65C10.2125 7.2565 9.89349 6.9375 9.5 6.9375C9.10651 6.9375 8.7875 7.2565 8.7875 7.65V9.7875H6.65C6.2565 9.7875 5.9375 10.1065 5.9375 10.5C5.9375 10.8935 6.2565 11.2125 6.65 11.2125H8.7875V13.35C8.7875 13.7435 9.10651 14.0625 9.5 14.0625C9.89349 14.0625 10.2125 13.7435 10.2125 13.35V11.2125H12.35C12.7435 11.2125 13.0625 10.8935 13.0625 10.5C13.0625 10.1065 12.7435 9.7875 12.35 9.7875H10.2125V7.65Z" fill="#C0C0D1"/>
+                  </svg>
+                {{list_words.submit_record}}
+              </div>
+
+              <select name="default_submit_record" id="default_submit_record" class="default-select content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                <option value="" selected>-</option>
+                <option value="classic tiny" {% if request.user.profile.default_submit_record == "classic tiny" %}selected{% endif %}>Classic Tiny List</option>
+                <option value="classic spam" {% if request.user.profile.default_submit_record == "classic spam" %}selected{% endif %}>Classic Spam List</option>
+                <option value="classic impossible_tiny" {% if request.user.profile.default_submit_record == "classic impossible_tiny" %}selected{% endif %}>Classic Impossible Tiny List</option>
+                <option value="platformer rated" {% if request.user.profile.default_submit_record == "platformer rated" %}selected{% endif %}>Platformer Rated List</option>
+                <option value="platformer all" {% if request.user.profile.default_submit_record == "platformer all" %}selected{% endif %}>TPL</option>
+                <option value="platformer challenge" {% if request.user.profile.default_submit_record == "platformer challenge" %}selected{% endif %}>Platformer Challenge List</option>
+                <option value="platformer deathless" {% if request.user.profile.default_submit_record == "platformer deathless" %}selected{% endif %}>Platformer Deathless List</option>
+                <option value="platformer impossible" {% if request.user.profile.default_submit_record == "platformer impossible" %}selected{% endif %}>Platformer Impossible List</option>
+                <option value="platformer tiny" {% if request.user.profile.default_submit_record == "platformer tiny" %}selected{% endif %}>Platformer Tiny List</option>
+              </select>
+            </div>
+
+            <div class="settings-input-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+              <div class="icon_text-container">
+                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14.9111 2.41058C14.667 2.65466 14.667 3.0475 14.667 3.83317V14.6665C14.667 15.4522 14.667 15.845 14.9111 16.0891C15.1552 16.3332 15.548 16.3332 16.3337 16.3332C17.1193 16.3332 17.5122 16.3332 17.7562 16.0891C18.0003 15.845 18.0003 15.4522 18.0003 14.6665V3.83317C18.0003 3.0475 18.0003 2.65466 17.7562 2.41058C17.5122 2.1665 17.1193 2.1665 16.3337 2.1665C15.548 2.1665 15.1552 2.1665 14.9111 2.41058Z" fill="#C0C0D1"/>
+                  <path d="M8.83301 6.33317C8.83301 5.5475 8.83301 5.15466 9.07709 4.91058C9.32117 4.6665 9.71401 4.6665 10.4997 4.6665C11.2853 4.6665 11.6782 4.6665 11.9223 4.91058C12.1663 5.15466 12.1663 5.5475 12.1663 6.33317V14.6665C12.1663 15.4522 12.1663 15.845 11.9223 16.0891C11.6782 16.3332 11.2853 16.3332 10.4997 16.3332C9.71401 16.3332 9.32117 16.3332 9.07709 16.0891C8.83301 15.845 8.83301 15.4522 8.83301 14.6665V6.33317Z" fill="#C0C0D1"/>
+                  <path d="M3.24408 8.24407C3 8.48816 3 8.881 3 9.66667V14.6667C3 15.4523 3 15.8452 3.24408 16.0892C3.48816 16.3333 3.88099 16.3333 4.66667 16.3333C5.45234 16.3333 5.84517 16.3333 6.08926 16.0892C6.33333 15.8452 6.33333 15.4523 6.33333 14.6667V9.66667C6.33333 8.881 6.33333 8.48816 6.08926 8.24407C5.84517 8 5.45234 8 4.66667 8C3.88099 8 3.48816 8 3.24408 8.24407Z" fill="#C0C0D1"/>
+                  <path d="M3 18.2085C2.65483 18.2085 2.375 18.4883 2.375 18.8335C2.375 19.1787 2.65483 19.4585 3 19.4585H18C18.3452 19.4585 18.625 19.1787 18.625 18.8335C18.625 18.4883 18.3452 18.2085 18 18.2085H3Z" fill="#C0C0D1"/>
+                  </svg>                  
+                {{list_words.stats_viewer}}
+              </div>
+
+              <select name="default_stats_viewer" id="default_stats_viewer" class="default-select content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                <option value="" selected>-</option>
+                <option value="classic tiny" {% if request.user.profile.default_stats_viewer == "classic tiny" %}selected{% endif %}>Classic Tiny List</option>
+                <option value="classic spam" {% if request.user.profile.default_stats_viewer == "classic spam" %}selected{% endif %}>Classic Spam List</option>
+                <option value="classic impossible_tiny" {% if request.user.profile.default_stats_viewer == "classic impossible_tiny" %}selected{% endif %}>Classic Impossible Tiny List</option>
+                <option value="platformer rated" {% if request.user.profile.default_stats_viewer == "platformer rated" %}selected{% endif %}>Platformer Rated List</option>
+                <option value="platformer all" {% if request.user.profile.default_stats_viewer == "platformer all" %}selected{% endif %}>TPL</option>
+                <option value="platformer challenge" {% if request.user.profile.default_stats_viewer == "platformer challenge" %}selected{% endif %}>Platformer Challenge List</option>
+                <option value="platformer deathless" {% if request.user.profile.default_stats_viewer == "platformer deathless" %}selected{% endif %}>Platformer Deathless List</option>
+                <option value="platformer impossible" {% if request.user.profile.default_stats_viewer == "platformer impossible" %}selected{% endif %}>Platformer Impossible List</option>
+                <option value="platformer tiny" {% if request.user.profile.default_stats_viewer == "platformer tiny" %}selected{% endif %}>Platformer Tiny List</option>
+              </select>
+            </div>
+
+            {% comment %} <div class="settings-input-container">
+              <div class="icon_text-container">
+                <img src="{% static 'img/home-1391-svgrepo-com.svg' %}" alt="home-icon" />
+                Home
+              </div>
+              <select name="device" id="device" class="default-select">
+                <option value="category" selected>-</option>
+                <option value="classic rated">Classic Rated list</option>
+                <option value="classic unrated">Classic Unrated list</option>
+                <option value="classic challenge">Classic Challenge list</option>
+                <option value="platformer rated">Platformer Rated List</option>
+                <option value="platformer unrated">Platformer Unrated List</option>
+                <option value="platformer challenge">Platformer Challenge List</option>
+              </select>
+            </div> {% endcomment %}
+          </div>
+
+          {% comment %}
+          <div class="update-social-data-container update-data-container">
+            <div class="update-youtube-container update-input-container">
+              <div class="update-youtube-icon_text icon_text-container">
+                <img src="{% static 'img/youtube-mini-icon.svg' %}" alt="" />
+
+                {{list_words.youtube_channel}}
+              </div>
+
+              <input
+                type="text"
+                name="youtube_channel"
+                placeholder="{{list_words.youtube_channel}}"
+                value="{% if form.errors %}{{form.youtube_channel.value}}{% else %}{% if request.user.profile.youtube_channel %}{{request.user.profile.youtube_channel}}{% else %}https://www.youtube.com/@{% endif %}{% endif %}"
+                oninput="updateYoutubeValue(this)"
+              />
+            </div>
+
+            <div class="update-twitch-container update-input-container">
+              <div class="update-twitch-icon_text icon_text-container">
+                <img src="{% static 'img/twitch-mini-icon.svg' %}" alt="" />
+
+                Twitch
+              </div>
+
+              <input
+                type="text"
+                name="twitch"
+                placeholder="Twitch"
+                value="{% if form.errors %}{{form.twitch.value}}{% else %}{% if request.user.profile.twitch %}{{request.user.profile.twitch}}{% else %}https://twitch.tv/{% endif %}{% endif %}"
+                oninput="updateTwitchValue(this)"
+              />
+            </div>
+
+            <div class="update-twitter-container update-input-container">
+              <div class="update-twitter-icon_text icon_text-container">
+                <img src="{% static 'img/twitter-mini-icon.svg' %}" alt="" />
+
+                Twitter
+              </div>
+
+              <input
+                type="text"
+                name="twitter"
+                placeholder="Twitter"
+                value="{% if form.errors %}{{form.twitter.value}}{% else %}{% if request.user.profile.twitter %}{{request.user.profile.twitter}}{% else %}https://twitter.com/{% endif %}{% endif %}"
+                oninput="updateTwitterValue(this)"
+              />
+            </div>
+
+            <div class="update-facebook-container update-input-container">
+              <div class="update-facebook-icon_text icon_text-container">
+                <img src="{% static 'img/facebook-mini-icon.svg' %}" alt="" />
+
+                Facebook
+              </div>
+
+              <input
+                type="text"
+                name="facebook"
+                placeholder="Facebook"
+                value="{% if form.errors %}{{form.facebook.value}}{% else %}{% if request.user.profile.facebook %}{{request.user.profile.facebook}}{% else %}https://facebook.com/{% endif %}{% endif %}"
+                oninput="updateFacebookValue(this)"
+              />
+            </div>
+          </div>
+          {% endcomment %}
+        </div>
+
+        <button type="submit" class="update-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.update}}</button>
+      </form>
+    </section>
+  </article>
+  <div id="cube-icon-container-right" class="right-bg"></div>
+
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var rouletteInput = document.querySelector("#roulette_animation");
+    var fastInput = document.querySelector("#fast_animation");
+    var fastAnimationContainer = document.querySelector(
+      "#fast-animation-container"
+    );
+
+    rouletteInput.addEventListener("change", function () {
+      if (rouletteInput.checked) {
+        fastAnimationContainer.style.display = "flex";
+        fastInput.style.display = "flex";
+      } else {
+        fastAnimationContainer.style.display = "none";
+        fastInput.style.display = "none";
+        fastInput.checked = false;
+      }
+    });
+
+    if (rouletteInput.checked) {
+      fastAnimationContainer.style.display = "flex";
+      fastInput.style.display = "flex";
+    } else {
+      fastAnimationContainer.style.display = "none";
+      fastInput.style.display = "none";
+      fastInput.checked = false;
+    }
+  });
+</script>
+<script src="{% static 'js/settings.js' %}?v=1.24"></script>
+
+{% endblock %} {% block footer_margin %}150{% endblock %}

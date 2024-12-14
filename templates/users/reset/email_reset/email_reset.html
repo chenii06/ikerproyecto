@@ -1,0 +1,29 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>{{list_words.reset_email}}</title>
+    <link rel="stylesheet" href="{% static 'css/password_reset.css' %}?v=1.24">
+{% endblock  %}
+
+{% block container %}
+
+<form class="reset-password-form" method="POST">
+
+    {% csrf_token %}
+
+    <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.want_to_change}}</p>
+
+    {{form.as_p}}
+
+    <button type="submit" class="reset-password-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.send_email}}</button>
+
+</form>
+
+<script>
+
+    function without_space(e){
+        e.value = e.value.replace(/ /g, '')
+    }
+</script>
+{% endblock  %}

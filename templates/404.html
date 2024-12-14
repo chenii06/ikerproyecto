@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>ERROR 404</title>
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+        <h2 class="text-404 text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">ERROR 404</h2>
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+        
+{% endblock %}

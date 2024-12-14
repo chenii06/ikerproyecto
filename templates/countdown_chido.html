@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>Countdown</title>
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article class="text-countdown-container">
+                <h2 class="text-countdown" id="countdown">{{ data.hours|stringformat:"02d" }} : {{ data.minutes|stringformat:"02d" }} : {{ data.seconds|stringformat:"02d" }}</h2>
+                <h2 class="second-text-countdown">ENTRA A NUESTRO VIDEO DE ESTRENO!!!!!</h2>
+                <iframe src="https://www.youtube.com/embed/mBMp_Raw7T4" frameborder="0" width="1000" height="562.5" class="second-text-countdown"></iframe>
+        </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+<script>
+    // Function to update the countdown timer
+    function updateTimer() {
+        var hours = parseInt(document.getElementById('countdown').textContent.split(':')[0]);
+        var minutes = parseInt(document.getElementById('countdown').textContent.split(':')[1]);
+        var seconds = parseInt(document.getElementById('countdown').textContent.split(':')[2]);
+
+        if (seconds > 0) {
+            seconds--;
+        } else {
+            if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                if (hours > 0) {
+                    hours--;
+                    minutes = 59;
+                    seconds = 59;
+                } else {
+                    // Timer has reached zero, you can handle this case as needed
+                }
+            }
+        }
+
+        // Update the timer display
+        document.getElementById('countdown').textContent =
+            (hours < 10 ? '0' : '') + hours + ' : ' +
+            (minutes < 10 ? '0' : '') + minutes + ' : ' +
+            (seconds < 10 ? '0' : '') + seconds;
+    }
+
+    // Update the timer every second
+    setInterval(updateTimer, 1000);
+</script>
+
+{% endblock %}

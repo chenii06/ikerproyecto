@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<head>
+    <title>{{ request.user.username }} | {{list_words.update_profile}}</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/update-profile.css' %}?v=1.24">
+</head>
+{% endblock %}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+    <article>
+        
+        <section class="update-profile-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.update_profile|upper}}</h2> 
+
+            <form class="update-profile-banner-container" action="{% url "users:update" %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="update-profile-banner">
+
+                    {% if request.global_context.is_subscriber %}
+                    <img class="custom-banner" alt="profile-banner" {% if request.user.profile.banner %}src="{{request.user.profile.banner.url}}"{% else %}hidden{% endif %}>
+
+                    <input type="file" id="profile-banner-input" name="banner" style="display:none;" onchange="displayBanner(this)"/>
+
+                    <div class="buttons-container banner-buttons">
+
+                        <button class="update-banner-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="button" onclick="document.getElementById('profile-banner-input').click();">
+                            {{list_words.change_banner}}
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.90108 3.20816C2 4.06634 2 5.44756 2 8.20999V11.1401C2 13.9024 2 15.2837 2.90108 16.1418C3.80217 17 5.25245 17 8.153 17H11.2295C14.13 17 15.5803 17 16.4814 16.1418C17.3825 15.2837 17.3825 13.9024 17.3825 11.1401V8.20999C17.3825 6.13016 17.3825 4.83329 16.998 3.9531V13.3375C16.2593 13.3375 15.5508 13.058 15.0285 12.5605L14.4504 12.01C13.8956 11.4817 13.6182 11.2173 13.3036 11.1061C12.958 10.9837 12.5776 10.9837 12.2318 11.1061C11.9174 11.2173 11.64 11.4817 11.0851 12.01L10.9981 12.0929C10.5479 12.5216 10.3229 12.736 10.0836 12.776C9.89776 12.8071 9.70644 12.7719 9.54589 12.6774C9.33938 12.5556 9.21402 12.277 8.9632 11.7196L8.92213 11.6283C8.34559 10.3471 8.05728 9.70638 7.55437 9.46633C7.30119 9.34547 7.01787 9.29352 6.73567 9.3161C6.17509 9.3612 5.65761 9.85406 4.62263 10.8398L3.15369 12.2387V3C3.06477 3.06307 2.98077 3.13226 2.90108 3.20816Z" fill="#9494A8" />
+                                <path d="M2.75391 8.44414C2.75391 6.97806 2.75562 5.95558 2.86453 5.1841C2.97033 4.43465 3.16384 4.03779 3.46064 3.75512C3.75745 3.47245 4.17416 3.28815 4.96108 3.18738C5.77113 3.08366 6.84474 3.08203 8.38411 3.08203H11.6014C13.1408 3.08203 14.2144 3.08366 15.0244 3.18738C15.8113 3.28815 16.228 3.47245 16.5248 3.75512C16.8216 4.03779 17.0151 4.43465 17.1209 5.1841C17.2299 5.95558 17.2316 6.97806 17.2316 8.44414V11.5082C17.2316 12.9743 17.2299 13.9967 17.1209 14.7682C17.0151 15.5177 16.8216 15.9145 16.5248 16.1971C16.228 16.4798 15.8113 16.6641 15.0244 16.7649C14.2144 16.8686 13.1408 16.8703 11.6014 16.8703H8.38411C6.84474 16.8703 5.77113 16.8686 4.96108 16.7649C4.17416 16.6641 3.75745 16.4798 3.46064 16.1971C3.16384 15.9145 2.97033 15.5177 2.86453 14.7682C2.75562 13.9967 2.75391 12.9743 2.75391 11.5082V8.44414Z" stroke="#9494A8" stroke-width="2" />
+                                <path d="M12.1046 9.40023C13.104 9.40023 13.9143 8.62856 13.9143 7.67668C13.9143 6.72478 13.104 5.95312 12.1046 5.95312C11.1051 5.95312 10.2949 6.72478 10.2949 7.67668C10.2949 8.62856 11.1051 9.40023 12.1046 9.40023Z" fill="#9494A8" />
+                              </svg>
+                        </button>
+
+                        <button class="profile-picture-changer-button delete-button" type="button" onclick="delete_banner();">
+
+                            {{list_words.delete_banner}}
+                            <img src="{% static 'img/trash-icon.svg' %}" alt="person-icon">
+    
+                        </button>
+
+                    </div>
+
+                    {% endif %}
+                </div>
+
+                <div class="update-profile-icon-button-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="link-discord-container">
+
+                        <a class="link-discord-button" href="{% url 'users:discord_login' %}">
+
+                            <img src="{% static 'img/discord-icon--button.svg' %}" alt="discord-icon">
+                            {{list_words.link_account}}
+
+                        </a>
+
+                        <div class="verified-link-discord-text-container">
+
+                            {% if request.user.profile.discord %}
+                                {% if request.user.profile.verified %}
+                                <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10Z" fill="#6875FF" />
+                                    <path d="M5.59961 9.8L8.47437 12.6L13.9996 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                  </svg><p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.account_verified}}</p>
+                                {% else %}
+                                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M1 10C1 7.61306 1.94821 5.32387 3.63604 3.63604C5.32387 1.94821 7.61306 1 10 1C12.387 1 14.6761 1.94821 16.364 3.63604C18.0518 5.32387 19 7.61306 19 10C19 12.387 18.0518 14.6761 16.364 16.364C14.6761 18.0518 12.387 19 10 19C7.61306 19 5.32387 18.0518 3.63604 16.364C1.94821 14.6761 1 12.387 1 10ZM10 5.5C10.2237 5.5 10.4384 5.58889 10.5966 5.74713C10.7548 5.90536 10.8437 6.11997 10.8437 6.34375V10.2812C10.8437 10.505 10.7548 10.7196 10.5966 10.8779C10.4384 11.0361 10.2237 11.125 10 11.125C9.77622 11.125 9.56161 11.0361 9.40338 10.8779C9.24514 10.7196 9.15625 10.505 9.15625 10.2812V6.34375C9.15625 6.11997 9.24514 5.90536 9.40338 5.74713C9.56161 5.58889 9.77622 5.5 10 5.5ZM10 12.25C9.70163 12.25 9.41549 12.3685 9.20451 12.5795C8.99353 12.7904 8.875 13.0766 8.875 13.375C8.875 13.6733 8.99353 13.9595 9.20451 14.1705C9.41549 14.3815 9.70163 14.5 10 14.5H10.0078C10.3063 14.5 10.5924 14.3815 10.8033 14.1705C11.0144 13.9595 11.1328 13.6733 11.1328 13.375C11.1328 13.0766 11.0144 12.7904 10.8033 12.5795C10.5924 12.3685 10.3063 12.25 10.0078 12.25H10Z" fill="#C0C0D1" />
+                                  </svg><p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.verification_indications_1}}<a href="https://discord.com/invite/9qwVvCP6rq" class="join-server-text alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.verification_indications_2}}</a>{{list_words.verification_indications_3}}</p>
+                                {% endif %}
+                            {% else %}
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M1 10C1 7.61306 1.94821 5.32387 3.63604 3.63604C5.32387 1.94821 7.61306 1 10 1C12.387 1 14.6761 1.94821 16.364 3.63604C18.0518 5.32387 19 7.61306 19 10C19 12.387 18.0518 14.6761 16.364 16.364C14.6761 18.0518 12.387 19 10 19C7.61306 19 5.32387 18.0518 3.63604 16.364C1.94821 14.6761 1 12.387 1 10ZM10 5.5C10.2237 5.5 10.4384 5.58889 10.5966 5.74713C10.7548 5.90536 10.8437 6.11997 10.8437 6.34375V10.2812C10.8437 10.505 10.7548 10.7196 10.5966 10.8779C10.4384 11.0361 10.2237 11.125 10 11.125C9.77622 11.125 9.56161 11.0361 9.40338 10.8779C9.24514 10.7196 9.15625 10.505 9.15625 10.2812V6.34375C9.15625 6.11997 9.24514 5.90536 9.40338 5.74713C9.56161 5.58889 9.77622 5.5 10 5.5ZM10 12.25C9.70163 12.25 9.41549 12.3685 9.20451 12.5795C8.99353 12.7904 8.875 13.0766 8.875 13.375C8.875 13.6733 8.99353 13.9595 9.20451 14.1705C9.41549 14.3815 9.70163 14.5 10 14.5H10.0078C10.3063 14.5 10.5924 14.3815 10.8033 14.1705C11.0144 13.9595 11.1328 13.6733 11.1328 13.375C11.1328 13.0766 11.0144 12.7904 10.8033 12.5795C10.5924 12.3685 10.3063 12.25 10.0078 12.25H10Z" fill="#C0C0D1" />
+                              </svg><p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.verification_indications_1}}<a href="https://discord.com/invite/9qwVvCP6rq" class="join-server-text alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.verification_indications_2}}</a>{{list_words.verification_indications_3}}</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-picture-container">
+                        {% if request.user.profile.picture %}
+                        <img src="{{request.user.profile.picture.url}}" class="picture_update" width="150" height="150" alt="profile-picture"/>
+                        {% else %}
+                        <img src="{% static 'img/default-profile.png' %}" class="picture_update" width="150" height="150" alt="default-picture"/>
+                        {% endif %}
+                    </div>
+
+                    <input type="file" id="profile-picture-input" name="picture" style="display:none;" onchange="displayImage(this)"/>
+
+                    <div class="buttons-container">
+
+                        <button class="profile-picture-changer-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="button" onclick="document.getElementById('profile-picture-input').click();">
+
+                            {{list_words.change_profile_picture}}
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.5 18C1.5 18 0 18 0 16.5C0 15 1.5 10.5 9.00001 10.5C16.5 10.5 18 15 18 16.5C18 18 16.5 18 16.5 18H1.5ZM9.00001 8.99997C10.1934 8.99997 11.3381 8.5259 12.1819 7.68199C13.0259 6.83807 13.5001 5.69347 13.5001 4.5C13.5001 3.30653 13.0259 2.16194 12.1819 1.31802C11.3381 0.474107 10.1934 0 9.00001 0C7.80652 0 6.66194 0.474107 5.81802 1.31802C4.97411 2.16194 4.5 3.30653 4.5 4.5C4.5 5.69347 4.97411 6.83807 5.81802 7.68199C6.66194 8.5259 7.80652 8.99997 9.00001 8.99997Z" fill="#9494A8" />
+                              </svg>
+    
+                        </button>
+
+                        <button class="profile-picture-changer-button delete-button" type="button" onclick="document.getElementById('profile-picture-input').click();">
+
+                            {{list_words.delete_profile_picture}}
+                            <img src="{% static 'img/trash-icon.svg' %}" alt="person-icon">
+    
+                        </button>
+
+                    </div>
+                
+                </div>
+
+                <div class="update-profile-data-container">
+
+                    <div class="update-data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <div class="update-username-container update-input-container">
+
+                            <div class="update-username-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.66666 20C1.66666 20 0 20 0 18.3334C0 16.6667 1.66666 11.6667 10 11.6667C18.3333 11.6667 20 16.6667 20 18.3334C20 20 18.3333 20 18.3333 20H1.66666ZM10 9.99997C11.3261 9.99997 12.5979 9.47322 13.5355 8.53554C14.4732 7.59785 15.0001 6.32608 15.0001 5C15.0001 3.67392 14.4732 2.40215 13.5355 1.46446C12.5979 0.526785 11.3261 0 10 0C8.67392 0 7.40215 0.526785 6.46447 1.46446C5.52679 2.40215 5 3.67392 5 5C5 6.32608 5.52679 7.59785 6.46447 8.53554C7.40215 9.47322 8.67392 9.99997 10 9.99997Z" fill="#9494A8" />
+                                  </svg>
+
+                                Username
+
+                            </div>
+
+                            <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="username" placeholder="Username" value="{% if form.errors %}{{form.username.value}}{% else %}{{request.user.username}}{% endif %}">
+
+                        </div>
+
+                        <div class="update-country-container update-input-container">
+
+                            <div class="update-country-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 20C4.5 20 0 15.5 0 10C0 4.5 4.5 0 10 0C15.5 0 20 4.5 20 10C20 15.5 15.5 20 10 20ZM7.91667 14.1667C8.41667 16.75 9.33333 18.3333 10 18.3333C10.6667 18.3333 11.5833 16.75 12.0833 14.1667H7.91667ZM13.8333 14.1667C13.5833 15.5833 13.1667 16.9167 12.6667 17.9167C14.5833 17.25 16.25 15.9167 17.25 14.1667H13.8333ZM2.75 14.1667C3.75 15.9167 5.41667 17.25 7.33333 17.9167C6.83333 16.9167 6.41667 15.5833 6.16667 14.1667H2.75ZM14.0833 12.5H18C18.1667 11.75 18.3333 10.8333 18.3333 10C18.3333 9.16667 18.1667 8.25 17.9167 7.5H14C14.1667 8.33333 14.1667 9.16667 14.1667 10C14.1667 10.8333 14.1667 11.6667 14.0833 12.5ZM7.66667 12.5H12.4167C12.5 11.75 12.5833 10.9167 12.5833 10C12.5833 9.08333 12.5 8.25 12.4167 7.5H7.66667C7.58333 8.25 7.5 9.08333 7.5 10C7.5 10.9167 7.58333 11.75 7.66667 12.5ZM2.08333 12.5H6C5.91667 11.6667 5.91667 10.8333 5.91667 10C5.91667 9.16667 5.91667 8.33333 6 7.5H2.08333C1.83333 8.25 1.66667 9.16667 1.66667 10C1.66667 10.8333 1.83333 11.75 2.08333 12.5ZM13.8333 5.83333H17.25C16.25 4.08333 14.5833 2.75 12.6667 2.08333C13.1667 3.08333 13.5833 4.41667 13.8333 5.83333ZM7.91667 5.83333H12.1667C11.6667 3.25 10.75 1.66667 10.0833 1.66667C9.41667 1.66667 8.41667 3.25 7.91667 5.83333ZM2.75 5.83333H6.16667C6.41667 4.41667 6.83333 3.08333 7.33333 2.08333C5.41667 2.75 3.83333 4.08333 2.75 5.83333Z" fill="#C0C0D1" />
+                                  </svg>
+
+                                {{list_words.country}}
+
+                            </div>
+
+                            <select name="country" id="country" class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <option value="">{{list_words.country}}</option>
+                                {% for country in countries %}
+                                <option value="{{country}}" {% if request.user.profile.country == country %}selected{% endif %}>{% if request.user.profile.language == "English" %}{{country}}{% elif request.user.profile.language == "Spanish" %}{{country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{country.country_russian}}{% elif request.user.profile.language == "German" %}{{country.country_german}}{% elif request.user.profile.language == "Czech" %}{{country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{country.country_french}}{% endif %}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+
+                        <div class="update-biography-container update-input-container">
+
+                            <div class="icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.875 2.5V15C16.875 15.1658 16.8091 15.3247 16.6919 15.4419C16.5747 15.5591 16.4158 15.625 16.25 15.625H5.625C5.2936 15.6254 4.97587 15.7572 4.74154 15.9915C4.5072 16.2259 4.37538 16.5436 4.375 16.875H15C15.1658 16.875 15.3247 16.9408 15.4419 17.0581C15.5592 17.1753 15.625 17.3342 15.625 17.5C15.625 17.6658 15.5592 17.8247 15.4419 17.9419C15.3247 18.0592 15.1658 18.125 15 18.125H3.75C3.58424 18.125 3.42528 18.0591 3.30807 17.9419C3.19086 17.8247 3.12501 17.6658 3.125 17.5V4.375C3.12576 3.71219 3.38939 3.07675 3.85807 2.60807C4.32675 2.13939 4.96219 1.87576 5.625 1.875H16.25C16.4158 1.87501 16.5747 1.94086 16.6919 2.05807C16.8091 2.17528 16.875 2.33424 16.875 2.5Z" fill="#9494A8"/>
+                                    </svg>                                    
+
+                                {{list_words.bio}}
+
+                            </div>
+
+                            <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" maxlength="100" name="bio" placeholder="{{list_words.bio}}" value="{% if form.errors %}{{form.bio.value}}{% else %}{{request.user.profile.bio}}{% endif %}"/>
+
+                        </div>
+
+                        <div class="update-device-container">
+
+                            <div class="update-username-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.5 9.57682V17.0768H14.1667V9.57682H17.5ZM18.3333 7.91016H13.3333C13.1123 7.91016 12.9004 7.99795 12.7441 8.15423C12.5878 8.31051 12.5 8.52248 12.5 8.74349V17.9102C12.5 18.1312 12.5878 18.3431 12.7441 18.4994C12.9004 18.6557 13.1123 18.7435 13.3333 18.7435H18.3333C18.5543 18.7435 18.7663 18.6557 18.9226 18.4994C19.0789 18.3431 19.1667 18.1312 19.1667 17.9102V8.74349C19.1667 8.52248 19.0789 8.31051 18.9226 8.15423C18.7663 7.99795 18.5543 7.91016 18.3333 7.91016Z" fill="#C0C0D1" />
+                                    <path d="M15.8398 2.91016H2.92318C2.70216 2.91016 2.4902 2.99795 2.33392 3.15423C2.17764 3.31051 2.08984 3.52248 2.08984 3.74349V12.9102C2.08984 13.1312 2.17764 13.3431 2.33392 13.4994C2.4902 13.6557 2.70216 13.7435 2.92318 13.7435H10.8398V12.0768H3.75651V4.57682H15.0065V6.24349H16.6732V3.74349C16.6732 3.52248 16.5854 3.31051 16.4291 3.15423C16.2728 2.99795 16.0609 2.91016 15.8398 2.91016Z" fill="#C0C0D1" />
+                                    <path d="M10.8398 15.4102V17.0768H1.67318C1.45216 17.0768 1.2402 16.989 1.08392 16.8327C0.927641 16.6765 0.839844 16.4645 0.839844 16.2435C0.839844 16.0225 0.927641 15.8105 1.08392 15.6542C1.2402 15.498 1.45216 15.4102 1.67318 15.4102H10.8398Z" fill="#C0C0D1" />
+                                  </svg>
+
+                                {{list_words.device}}
+
+                            </div>
+
+                            <div class="devices-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <div class="icon_text-container">
+        
+                                    <input type="checkbox" class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="device" id="device" value="mouse" {% if "mouse" in device %}checked{% endif %}/>
+                                    {{list_words.mouse}}
+                                </div>
+                                <div class="icon_text-container">
+        
+                                    <input type="checkbox" class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="device" id="device" value="keyboard" {% if "keyboard" in device %}checked{% endif %}/>
+                                    {{list_words.keyboard}}
+                                </div>
+                                <div class="icon_text-container">
+        
+                                    <input type="checkbox" class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="device" id="device" value="mobile" {% if "mobile" in device %}checked{% endif %}/>
+                                    {{list_words.mobile}}
+                                </div>
+                                <div class="icon_text-container">
+        
+                                    <input type="checkbox" class="option-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="device" id="device" value="controller" {% if "controller" in device %}checked{% endif %}/>
+                                    {{list_words.controller}}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="update-biography-container update-input-container">
+
+                            <div class="icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.1875 4.71307C6.44163 4.71307 5.8375 5.31719 5.8375 6.0625C5.8375 6.80781 6.44163 7.4125 7.1875 7.4125C7.93337 7.4125 8.5375 6.80781 8.5375 6.0625C8.5375 5.31719 7.93337 4.71307 7.1875 4.71307ZM12.25 9.2125C11.5041 9.2125 10.9 9.81719 10.9 10.5625C10.9 11.3078 11.5041 11.9125 12.25 11.9125C12.9959 11.9125 13.6 11.3078 13.6 10.5625C13.6 9.81719 12.9959 9.2125 12.25 9.2125ZM15.625 6.625H9.35763C9.10731 7.59419 8.23487 8.3125 7.1875 8.3125C6.14013 8.3125 5.26769 7.59419 5.01737 6.625H4.375C4.0645 6.625 3.8125 6.37356 3.8125 6.0625C3.8125 5.752 4.0645 5.5 4.375 5.5H5.01737C5.26769 4.53081 6.14013 3.8125 7.1875 3.8125C8.23487 3.8125 9.10731 4.53081 9.35763 5.5H15.625C15.9355 5.5 16.1875 5.752 16.1875 6.0625C16.1875 6.37356 15.9355 6.625 15.625 6.625ZM15.625 11.125H14.4201C14.1698 12.0942 13.2974 12.8125 12.25 12.8125C11.2026 12.8125 10.3302 12.0942 10.0799 11.125H4.375C4.0645 11.125 3.8125 10.8736 3.8125 10.5625C3.8125 10.252 4.0645 10 4.375 10H10.0799C10.3307 9.03081 11.2026 8.3125 12.25 8.3125C13.2974 8.3125 14.1698 9.03081 14.4201 10H15.625C15.9355 10 16.1875 10.252 16.1875 10.5625C16.1875 10.8736 15.9355 11.125 15.625 11.125ZM15.625 15.625H9.35763C9.10731 16.5942 8.23487 17.3125 7.1875 17.3125C6.14013 17.3125 5.26769 16.5942 5.01737 15.625H4.375C4.0645 15.625 3.8125 15.3736 3.8125 15.0625C3.8125 14.7514 4.0645 14.5 4.375 14.5H5.01737C5.26769 13.5314 6.14013 12.8125 7.1875 12.8125C8.23487 12.8125 9.10731 13.5314 9.35763 14.5H15.625C15.9355 14.5 16.1875 14.7514 16.1875 15.0625C16.1875 15.3736 15.9355 15.625 15.625 15.625ZM16.75 1H3.25C2.00744 1 1 2.00744 1 3.25V16.75C1 17.9926 2.00744 19 3.25 19H16.75C17.9926 19 19 17.9926 19 16.75V3.25C19 2.00744 17.9926 1 16.75 1ZM7.1875 13.7131C6.44163 13.7131 5.8375 14.3172 5.8375 15.0625C5.8375 15.8078 6.44163 16.4125 7.1875 16.4125C7.93337 16.4125 8.5375 15.8078 8.5375 15.0625C8.5375 14.3172 7.93337 13.7131 7.1875 13.7131Z" fill="#C0C0D1"/>
+                                    </svg>
+
+                                {{list_words.preferences}}
+
+                            </div>
+
+                            <select name="preferences" id="preferences" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <option value="">{{list_words.preferences}}</option>
+                                <option value="classic tiny" {% if request.user.profile.preferences == "classic tiny" %}selected{% endif %}>Classic Tiny List</option>
+                                <option value="classic spam" {% if request.user.profile.preferences == "classic spam" %}selected{% endif %}>Classic Spam List</option>
+                                <option value="classic impossible_tiny" {% if request.user.profile.preferences == "classic impossible_tiny" %}selected{% endif %}>Classic Impossible Tiny List</option>
+                                <option value="platformer rated" {% if request.user.profile.preferences == "platformer rated" %}selected{% endif %}>Platformer Rated List</option>
+                                <option value="platformer all" {% if request.user.profile.preferences == "platformer all" %}selected{% endif %}>TPL</option>
+                                <option value="platformer challenge" {% if request.user.profile.preferences == "platformer challenge" %}selected{% endif %}>Platformer Challenge List</option>
+                                <option value="platformer deathless" {% if request.user.profile.preferences == "platformer deathless" %}selected{% endif %}>Platformer Deathless List</option>
+                                <option value="platformer impossible" {% if request.user.profile.preferences == "platformer impossible" %}selected{% endif %}>Platformer Impossible List</option>
+                                <option value="platformer tiny" {% if request.user.profile.preferences == "platformer tiny" %}selected{% endif %}>Platformer Tiny List</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="update-social-data-container update-data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <div class="update-youtube-container update-input-container">
+
+                            <div class="update-youtube-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.60804 12.5861V6.9743C9.50533 7.91173 10.9749 8.81731 12.7129 9.79363C11.2793 10.6283 9.50533 11.5649 7.60804 12.5861ZM18.1819 4.18328C17.8547 3.73052 17.2969 3.37809 16.703 3.26141C14.9574 2.91336 4.06761 2.91237 2.323 3.26141C1.84677 3.35515 1.42271 3.58173 1.05841 3.93377C-0.476535 5.42967 0.00444418 13.4517 0.374426 14.7512C0.53001 15.3136 0.731134 15.7193 0.984429 15.9855C1.31077 16.3376 1.75759 16.58 2.27082 16.6887C3.70805 17.0008 11.1124 17.1753 16.6726 16.7355C17.1849 16.6418 17.6383 16.3916 17.996 16.0246C19.4151 14.5347 19.3184 6.06213 18.1819 4.18328Z" fill="#9494A8" />
+                                  </svg>
+
+                                {{list_words.youtube_channel}}
+
+                            </div>
+
+                            <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="youtube_channel" placeholder="{{list_words.youtube_channel}}" value="{% if form.errors %}{{form.youtube_channel.value}}{% else %}{% if request.user.profile.youtube_channel %}{{request.user.profile.youtube_channel}}{% else %}https://www.youtube.com/@{% endif %}{% endif %}" oninput="updateYoutubeValue(this)">
+
+                        </div>
+
+                        <div class="update-twitch-container update-input-container">
+
+                            <div class="update-twitch-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.6316 10H14.7368V5H12.6316V10ZM7.36842 10H9.47368V5H7.36842V10ZM17.8947 11.3071V2H3.15789V14H7.36842V16.9531L10.0632 14H15.0947L17.8947 11.3071ZM14.6389 17H10.5189L7.77579 20H5.26316V17H0V3.47998L1.36842 0H20V12.1729L14.6389 17Z" fill="#9494A8" />
+                                  </svg>
+
+                                Twitch
+
+                            </div>
+
+                            <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="twitch" placeholder="Twitch" value="{% if form.errors %}{{form.twitch.value}}{% else %}{% if request.user.profile.twitch %}{{request.user.profile.twitch}}{% else %}https://twitch.tv/{% endif %}{% endif %}" oninput="updateTwitchValue(this)">
+
+                        </div>
+
+                        <div class="update-twitter-container update-input-container">
+
+                            <div class="update-twitter-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.99048 17.9998C13.1781 17.9998 17.1095 11.8434 17.1095 6.50517C17.1095 6.32992 17.1095 6.15599 17.0981 5.98271C17.8629 5.41167 18.5229 4.70266 19.0476 3.8914C18.3352 4.21827 17.5781 4.43263 16.8038 4.52714C17.619 4.02207 18.2295 3.22858 18.5219 2.29228C17.7543 2.76289 16.9152 3.09502 16.04 3.27323C14.56 1.64676 12.0848 1.56796 10.5105 3.09794C9.49619 4.08445 9.06476 5.55532 9.38 6.95829C6.2381 6.79486 3.31048 5.26097 1.32571 2.73759C0.288571 4.5836 0.819048 6.94429 2.53619 8.12968C1.91429 8.11097 1.30571 7.93788 0.761905 7.6248V7.67607C0.762857 9.59889 2.07429 11.2545 3.89714 11.6355C3.3219 11.798 2.7181 11.8215 2.13333 11.7044C2.64476 13.3505 4.11238 14.478 5.78381 14.5105C4.4 15.6349 2.69048 16.2454 0.930476 16.2434C0.62 16.2425 0.309524 16.2237 0 16.1853C1.78762 17.3707 3.86667 17.9998 5.99048 17.9969" fill="#9494A8" />
+                                  </svg>
+
+                                Twitter
+
+                            </div>
+
+                            <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="twitter" placeholder="Twitter" value="{% if form.errors %}{{form.twitter.value}}{% else %}{% if request.user.profile.twitter %}{{request.user.profile.twitter}}{% else %}https://twitter.com/{% endif %}{% endif %}" oninput="updateTwitterValue(this)"/>
+
+                        </div>
+
+                        <div class="update-facebook-container update-input-container">
+
+                            <div class="update-facebook-icon_text icon_text-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0697 5.08226C12.5129 4.651 13.199 4.698 13.2492 4.70035L16.1198 4.69918L16.1825 0.350177L15.7494 0.238542C15.4719 0.166875 14.6225 0 12.7501 0C9.41625 0 7.17575 2.45006 7.17575 6.09518V7.07403H3.81836V11.7744H7.17575V20H11.6523V11.7744H15.191L15.8065 7.07403H11.6523V6.3537C11.6523 5.78144 11.7932 5.35253 12.0697 5.08226Z" fill="#9494A8" />
+                                  </svg>
+
+                                Facebook
+
+                            </div>
+
+                            <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" name="facebook" placeholder="Facebook" value="{% if form.errors %}{{form.facebook.value}}{% else %}{% if request.user.profile.facebook %}{{request.user.profile.facebook}}{% else %}https://facebook.com/{% endif %}{% endif %}" oninput="updateFacebookValue(this)">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="update-profile-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {{list_words.update_info}}
+                </button>
+
+            </form>
+
+        </section>
+
+    </article>
+
+</main>
+
+<script>
+    function updateYoutubeValue(input) {
+        const userValue = input.value.substring("https://www.youtube.com/@".length);
+    
+        input.value = "https://www.youtube.com/@" + userValue;
+      }
+      function updateTwitterValue(input) {
+        const userValue = input.value.substring("https://twitter.com/".length);
+    
+        input.value = "https://twitter.com/" + userValue;
+      }
+      function updateTwitchValue(input) {
+        const userValue = input.value.substring("https://twitch.tv/".length);
+    
+        input.value = "https://twitch.tv/" + userValue;
+      }
+      function updateFacebookValue(input) {
+        const userValue = input.value.substring("https://facebook.com/".length);
+    
+        input.value = "https://facebook.com/" + userValue;
+      }
+
+      // Script to change the image while clicking on Picture
+      function displayImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var profileImage = document.querySelector('.picture_update');
+                profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function displayBanner(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var profileImage = document.querySelector('.custom-banner');
+                profileImage.removeAttribute('hidden');
+                profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function delete_banner() {
+        data = {}
+        data.delete_banner = true;
+
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+                window.location.href = "{% url 'users:update' %}"
+            }
+        })
+    }
+
+    function delete_picture() {
+        data = {}
+        data.delete_picture = true;
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+                window.location.href = "{% url 'users:update' %}"
+            }
+        })
+    }
+
+</script>
+
+<script src="{% static 'js/changeColor/updateProfile.js' %}?v=1.24" defer></script>
+{% endblock %}
+
+{% block footer_margin %}150{% endblock %}

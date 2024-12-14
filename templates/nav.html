@@ -1,0 +1,17 @@
+{% load static %}
+
+<header>
+  <a href="{% url 'demonlist:home' %}" class="logo-container">
+      <img src="{% static 'img/logo.webp' %}" alt="Demonlist Logo">
+      <span>Home</span>
+  </a>
+  <nav>
+      <a href="">Stats Viewer</a>
+      <a href="">Submit Record</a>
+      <a href="" class="nav-highlight">Account</a>
+      <button id="adminButton" class="admin-button">
+        <i class="fas fa-shield"></i>
+        Admin Mode
+      </button>
+  </nav>
+</header>

@@ -1,0 +1,116 @@
+/* a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+.roulette-button { */
+
+  /* Layout */
+  /* display: flex;
+  padding: 10px 60px;
+  justify-content: center;
+  align-items: center; */
+
+  /* Estilos */
+  /* cursor: pointer;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  background: #3EE5FC; */
+
+  /* Estilos de fuente */
+  /* color: var(--Purple-Dark);
+  font-family: Poppins;
+  font-size: 18px;
+  font-weight: 500;
+
+}
+
+.roulette-button:hover {
+  background-color: #31bacd;
+}
+
+.roulette-button:active {
+  scale: 0.97;
+}
+
+.card-title {
+  color: #FFF;
+  font-family: "Akira Expanded";
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.card-data {
+  color: #9494A8;
+  font-family: Poppins;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.card-data b {
+  color: #C0C0D1;
+  font-weight: 700;
+} */
+
+.refused-scroll {
+  overflow-y: hidden;
+  } 
+
+.modal-overlay.animate__fadeInLessSmooth {
+  --animate-duration: 0.5s;
+  --animate-timing: ease-out;
+}

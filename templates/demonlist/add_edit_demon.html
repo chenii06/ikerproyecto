@@ -1,0 +1,618 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>{% if request.global_context.is_list_leader %}Add / {% endif %}Edit Demon</title>
+    <link rel="stylesheet" href="{% static 'css/add_edit_demon.css' %}?v=1.24">
+
+    <!-- Incluye jQuery (asegúrate de que esté incluido antes de Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Incluye las hojas de estilo de Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Incluye la biblioteca Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        {% comment %} Contenedor de el titulo y bloque de submit {% endcomment %}
+        <section class="add-edit-demon-container">
+
+            {% comment %} TITULO {% endcomment %}
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{% if request.global_context.is_list_leader %}Add / {% endif %}Edit Demon</h2>
+
+            <form class="add-edit-demon-form card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="hidden" name="user" value="{{ user.pk}}" />
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="hidden" name="profile" value="{{ profile.pk }}" />
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="option" name="option" onchange="change_option(this);" {% if not request.global_context.is_list_leader %}hidden{% endif %}>
+                    {% if request.global_context.is_list_leader %}
+                    <option value="Add" selected>Add</option>
+                    {% endif %}
+                    <option value="Edit">Edit</option>
+                    {% if request.global_context.is_list_leader %}
+                    <option value="Remove">Remove</option>
+                    <option value="Recover">Recover</option>
+                    {% endif %}
+                </select>
+
+                {% if request.global_context.is_list_leader %}
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="level" name="level" placeholder="Demon" required>
+                <div class="invalid-feedback text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                {% endif %}
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="mode" name="mode" required {% if not request.global_context.is_list_leader %}hidden{% endif %} onchange="change_mode(this);">
+                    <option value="" selected>-- Mode --</option>
+                    {% if request.global_context.is_classic_list_leader %}
+                    <option value="classic">Classic</option>
+                    {% endif %}
+                    {% if request.global_context.is_platformer_list_leader %}
+                    <option value="platformer">Platformer</option>
+                    {% endif %}
+                </select>
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="list" name="list" hidden>
+                    <option value="" selected>-- List --</option>
+                </select>
+
+                <div id="edit_demon_container" class="edit_demon_container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" hidden>
+                    <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="edit_demon" name="edit_demon" onchange="select_demon(this);">
+                        <option value="" selected >-- Demon --</option>
+                    </select>
+                </div>
+
+                {% if request.global_context.is_list_leader %}
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="category" name="category" onchange="change_category(this);" required>
+                    <option value="" selected >-- Category --</option>
+                </select>
+                {% endif %}
+
+                <label class="photo-label">Photo</label>
+                <p><input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="file" id="photo" name="photo" required><span id="photo_name"></span></p>
+                
+                {% for error in form.photo.errors %}
+                <div class="alert alert-danger">
+                    <b class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Photo: </b>{{error}}
+                </div>
+                {% endfor %}
+
+                {% if request.global_context.is_list_leader %}
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="position" name="position" placeholder="All Position" required>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                {% endif %}
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="verification_status" name="verification_status" hidden>
+                    <option value="" selected>-- Verification Status --</option>
+                    <option value="Not finished">Not finished</option>
+                    <option value="Finished">Finished</option>
+                    <option value="Verifying">Verifying</option>
+                </select>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="verification_record" name="verification_record" placeholder="Verification Record" hidden>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.verification_record.errors %}{{ error }}{% endfor %}
+                </div>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="creator" name="creator" placeholder="Creator" required>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="verifier" name="verifier" placeholder="Verifier" required>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="verification_video" name="verification_video" placeholder="Verification Video" required>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                {% if request.global_context.is_list_leader %}
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="level_id" name="level_id" placeholder="Level id" required>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="level_id_ldm" name="level_id_ldm" placeholder="Level id LDM (Optional)">
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="object_count" name="object_count" placeholder="Object Count" required>
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="demon_difficulty" name="demon_difficulty">
+                    <option value="" selected>-- Demon difficulty --</option>
+                    <option value="Easy demon">Easy demon</option>
+                    <option value="Medium demon">Medium demon</option>
+                    <option value="Hard demon">Hard demon</option>
+                    <option value="Insane demon">Insane demon</option>
+                    <option value="Extreme demon">Extreme demon</option>
+                </select>
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="type" name="type">
+                    <option value="" selected>-- Type --</option>
+                    <option value="featured">Featured</option>
+                    <option value="epic">Epic</option>
+                    <option value="legendary">Legendary</option>
+                    <option value="mythic">Mythic</option>
+                </select>
+
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="version" name="version" required>
+                    <option value="" selected>-- Version --</option>
+                    <option value="2.2">2.2</option>
+                    <option value="2.1">2.1</option>
+                    <option value="2.0">2.0</option>
+                    <option value="1.9">1.9</option>
+                    <option value="1.8">1.8</option>
+                    <option value="1.7">1.7</option>
+                    <option value="1.6">1.6</option>
+                    <option value="1.5">1.5</option>
+                    <option value="1.4">1.4</option>
+                    <option value="1.3">1.3</option>
+                    <option value="1.2">1.2</option>
+                    <option value="1.1">1.1</option>
+                    <option value="1.0">1.0</option>
+
+                </select>
+
+                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="level_password" name="level_password" placeholder="Level Password (Optional)">
+                <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                </div>
+
+                {% endif %}
+
+                <button type="submit" class="add-edit-demon-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Submit!</button>
+            </form>
+
+        </section>
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+    <script>
+
+    $(document).ready(function() {
+
+        {% if not request.global_context.is_list_leader %}
+        $("#option").val("Edit");
+        $("#option").change();
+        {% endif %}
+
+        $('#edit_demon').select2({
+            width: '100%',
+            dropdownCssClass: 'contain-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode',
+            containerCssClass: 'card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode',
+            ajax: {
+                type: 'POST',
+                dataType: 'json',
+                delay: 250,
+                headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                data: function(params) {
+                    return {
+                        option: "Filter",
+                        action: $("#option").val(),
+                        mode: $("#mode").val(),
+                        category: $("#list").val(),
+                        search: params.term
+                    };
+                },
+                processResults: function(data) {
+                    var results = [];
+                    for (var i = 0; i < data.results.length; i++) {
+                        results.push({
+                            id: data.results[i].id,
+                            text: data.results[i].text
+                        });
+                    }
+                    return {
+                        results: results
+                    };
+                },
+                cache: true
+            },
+        })
+
+    })
+
+    function change_option(option){
+        $('#category').val("");
+        $('#photo_name').text("");
+        $('#position').val("");
+        $('#verification_status').val("");
+        $('#verification_record').val("");
+        $('#creator').val("");
+        $('#verifier').val("");
+        $('#verification_video').val("");
+        $('#level_id').val("");
+        $('#level_id_ldm').val("");
+        $('#object_count').val("");
+        $('#demon_difficulty').val("");
+        $('#level_password').val("");
+        $('#type').val("");
+        $('#version').val("");
+        if (option.value == "Add"){
+            $('#edit_demon_container').attr("hidden", true);
+            $('#edit_demon').attr("required", false);
+            $('#level').attr("hidden", false);
+            $('#level').attr("required", true);
+            $('#list').attr("hidden", true);
+            $('#list').attr("required", false);
+            $('#mode').val("");
+            $('#mode').attr("onchange", `change_mode(this);`);
+            $('#list').val("");
+            $('#list').attr("onchange", "");
+            $('#category').val("");
+            $('#photo').attr("required", true);
+        }
+        else {
+            $('#level').attr("hidden", true);
+            $('#level').attr("required", false);
+            $('#edit_demon_container').attr("hidden", false);
+            $('#edit_demon').attr("required", true);
+            {% if request.global_context.is_list_leader %}
+            $('#list').attr("hidden", false);
+            {% endif %}
+            $('#list').attr("required", true);
+            $('#mode').val("");
+            $('#mode').attr("onchange", `change_mode(this);`);
+            $('#list').val("");
+            $('#list').attr("onchange", "change_list(this);");
+        }
+        if (option.value == "Add" || option.value == "Edit"){
+
+            {% if request.global_context.is_list_leader %}
+            $('#category').attr("hidden", false);
+            {% endif %}
+            $('#category').attr("required", true);
+            $('#photo').attr("hidden", false);
+            $('#photo').attr("required", true);
+            $('.photo-label').attr("hidden", false);
+            $('#photo_name').attr("hidden", false);
+            $('#position').attr("hidden", false);
+            $('#position').attr("required", true);
+            $('#verification_status').attr("required", false);
+            $('#verification_status').attr("hidden", true);
+            $('#verification_record').attr("required", false);
+            $('#verification_record').attr("hidden", true);
+            $('#creator').attr("hidden", false);
+            $('#creator').attr("required", true);
+            $('#verifier').attr("hidden", false);
+            $('#verifier').attr("required", true);
+            $('#verification_video').attr("hidden", false);
+            $('#verification_video').attr("required", true);
+            $('#level_id').attr("hidden", false);
+            $('#level_id').attr("required", true);
+            $('#level_id_ldm').attr("hidden", false);
+            $('#object_count').attr("hidden", false);
+            $('#object_count').attr("required", true);
+            $('#demon_difficulty').attr("hidden", false);
+            $('#level_password').attr("hidden", false);
+            $('#type').attr("hidden", false);
+            $('#version').attr("hidden", false);
+            $('#version').attr("required", true);
+        }
+        else if (option.value == "Remove" || option.value == "Recover"){
+            $('#category').attr("hidden", true);
+            $('#category').attr("required", false);
+            $('#photo').attr("hidden", true);
+            $('#photo').attr("required", false);
+            $('.photo-label').attr("hidden", true);
+            $('#photo_name').attr("hidden", true);
+            if (option.value == "Remove"){
+                $('#position').attr("hidden", true);
+                $('#position').attr("required", false);
+            }
+            else if (option.value == "Recover"){
+                $('#position').attr("hidden", false);
+                $('#position').attr("required", true);
+            }
+            $('#verification_status').attr("required", false);
+            $('#verification_status').attr("hidden", true);
+            $('#verification_record').attr("required", false);
+            $('#verification_record').attr("hidden", true);
+            $('#creator').attr("hidden", true);
+            $('#creator').attr("required", false);
+            $('#verifier').attr("hidden", true);
+            $('#verifier').attr("required", false);
+            $('#verification_video').attr("hidden", true);
+            $('#verification_video').attr("required", false);
+            $('#level_id').attr("hidden", true);
+            $('#level_id').attr("required", false);
+            $('#level_id_ldm').attr("hidden", true);
+            $('#level_id_ldm').attr("required", false);
+            $('#object_count').attr("hidden", true);
+            $('#object_count').attr("required", false);
+            $('#demon_difficulty').attr("hidden", true);
+            $('#level_password').attr("hidden", true);
+            $('#level_password').attr("required", false);
+            $('#type').attr("hidden", true);
+            $('#version').attr("hidden", true);
+            $('#version').attr("required", false);
+        }
+        $('#edit_demon').val(null).trigger('change');
+    }
+
+    function change_mode(mode) {
+        const modo = mode.value;
+        $("#option").change();
+        $("#mode").val(modo);
+        $('#category').empty()
+        $('#category').append($('<option>', {
+            value: "",
+            text: "-- Category --",
+            selected: true,
+            disabled: true
+        }));
+        if (modo == "classic"){
+            {% if request.global_context.is_tiny_list_leader %}
+            $('#category').append($('<option>', {
+                value: "tiny",
+                text: "Tiny"
+            }));
+            {% endif %}
+            {% if request.global_context.is_spam_list_leader %}
+            $('#category').append($('<option>', {
+                value: "spam",
+                text: "Spam"
+            }));
+            {% endif %}
+            {% if request.global_context.is_impossible_tiny_list_leader %}
+            $('#category').append($('<option>', {
+                value: "impossible_tiny",
+                text: "Impossible Tiny"
+            }));
+            {% endif %}
+        }
+        else if (modo == "platformer"){
+            {% if request.global_context.is_rated_list_leader %}
+            $('#category').append($('<option>', {
+                value: "rated",
+                text: "Rated"
+            }));
+            {% endif %}
+            {% if request.global_context.is_all_list_leader %}
+            $('#category').append($('<option>', {
+                value: "all",
+                text: "TPL"
+            }));
+            {% endif %}
+            {% if request.global_context.is_challenge_list_leader %}
+            $('#category').append($('<option>', {
+                value: "challenge",
+                text: "Challenge"
+            }));
+            {% endif %}
+            {% if request.global_context.is_deathless_list_leader %}
+            $('#category').append($('<option>', {
+                value: "deathless",
+                text: "Deathless"
+            }));
+            {% endif %}
+            {% if request.global_context.is_impossible_list_leader %}
+            $('#category').append($('<option>', {
+                value: "impossible",
+                text: "Impossible"
+            }));
+            {% endif %}
+            {% if request.global_context.is_tiny_list_leader %}
+            $('#category').append($('<option>', {
+                value: "tiny",
+                text: "Tiny"
+            }));
+            {% endif %}
+        }
+        if ($("#option").val() != "Add"){
+            $('#list').empty()
+            $('#edit_demon').empty()
+            $('#list').append($('<option>', {
+                value: "",
+                text: "-- List --",
+                selected: true,
+                disabled: true
+            }));
+            $('#list').attr("hidden", false);
+
+            $('#edit_demon').append($('<option>', {
+                value: "",
+                text: "-- Demon --",
+                selected: true,
+                disabled: true
+            }));
+            if (modo == "classic"){
+                {% if request.global_context.is_tiny_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "tiny",
+                    text: "Tiny List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_spam_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "spam",
+                    text: "Spam List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_impossible_tiny_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "impossible_tiny",
+                    text: "Impossible Tiny List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_list_leader %}
+                if (option.value == "Add" || option.value == "Edit"){
+                    $('#category').attr("hidden", false);
+                    $('#category').val("");
+                    $('#position').attr("required", true);
+                    $('#position').attr("hidden", false);
+                }
+                {% endif %}
+            }
+            else if (modo == "platformer"){
+                {% if request.global_context.is_rated_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "rated",
+                    text: "Rated List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_all_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "all",
+                    text: "TPL"
+                }));
+                {% endif %}
+                {% if request.global_context.is_challenge_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "challenge",
+                    text: "Challenge List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_deathless_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "deathless",
+                    text: "Deathless List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_impossible_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "impossible",
+                    text: "Impossible List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_tiny_list_leader %}
+                $('#list').append($('<option>', {
+                    value: "tiny",
+                    text: "Tiny List"
+                }));
+                {% endif %}
+                {% if request.global_context.is_list_leader %}
+                if (option.value == "Add" || option.value == "Edit"){
+                    $('#category').attr("hidden", false);
+                    $('#category').val("");
+                    $('#position').attr("required", true);
+                    $('#position').attr("hidden", false);
+                }
+                {% endif %}
+            }
+            {% if not request.global_context.is_list_leader %}
+            $('#list').val("rated");
+            $("#list").change();
+            {% endif %}
+        }
+    }
+
+    function change_list(list){
+        const modo = $("#mode").val();
+        const lista = list.value;
+        $("#option").change();
+        $("#list").val(lista);
+        $("#mode").val(modo);
+        if (lista == "all_demonlist"){
+            $('#category').attr("hidden", true);
+            $('#category').val("rated");
+            $('#position').attr("required", false);
+            $('#position').attr("hidden", true);
+        }
+        else if (lista == "future"){
+            $('#verification_status').attr("required", true);
+            $('#verification_status').attr("hidden", false);
+            $('#verification_record').attr("required", true);
+            $('#verification_record').attr("hidden", false);
+        }
+    }
+
+    function change_category(category){
+        const modo = $("#mode").val();
+        const categoria = category.value;
+        if (categoria == "future"){
+            $('#verification_status').attr("required", true);
+            $('#verification_status').attr("hidden", false);
+            $('#verification_record').attr("required", true);
+            $('#verification_record').attr("hidden", false);
+        }
+        else {
+            $('#verification_status').val("");
+            $('#verification_status').attr("hidden", true);
+            $('#verification_status').attr("required", false);
+            $('#verification_record').val("");
+            $('#verification_record').attr("hidden", true);
+            $('#verification_record').attr("required", false);
+        }
+    }
+
+    
+    function select_demon(demon){
+        if (demon.value != ""){
+            data = {}
+            data.option = "Get"
+            data.demon_id = demon.value
+            data.category = $('#list').val()
+
+            $.ajax({
+                type: "post", // "post" "get" "delete" "put"
+                data: data, // PREFERIBLEMENTE JSON
+                cache: false,
+                headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                success: function (response) {
+                    if (response.results[0].deathless && $("#list").val() == "deathless"){
+                        $('#category').val("deathless");
+                    }
+                    else if ($("#list").val() == "all"){
+                        $('#category').val("all");
+                    }
+                    else {
+                        $('#category').val(response.results[0].category);
+                    }
+                    $('#photo').attr("required", false);
+                    $('#photo_name').text(response.results[0].photo);
+                    $('#position').val(response.results[0].order_position);
+                    $('#verification_status').val(response.results[0].verification_status);
+                    $('#verification_record').val(response.results[0].verification_record);
+                    $('#creator').val(response.results[0].creator);
+                    $('#verifier').val(response.results[0].verifier);
+                    $('#verification_video').val(response.results[0].verification_video);
+                    $('#level_id').val(response.results[0].level_id);
+                    $('#level_id_ldm').val(response.results[0].level_id_ldm);
+                    $('#object_count').val(response.results[0].object_count);
+                    $('#demon_difficulty').val(response.results[0].demon_difficulty);
+                    $('#level_password').val(response.results[0].level_password);
+                    $('#type').val(response.results[0].type);
+                    $('#version').val(response.results[0].update_created);
+                    if ($("#category").val() == "future") {
+                        $('#object_count').attr("required", false);
+                    }
+                    else {
+                        $('#object_count').attr("required", true);
+                    }
+                }
+            })
+        }
+    }
+
+    </script>
+{% endblock %}

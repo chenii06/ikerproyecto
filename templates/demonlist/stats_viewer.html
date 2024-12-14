@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block head_content %}
+<title>{{list_words.stats_viewer}}</title>
+<link rel="stylesheet" href="{% static 'css/statsviewer.css' %}?v=1.24">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+{% endblock%}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="stats-viewer-container" id="table-content">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.stats_viewer|upper}}</h2>
+
+
+            <form class="stats-inputs-container" id="formulario" method="GET" action="{% url 'demonlist:stats_viewer' %}">
+
+                <div class="mode-filter-button-container filter-button-container">
+
+                    <input type="hidden" id="mode" name="mode" value="{% if mode_filter %}{{mode_filter}}{% endif %}">
+
+                    <button class="classic-filter-button outside-filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode filter-button{% if mode_filter == "classic" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% elif not mode_filter and request.user.profile.default_stats_viewer|first_word == "classic" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" >
+
+                        Classic
+
+                    </button>
+
+                    <button class="platformer-filter-button outside-filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode filter-button{% if mode_filter %}{% if mode_filter == "platformer" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|first_word == "platformer" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button">
+                        Platformer
+
+                    </button>
+
+                </div>
+
+                <div class="filter-search-container">
+
+                    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" class="input-img stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <path d="M16.4536 16.4699L21.875 21.875M18.75 10.9375C18.75 15.2522 15.2522 18.75 10.9375 18.75C6.62277 18.75 3.125 15.2522 3.125 10.9375C3.125 6.62277 6.62277 3.125 10.9375 3.125C15.2522 3.125 18.75 6.62277 18.75 10.9375Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+
+                    <input class="card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" id="search" name="search" placeholder="{% if status_filter == "Individual" %}{{list_words.search_player}}{% elif status_filter == "Nations" %}{{list_words.search_country}}{% elif status_filter == "Teams" %}{{list_words.search_team}}{% endif %}" value="{% if search_filter %}{{search_filter}}{% endif %}">
+
+                    {% comment %} Contenedor de los botones de filtro {% endcomment %}
+                    <button class="stats-filter-button card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="button">
+
+                        <span>
+
+                            <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.625 4.79167C3.625 4.20828 3.625 3.91658 3.73853 3.69376C3.83841 3.49776 3.99776 3.33841 4.19376 3.23853C4.41658 3.125 4.70828 3.125 5.29167 3.125H20.7083C21.2918 3.125 21.5834 3.125 21.8062 3.23853C22.0023 3.33841 22.1616 3.49776 22.2615 3.69376C22.375 3.91658 22.375 4.20828 22.375 4.79167V6.60131C22.375 6.85609 22.375 6.98348 22.3462 7.10336C22.3207 7.20966 22.2786 7.31126 22.2215 7.40446C22.1571 7.50958 22.067 7.59967 21.8869 7.77982L15.5715 14.0952C15.3914 14.2753 15.3012 14.3654 15.2369 14.4705C15.1797 14.5637 15.1376 14.6653 15.1121 14.7717C15.0833 14.8916 15.0833 15.019 15.0833 15.2736V17.7083L10.9167 21.875V15.2736C10.9167 15.019 10.9167 14.8916 10.8879 14.7717C10.8624 14.6653 10.8203 14.5637 10.7632 14.4705C10.6987 14.3654 10.6087 14.2753 10.4285 14.0952L4.11316 7.77982C3.933 7.59967 3.84292 7.50958 3.7785 7.40446C3.72139 7.31126 3.6793 7.20966 3.65378 7.10336C3.625 6.98348 3.625 6.85609 3.625 6.60131V4.79167Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>   
+
+                            {{list_words.filters}}
+
+                            <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" class="list-filter-img text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.70462 5.76598C2.43179 6.06044 2.43179 6.53727 2.70462 6.83098L8.48911 13.0583C9.03546 13.6472 9.92177 13.6472 10.4681 13.0583L16.2953 6.78588C16.5653 6.49442 16.5688 6.02356 16.3023 5.72834C16.0302 5.4271 15.5818 5.42345 15.3054 5.72017L9.97354 11.461C9.70002 11.7554 9.2572 11.7554 8.98368 11.461L3.69377 5.76598C3.42094 5.47152 2.97814 5.47152 2.70462 5.76598Z" fill="#9494A8"/>
+                                </svg>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+                <div class="stats-filter-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="list-filter-container filter-container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.category}}:</p>
+
+                        {% comment %} Contenedor de los botones de filtro de lista {% endcomment %}
+                        <div class="list-filter-button-container filter-button-container">
+
+                            <input type="hidden" id="category" name="category" value="{% if category_filter %}{{category_filter}}{% elif mode_filter == "platformer" %}rated{% else %}tiny{% endif %}">
+                            
+                            <button class="rated-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "rated" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "rated" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% elif not request.user.profile.default_stats_viewer and mode_filter == "platformer" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "classic" %}style="display: none;"{% endif %}>
+
+                                Rated
+
+                            </button>
+
+                            <button class="tpl-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "all" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "all" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "classic" %}style="display: none;"{% endif %}>
+
+                                TPL
+
+                            </button>
+
+                            {% comment %} Este boton tiene la clase "filter-button-active" la cual indica que el filtro esta activo {% endcomment %}
+
+                            <button class="challenge-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "challenge" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "challenge" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "classic" %}style="display: none;"{% endif %}>
+
+                                Challenge
+
+                            </button>
+
+                            <button class="tiny-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "tiny" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "tiny" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% elif not request.user.profile.default_stats_viewer and mode_filter == "classic" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button">
+
+                                Tiny
+
+                            </button>
+
+                            <button class="deathless-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "deathless" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "deathless" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "classic" %}style="display: none;"{% endif %}>
+
+                                Deathless
+
+                            </button>
+
+                            <button class="impossible-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "impossible" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "impossible" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "classic" %}style="display: none;"{% endif %}>
+
+                                Impossible
+
+                            </button>
+
+                            <button class="spam-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "spam" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "spam" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "platformer" %}style="display: none;"{% endif %}>
+
+                                Spam
+
+                            </button>
+
+                            <button class="impossible_tiny-filter-button filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% if category_filter %}{% if category_filter == "impossible_tiny" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}{% elif request.user.profile.default_stats_viewer|second_word == "impossible_tiny" %} filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode{% endif %}" type="button" {% if mode_filter == "platformer" %}style="display: none;"{% endif %}>
+
+                                Impossible Tiny
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="additional-filter-container filter-container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+
+                        <div class="status-container text_input-container">
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.type}}:</p>
+
+                            {% comment %} Select del tipo (individual / team / nation) {% endcomment %}
+                            <select id="status" name="status" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    
+                                <option value="Individual" {% if status_filter == "Individual" %}selected{% endif %}>{{list_words.individual}}</option>
+                                <option value="Nations" {% if status_filter == "Nations" %}selected{% endif %}>{{list_words.nations}}</option>
+                                <option value="Teams" {% if status_filter == "Teams" %}selected{% endif %}>{{list_words.teams}}</option>
+    
+                            </select>
+
+                        </div>
+
+                        {% if status_filter == "Individual" %}
+                        <div class="nations-container text_input-container">
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.nation}}:</p>
+
+                            {% comment %} Select de la nacionalidad{% endcomment %}
+                            <select id="country" name="country" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <option value="" selected>{{list_words.nation}}</option>
+                                {% for country in countries %}
+                                <option value="{{country}}" {% if country|stringformat:"s" == country_filter %}selected{% endif %}>{% if request.user.is_anonymous %}{{country}}{% elif request.user.profile.language == "English" %}{{country}}{% elif request.user.profile.language == "Spanish" %}{{country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{country.country_russian}}{% elif request.user.profile.language == "German" %}{{country.country_german}}{% elif request.user.profile.language == "Czech" %}{{country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{country.country_french}}{% endif %}</option>
+                                {% endfor %}
+    
+                            </select>
+
+                        </div>
+                        {% endif %}
+
+                        {% if mode_filter == "classic" %}
+                        <div class="nations-container text_input-container">
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.modifiers}}:</p>
+
+                            {% comment %} Select de la nacionalidad{% endcomment %}
+                            <select id="with_mods" name="with_mods" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <option value="" selected>{{list_words.without_mods}}</option>
+                                <option value="true" {% if with_mods %}selected{% endif %}>{{list_words.all_with_mods}}</option>
+                            </select>
+
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <button type="button" class="submit-filter-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="button_search" name="button_search">
+
+                        {{list_words.search}}
+
+                    </button>
+
+
+                </div>
+            </form>
+
+            <table class="stats-viewer-table card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="tablePlayers">
+                <thead>
+                    <tr class="stats-header tr-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <th>{{list_words.position|upper}}</th>
+                        {% if status_filter == "Teams" %}
+                        <th>{{list_words.team|upper}}</th>
+                        {% else %}
+                        <th>{{list_words.country|upper}}</th>
+                        {% endif %}
+                        {% if status_filter == "Individual" %}
+                        <th>{{list_words.player|upper}}</th>
+                        {% endif %}
+                        <th>{{list_words.list_points|upper}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if status_filter == "Individual" %}
+                        {% if players %}
+                        {% for player in players %}
+                        <tr class="stats-body text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{player.position}}</td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                {% if player.country.picture.url %}<img src="{{player.country.picture.url}}" title="{% if request.user.is_anonymous %}{{player.country}}{% elif request.user.profile.language == "English" %}{{player.country}}{% elif request.user.profile.language == "Spanish" %}{{player.country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{player.country.country_russian}}{% elif request.user.profile.language == "German" %}{{player.country.country_german}}{% elif request.user.profile.language == "Czech" %}{{player.country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{player.country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{player.country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{player.country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{player.country.country_french}}{% endif %}" alt="country-flag" height="25">{% endif %}
+                            </td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><a class="player-td text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' player.user.username %}">{{player.user.username}}</a></td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{player.list_points}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    {% elif status_filter == "Nations" %}
+                        {% if players %}
+                        {% for player in players %}
+                        <tr class="stats-body text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{player.position}}</td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                {% if player.picture.url %}<img src="{{player.picture.url}}" title="{% if request.user.is_anonymous %}{{player.country}}{% elif request.user.profile.language == "English" %}{{player.country}}{% elif request.user.profile.language == "Spanish" %}{{player.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{player.country_russian}}{% elif request.user.profile.language == "German" %}{{player.country_german}}{% elif request.user.profile.language == "Czech" %}{{player.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{player.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{player.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{player.country_portuguese}}{% elif request.user.profile.language == "French" %}{{player.country_french}}{% endif %}" alt="country-flag" height="25" style="margin-right: 10px;">{% endif %}{% if request.user.is_anonymous %}{{player.country}}{% elif request.user.profile.language == "English" %}{{player.country}}{% elif request.user.profile.language == "Spanish" %}{{player.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{player.country_russian}}{% elif request.user.profile.language == "German" %}{{player.country_german}}{% elif request.user.profile.language == "Czech" %}{{player.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{player.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{player.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{player.country_portuguese}}{% elif request.user.profile.language == "French" %}{{player.country_french}}{% endif %}
+                            </td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{player.list_points}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    {% elif status_filter == "Teams" %}
+                        {% if players %}
+                        {% for player in players %}
+                        <tr class="stats-body text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{player.position}}</td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><button class="team-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onclick="show_team_members({{player.id}}, '{{list_filter}}')">{{player.name}}</button></td>
+                            <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{player.list_points}}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    {% endif %}
+
+                </tbody>
+            </table>
+
+            <div class="pagination-links-container" id="pagination-links">
+
+                {% if has_other_pages %}
+                <ul class="pagination card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {% if has_previous %}
+                    <li>
+                        <a href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&country={{country_filter_url}}&search={{search_filter}}{% if with_mods %}&with_mods={{with_mods}}{% endif %}&page=1" class="page-link stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19.2705 5.20825L12.7154 11.7634C12.3086 12.1701 12.3086 12.8297 12.7154 13.2365L19.2705 19.7916" stroke="#9494A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M10.9375 5.20825L4.3824 11.7634C3.97563 12.1701 3.97563 12.8297 4.3824 13.2365L10.9375 19.7916" stroke="#9494A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&country={{country_filter_url}}&search={{search_filter}}{% if with_mods %}&with_mods={{with_mods}}{% endif %}&page={{previous_page_number}}" class="page-link stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 5L8.4449 11.5551C8.03813 11.9619 8.03813 12.6215 8.4449 13.0282L15 19.5833" stroke="#9494A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% for page in paginator.page_range %}
+
+                        {% if number == page %}
+                        <li class="filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <span>{{ page }}</span>
+                        </li>
+                        {% elif page > number|add:'-3' and page < number|add:'3' %}
+
+                        <li>
+                            <a href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&country={{country_filter_url}}&search={{search_filter}}{% if with_mods %}&with_mods={{with_mods}}{% endif %}&page={{ page }}" class="page-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{ page }}</a>
+                        </li>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if has_next %}
+                    <li>
+                        <a href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&country={{country_filter_url}}&search={{search_filter}}{% if with_mods %}{% if with_mods %}&with_mods={{with_mods}}{% endif %}{% endif %}&page={{ next_page_number }}" class="page-link stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 5L16.5551 11.5551C16.9619 11.9619 16.9619 12.6215 16.5551 13.0282L10 19.5833" stroke="#9494A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>                                
+                        </a>
+                    </li>
+
+                    <li class="{{ page_max }}">
+                        <a href="?status={{status_filter}}&mode={{mode_filter}}&category={{category_filter}}&country={{country_filter_url}}&search={{search_filter}}{% if with_mods %}&with_mods={{with_mods}}{% endif %}&page={{ page_max  }}" class="page-link stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5.72949 5.20825L12.2846 11.7634C12.6914 12.1701 12.6914 12.8297 12.2846 13.2365L5.72949 19.7916" stroke="#9494A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14.0625 5.20825L20.6176 11.7634C21.0244 12.1701 21.0244 12.8297 20.6176 13.2365L14.0625 19.7916" stroke="#9494A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+<script src="{% static 'js/statsviewer.js' %}?v=1.25"></script>
+
+<script>
+
+    function show_team_members(id, list_filter) {
+        data = {}
+        data.option = "show_team_members";
+        data.id = id;
+        data.list_filter = list_filter;
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+                document.body.classList.add('popup-open_members');
+                pop_up = `<div class="team-modal-container">
+    
+                    <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+        
+                        <div class="close-modal-button-container">
+        
+                            <button class="close-modal-button--team " onclick="hide_members()">
+                                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1.4981 1.52299C0.833966 2.22033 0.833966 3.35092 1.4981 4.04826L7.59498 10.45L1.4981 16.8518C0.833966 17.5491 0.833966 18.6797 1.4981 19.377C2.16221 20.0743 3.23898 20.0743 3.9031 19.377L9.99999 12.9752L16.0969 19.377C16.761 20.0743 17.8378 20.0743 18.5019 19.377C19.166 18.6797 19.166 17.5491 18.5019 16.8518L12.405 10.45L18.5019 4.04828C19.166 3.35096 19.166 2.22035 18.5019 1.52303C17.8376 0.825687 16.761 0.825687 16.0969 1.52303L9.99999 7.92472L3.9031 1.52299C3.23898 0.825669 2.16221 0.825669 1.4981 1.52299Z" fill="#C0C0D1" />
+</svg>
+                            </button>
+        
+                        </div>
+        
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.team_members}}</p>
+        
+                        <span>
+                            <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M13.3737 13.8876L18 18.5M15.3333 9.16667C15.3333 12.8485 12.3485 15.8333 8.66667 15.8333C4.98476 15.8333 2 12.8485 2 9.16667C2 5.48476 4.98476 2.5 8.66667 2.5C12.3485 2.5 15.3333 5.48476 15.3333 9.16667Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+                            <input class="button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search}}..." oninput="search_member(` + id + `, this, '` + list_filter + `');">
+                        </span>
+        
+        
+                        <div class="data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="user-container_members">`
+        
+                $(response).each(function (index, player) {
+                    pop_up += `<div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        `
+                    if (player.picture) {
+                        pop_up += `<img src="` + player.picture + `" alt="player-picture">`
+                    }
+                    else {
+                        pop_up += `<img src="{% static 'img/default-profile.png' %}" alt="default-picture">`
+                    }
+                    pop_up += `<a href="{% url 'demonlist:category_or_username' 1234 %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">`.replace(/1234/, player.user__username) + player.user__username + `</a>`
+                    if (player.if_owner) {
+                        pop_up += `<i class="fa-solid fa-crown ml-3 crown-icon"></i>`
+                    }
+                    pop_up += `<p class="member-points text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">` + player.list_points + `</p></div>`
+                })
+                pop_up += `</div>
+                    </div>
+                </div>`
+                $('body').append(pop_up)
+    
+            }
+        })
+    }
+    
+    function search_member(id, member, list_filter) {
+        data = {}
+        data.id = id;
+        data.member = member.value;
+        data.option = "show_team_members";
+        data.list_filter = list_filter;
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+            },
+            success: function (response) {
+                $("#user-container_members").empty();
+    
+                $(response).each(function (index, user) {
+                    fila = `<div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">`
+                    if (user.picture) {
+                        photo = `<img src="` + user.picture + `" alt="player-picture"/>`
+                    }
+                    else {
+                        photo = `<img src="{% static 'img/default-profile.png' %}" alt="default-picture"/>`
+                    }
+                    fila += photo
+    
+                    fila += `<a href="{% url 'demonlist:category_or_username' 1234 %}`.replace(/1234/, user.user__username) + `" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">` + user.user__username + `</a>`
+                    if (user.if_owner) {
+                        fila += `<i class="fa-solid fa-crown ml-3 crown-icon"></i>`
+                    }
+                    fila += `<p class="member-points text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">` + user.list_points + `</p></div>`
+                    $('#user-container_members').append(fila);
+                })
+            }
+        })
+    }
+
+    function define_vars(){
+        var platformerButton = document.querySelector('.platformer-filter-button');
+        var classicButton = document.querySelector('.classic-filter-button');
+        var ratedButton = document.querySelector('.rated-filter-button');
+        var challengeButton = document.querySelector('.challenge-filter-button');
+        var tinyButton = document.querySelector('.tiny-filter-button');
+        var deathlessButton = document.querySelector('.deathless-filter-button');
+        var impossibleButton = document.querySelector('.impossible-filter-button');
+        var spamButton = document.querySelector('.spam-filter-button');
+        var impossibleTinyButton = document.querySelector('.impossible_tiny-filter-button');
+        var tplButton = document.querySelector('.tpl-filter-button');
+        var modeInput = document.getElementById('mode');
+        var categoryInput = document.getElementById('category');
+        
+        statsFilterButton.addEventListener("click", openFilterContainer);
+    
+        platformerButton.addEventListener('click', function() {
+            modeInput.value = 'platformer';
+            categoryInput.value = 'rated';
+            platformerButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            classicButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+    
+        classicButton.addEventListener('click', function() {
+            modeInput.value = 'classic';
+            categoryInput.value = 'tiny';
+            classicButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            platformerButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+        
+        ratedButton.addEventListener('click', function() {
+            categoryInput.value = 'rated';
+            ratedButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+    
+        challengeButton.addEventListener('click', function() {
+            categoryInput.value = 'challenge';
+            challengeButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+    
+        tinyButton.addEventListener('click', function() {
+            categoryInput.value = 'tiny';
+            tinyButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+    
+        deathlessButton.addEventListener('click', function() {
+            categoryInput.value = 'deathless';
+            deathlessButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+    
+        impossibleButton.addEventListener('click', function() {
+            categoryInput.value = 'impossible';
+            impossibleButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+
+        spamButton.addEventListener('click', function() {
+            categoryInput.value = 'spam';
+            spamButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+
+        impossibleTinyButton.addEventListener('click', function() {
+            categoryInput.value = 'impossible_tiny';
+            impossibleTinyButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tplButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+
+        tplButton.addEventListener('click', function() {
+            categoryInput.value = 'all';
+            tplButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            ratedButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            challengeButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            tinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            deathlessButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            spamButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+            impossibleTinyButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+        });
+    }
+
+</script>
+
+<script src="{%static 'js/changeColor/statsViewers.js' %}?v=1.25" defer></script>
+
+{% endblock%}

@@ -1,0 +1,47 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>{{list_words.reset_email}}</title>
+    <link rel="stylesheet" href="{% static 'css/password_reset.css' %}?v=1.24">
+{% endblock  %}
+
+{% block container %}
+
+
+{% if validlink %}
+
+<form class="reset-password-form" method="POST">
+    {% csrf_token %}
+
+    <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.please_enter_your_new_email}}</p>
+
+    {% if form.email.errors %}
+        {% for error in form.email.errors %}
+            <div>
+                <li class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> {{ error }}</li>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {{ form.new_email }}
+
+    <div>
+        <button class="reset-password-button" type="submit">{{list_words.change_my_email}}</button>
+    </div>
+
+</form>
+
+{% else %}
+
+<p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.the_email_reset_link_was_invalid}}</p>
+
+{% endif %}
+
+<script>
+
+    function without_space(e){
+        e.value = e.value.replace(/ /g, '')
+    }
+</script>
+{% endblock  %}

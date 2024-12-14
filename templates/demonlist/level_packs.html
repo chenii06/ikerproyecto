@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block head_content %}
+<title>Pemonlist Level Packs</title>
+<link rel="stylesheet" href="{% static 'css/level-packs.css' %}?v=1.241">
+{% endblock %}
+
+{% block container %}
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <!-- BLOQUE DEL NAVBAR ACÁ -->
+
+    <article>
+
+        <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">PEMONLIST LEVEL PACKS</h2>
+
+        <section class="level-pack-cards-container">
+
+            {% for level_pack in level_packs %}
+            {% with 0 as checked_count %}
+            <div class="card {{level_pack.color}}-pack">
+
+                <div class="pack-img-data-container">
+                    <img src="{% static 'img/'|add:level_pack.color|diff_string|add:'-icon.png' %}" alt="{{level_pack.color}}-demon-pack">
+                    <div class="data-container {{level_pack.color}}-pack-data">
+                        <h4 class="pack-title">{{level_pack.name}}</h4>
+                        {% with level_pack.demons.all|count_checked:demons_beaten as checked_count %}
+                        <h5 class="pack-percentaje">{% widthratio checked_count level_pack.demons.count 100 %}%</h5>
+                        <span class="pack-progress">
+                            <b>
+                                {{ checked_count }}/{{ level_pack.demons.count }} 
+                            </b> towards {{level_pack.name}} rank
+                        </span>
+                        {% endwith %}
+                    </div>
+                </div>
+            
+                <div class="pack-category-level-container {{level_pack.name}} hide">
+                    {% for demon in level_pack.demons.all %}
+                    <div class="level-container {{level_pack.color}}-pack-container">
+                        <div class="level {{level_pack.color}}-pack-alt">
+                            <div class="level-data">
+                                <h4 class="level-title">{{demon.level}}</h4>
+                                <span class="level-creator">{{demon.creator}}</span>
+                            </div>
+                            <input type="checkbox" {% if demon.id in demons_beaten %}checked{% endif %} disabled>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            
+                <button class="show-less-more-button {{level_pack.color}}-pack-container {{level_pack.color}}-button">Show</button>
+            </div>
+            {% endwith %}
+            {% endfor %}
+
+        </section>
+
+    </article>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Selecciona todos los botones con la clase 'show-less-more-button'
+        const showMoreButtons = document.querySelectorAll('.show-less-more-button');
+    
+        showMoreButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                // Encuentra el contenedor de niveles correspondiente
+                const levelContainer = this.previousElementSibling;
+    
+                // Alterna la clase 'hide' en el contenedor de niveles
+                levelContainer.classList.toggle('hide');
+    
+                // Cambia el texto del botón dependiendo del estado actual
+                if (levelContainer.classList.contains('hide')) {
+                    this.textContent = 'Show More';
+                } else {
+                    this.textContent = 'Hide';
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

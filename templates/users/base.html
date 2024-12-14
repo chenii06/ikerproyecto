@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block head_content %}{% endblock %}
+    <link rel="icon" sizes="192x192" href="{% static 'img/favicon.ico' %}?v=1.24">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=1.24"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK" crossorigin="anonymous"></script>
+    <meta name="og:site_name" content="geomax">
+    <meta name="keywords" content="geometrydash, geometry, dash, 2.2, geomax, platformer, platformerlist, platformlist, platform, list, platformerdemonlist, demonlist, platformerdemons, demons">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="{% static 'img/GM_LOGO.png' %}">
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "Organization",
+            "name": "geomax",
+            "description": "The best website about Geometry Dash demons!",
+            "url": "https://www.geomax.site",
+            "logo": "{% static 'img/GM_LOGO.png' %}",
+            "sameAs": [
+                "https://x.com/GeomaxGD",
+                "https://www.tiktok.com/@geomax_es",
+                "https://www.tiktok.com/@geomaxgd",
+                "https://discord.com/invite/9qwVvCP6rq",
+            ]
+        }
+    </script>
+
+    {% if not request.global_context.is_subscriber %}
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4441590333956011"
+    crossorigin="anonymous"></script>
+    {% endif %}
+
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CDP73NMWBY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CDP73NMWBY');
+</script>
+
+<body>
+    {% include "nav.html" %}
+    <main class="background-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+        <div id="cube-icon-container-left" class="left-bg"></div>
+        <article>
+
+            {% comment %} Contenedor del login {% endcomment %}
+            <section class="section-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                {% comment %} LOGO {% endcomment %}
+                <img src="{% static 'img/logo.png' %}?v=1.202" alt="DemonList Logo">
+
+                {% comment %} MENSAJE DE ERROR {% endcomment %}
+                {% comment %} <p class="login-wrong-message">Your username and password didn't match. Please try again.</p> {% endcomment %}
+
+                {% block container %}
+                {% endblock%}
+
+            </section>
+
+        </article>
+        <div id="cube-icon-container-right" class="right-bg"></div>
+    </main>
+
+    {% comment %} Contenedor del footer {% endcomment %}
+    <footer class="card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+        {% comment %} Contenedor del copyright {% endcomment %}
+        <div class="copyright-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+            <p>© 2024 Geomax | {{request.global_context.global_list_words.developed_by}} <a class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' 'ChuckyGD' %}">ChuckyGD</a></p>
+            <a class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'terms' %}">{{request.global_context.global_list_words.terms_and_conditions}}</a>
+        </div>
+
+        {% comment %} Contenedor de los links de redes (yt / ds / twt) {% endcomment %}
+        <div class="social_links-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+            <a href="https://www.youtube.com/@GeomaxGD">
+                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.4553 24.2136V13.5512C19.0601 15.3323 21.8523 17.0529 25.1545 18.9079C22.4307 20.4938 19.0601 22.2733 15.4553 24.2136ZM35.5456 8.24823C34.9239 7.38799 33.8641 6.71837 32.7357 6.49668C29.4191 5.83538 8.72846 5.8335 5.4137 6.49668C4.50886 6.67478 3.70315 7.10528 3.01098 7.77416C0.0945833 10.6164 1.00844 25.8582 1.71141 28.3273C2.00702 29.3958 2.38915 30.1667 2.87041 30.6724C3.49046 31.3414 4.33942 31.802 5.31456 32.0085C8.04529 32.6015 22.1136 32.9331 32.6779 32.0974C33.6513 31.9194 34.5128 31.444 35.1924 30.7467C37.8887 27.9159 37.705 11.818 35.5456 8.24823Z" fill="#9494A8" />
+                  </svg>
+            </a>
+            <a href="https://x.com/GeomaxGD">
+                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.3819 34.3996C26.0384 34.3996 33.5081 22.7025 33.5081 12.5598C33.5081 12.2268 33.5081 11.8964 33.4864 11.5671C34.9395 10.4822 36.1935 9.13505 37.1904 7.59366C35.8369 8.21471 34.3984 8.622 32.9272 8.80157C34.4761 7.84193 35.6361 6.3343 36.1916 4.55533C34.7332 5.44949 33.1389 6.08054 31.476 6.41914C28.664 3.32885 23.9611 3.17913 20.97 6.08609C19.0428 7.96046 18.223 10.7551 18.822 13.4208C12.8524 13.1102 7.28991 10.1958 3.51885 5.40142C1.54828 8.90884 2.55619 13.3942 5.81876 15.6464C4.63715 15.6108 3.48085 15.282 2.44762 14.6871V14.7845C2.44943 18.4379 4.94115 21.5835 8.40457 22.3074C7.31161 22.6162 6.16439 22.6608 5.05333 22.4384C6.02504 25.5659 8.81352 27.7082 11.9892 27.7699C9.36 29.9063 6.11191 31.0663 2.7679 31.0625C2.178 31.0607 1.5881 31.025 1 30.9521C4.39648 33.2043 8.34667 34.3996 12.3819 34.3941" fill="#9494A8" />
+                  </svg>
+            </a>
+            <a href="https://discord.com/invite/9qwVvCP6rq">
+                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32.2177 6.56751C36.5094 13.1925 38.6287 20.6653 37.8364 29.2681C37.8332 29.3046 37.8151 29.338 37.7866 29.3599C34.5367 31.8654 31.388 33.386 28.2834 34.3945C28.2591 34.4021 28.2332 34.4017 28.2093 34.3932C28.1854 34.3848 28.1646 34.3685 28.1498 34.347C27.4326 33.2991 26.7809 32.1945 26.2099 31.0345C26.1772 30.9661 26.2071 30.884 26.2745 30.8571C27.3096 30.4476 28.2938 29.9568 29.2404 29.3758C29.3151 29.33 29.3198 29.2177 29.2509 29.164C29.05 29.0072 28.8509 28.8427 28.6605 28.6781C28.6248 28.6477 28.5769 28.6419 28.5365 28.6622C22.3904 31.642 15.6578 31.642 9.43905 28.6622C9.39867 28.6432 9.3507 28.6496 9.31602 28.6795C9.12602 28.8442 8.92652 29.0072 8.72752 29.164C8.65864 29.2177 8.66434 29.33 8.73939 29.3758C9.68605 29.9458 10.6702 30.4476 11.7038 30.859C11.7708 30.8859 11.8026 30.9661 11.7694 31.0345C11.2108 32.1962 10.5591 33.3008 9.82855 34.3485C9.79672 34.3911 9.74447 34.4104 9.69507 34.3945C6.60522 33.386 3.45642 31.8654 0.206484 29.3599C0.179409 29.338 0.159934 29.3031 0.157084 29.2666C-0.505066 21.8252 0.844407 14.2906 5.77064 6.56601C5.78252 6.54556 5.80057 6.5296 5.82147 6.52012C8.24539 5.35213 10.8422 4.49284 13.5564 4.00211C13.6058 3.99413 13.6552 4.01807 13.6808 4.06393C14.0162 4.68734 14.3995 5.48679 14.6588 6.1401C17.5198 5.68127 20.4254 5.68127 23.3461 6.1401C23.6054 5.50075 23.9755 4.68734 24.3095 4.06393C24.3213 4.04117 24.3398 4.02295 24.3622 4.01184C24.3844 4.00074 24.4097 3.99732 24.4338 4.00211C27.1495 4.49434 29.7464 5.35362 32.1683 6.52012C32.1898 6.5296 32.2073 6.54556 32.2177 6.56751ZM16.1133 20.716C16.1432 18.5163 14.6156 16.696 12.698 16.696C10.7961 16.696 9.28325 18.5003 9.28325 20.716C9.28325 22.9314 10.826 24.7358 12.698 24.7358C14.6004 24.7358 16.1133 22.9314 16.1133 20.716ZM28.7398 20.716C28.7698 18.5163 27.2422 16.696 25.3251 16.696C23.4226 16.696 21.9097 18.5003 21.9097 20.716C21.9097 22.9314 23.4525 24.7358 25.3251 24.7358C27.2422 24.7358 28.7398 22.9314 28.7398 20.716Z" fill="white" />
+                  </svg>
+            </a>
+            <a href="https://www.tiktok.com/@{% if request.global_context.is_hispanic %}geomax_es{% else %}geomaxgd{% endif %}">
+                <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.7773 1.22109C21.7212 1.19141 23.6508 1.20684 25.5793 1.19141C25.6435 3.60322 26.622 5.77397 28.1789 7.38185L28.1764 7.37947C29.852 8.88878 32.0323 9.86728 34.4358 10.0335L34.469 10.0359V16.0162C32.1985 15.9592 30.0633 15.4355 28.1384 14.5354L28.2359 14.5757C27.3049 14.128 26.5175 13.6685 25.7693 13.1555L25.8311 13.1958C25.8168 17.529 25.8453 21.8622 25.8014 26.1799C25.6791 28.3803 24.9476 30.3873 23.7743 32.0629L23.7981 32.026C21.8363 34.8356 18.6586 36.6799 15.0451 36.7891H15.0285C14.8824 36.7962 14.7102 36.7998 14.5368 36.7998C12.4825 36.7998 10.5623 36.2273 8.9259 35.2334L8.9734 35.2608C5.99515 33.4689 3.94077 30.4027 3.56078 26.8366L3.55603 26.7879C3.52633 26.0458 3.51208 25.3036 3.54178 24.5769C4.12365 18.9018 8.8784 14.5116 14.658 14.5116C15.3075 14.5116 15.8775 14.5579 16.4962 14.6636C16.5259 16.8593 16.4368 19.0562 16.4368 21.2519C15.9345 21.0701 15.355 20.9644 14.7506 20.9644C12.5323 20.9644 10.6454 22.3824 9.94715 24.3618L9.93645 24.3975C9.77852 24.9046 9.68708 25.4876 9.68708 26.0908C9.68708 26.3355 9.70252 26.5778 9.73102 26.8153L9.72865 26.7868C10.1229 29.2163 12.2058 31.0498 14.7173 31.0498C14.7898 31.0498 14.861 31.0487 14.9323 31.0451H14.9216C16.6589 30.9928 18.167 30.0584 19.0196 28.6773L19.0315 28.6558C19.3486 28.2141 19.5658 27.6798 19.6384 27.0991L19.6395 27.0824C19.7879 24.426 19.7286 21.785 19.7429 19.1286C19.7571 13.1483 19.7287 7.18235 19.7725 1.21753L19.7773 1.22109Z" fill="black" />
+                  </svg>
+            </a>
+
+        </div>
+
+        {% comment %} Contenedor de las aclaraciones (la pagina no esta afiliada con RobTopGames) {% endcomment %}
+        <div class="aclaration-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{request.global_context.global_list_words.all_rights}}</p>
+            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{request.global_context.global_list_words.no_way_affiliated}}</p>
+        
+        </div>
+
+    </footer>
+    
+</body>
+
+<script>
+    const IconsContainerLeft = document.getElementById('cube-icon-container-left');
+    const iconCount = 485; // Número de íconos
+
+    for (let i = 0; i < iconCount; i++) {
+        const icon = document.createElement('div');
+        icon.className = 'cube-icon';
+        icon.style.background = `url('{% static 'img/Icons/icon_1234.png' %}')`.replace(/1234/, i); // Ruta al icono
+        icon.style.backgroundSize = 'contain';
+        icon.style.backgroundRepeat = 'no-repeat';
+        IconsContainerLeft.appendChild(icon);
+    }
+
+    function randomizeIcons() {
+        const icons = Array.from(IconsContainerLeft.children);
+        icons.sort(() => Math.random() - 0.5); // Orden random
+        IconsContainerLeft.innerHTML = '';
+        icons.forEach(icon => IconsContainerLeft.appendChild(icon));
+    }
+
+    randomizeIcons();
+
+    const IconsContainerRight = document.getElementById('cube-icon-container-right');
+
+    for (let i = 0; i < iconCount; i++) {
+        const icon = document.createElement('div');
+        icon.className = 'cube-icon';
+        icon.style.background = `url('{% static 'img/Icons/icon_1234.png' %}')`.replace(/1234/, i); // Ruta al icono
+        icon.style.backgroundSize = 'contain';
+        icon.style.backgroundRepeat = 'no-repeat';
+        IconsContainerRight.appendChild(icon);
+    }
+
+    function randomizeIconsRight() {
+        const icons = Array.from(IconsContainerRight.children);
+        icons.sort(() => Math.random() - 0.5); // Orden random
+        IconsContainerRight.innerHTML = '';
+        icons.forEach(icon => IconsContainerRight.appendChild(icon));
+    }
+
+    randomizeIconsRight();
+
+    document.addEventListener('scroll', function() {
+        const scrollTop = window.scrollY;
+        const scrollSpeed = 0.2;
+        const leftBg = document.querySelector('.left-bg');
+        const rightBg = document.querySelector('.right-bg');
+        const article = document.querySelector('#article');
+    
+        const leftBgParallax = -scrollTop * scrollSpeed;
+        const rightBgParallax = scrollTop * scrollSpeed;
+    
+        leftBg.style.transform = `translateY(${leftBgParallax}px)`;
+        rightBg.style.transform = `translateY(${rightBgParallax}px)`;
+    
+    });
+
+</script>
+
+</html>

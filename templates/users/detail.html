@@ -1,0 +1,1254 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block head_content %}
+<!-- CSS of the Record's table -->
+<link rel="stylesheet" href="{% static 'css/detail.css' %}?v=1.24" />
+<title>{{ user.username }} | DemonList</title>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block container %}
+
+{% comment %} Contenedor base de toda la seccion de perfil {% endcomment %}
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+    {% comment %} El articulo corresponde a la buena practica de semantica {% endcomment %}
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        {% comment %} Contenedor de la seccion del perfil (contiene la parte principal del perfil) {% endcomment %}
+        <section class="profile-container">
+
+            {% comment %} Contenedor del banner (aca van los follows, el team y la fecha de ingreso) {% endcomment %}
+            <div class="profile-banner-container">
+
+                {% if user.profile.banner and request.global_context.is_subscriber %}
+                <img class="custom-banner" src="{{user.profile.banner.url}}" alt="profile-banner">
+                {% endif %}
+
+                <div class="banner-data-container">
+
+                    {% if not user.profile.claimable %}
+                    {% comment %} Contenedor de la fecha de ingreso {% endcomment %}
+                    <div class="join_date-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 7.5H18M6.33333 2.5V4.16667M14.6667 2.5V4.16667M5.5 10H7.16667M9.66667 10H11.3333M13.8333 10H15.5M5.5 12.5H7.16667M9.66667 12.5H11.3333M13.8333 12.5H15.5M5.5 15H7.16667M9.66667 15H11.3333M13.8333 15H15.5M5.66667 17.5H15.3333C16.2667 17.5 16.7335 17.5 17.09 17.3183C17.4036 17.1586 17.6586 16.9036 17.8183 16.59C18 16.2335 18 15.7667 18 14.8333V6.83333C18 5.89991 18 5.4332 17.8183 5.07668C17.6586 4.76307 17.4036 4.50811 17.09 4.34832C16.7335 4.16667 16.2667 4.16667 15.3333 4.16667H5.66667C4.73325 4.16667 4.26653 4.16667 3.91002 4.34832C3.59641 4.50811 3.34144 4.76307 3.18166 5.07668C3 5.4332 3 5.89991 3 6.83333V14.8333C3 15.7667 3 16.2335 3.18166 16.59C3.34144 16.9036 3.59641 17.1586 3.91002 17.3183C4.26653 17.5 4.73324 17.5 5.66667 17.5Z" stroke-linecap="round"/>
+                        </svg>                            
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.joined_date}}: <b>{{ user.profile.created|date }}</b></p>
+                    </div>
+                    {% endif %}
+
+                    {% comment %} Contenedor de los items que indican los follows y el team {% endcomment %}
+                    <div class="following_followers_team-container">
+
+                        {% if not user.profile.claimable %}
+                        <div class="following-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <p><b>{{ user.profile.followings.count }}</b> {{list_words.following|capfirst}}</p>
+                        </div>
+                        {% endif %}
+                        <div class="followers-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <p><b>{{ user.profile.followers.count }}</b>{{list_words.followers|capfirst}}</p>
+                        </div>
+                        {% if user.profile.team %}
+                        <div class="team-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <svg width="20" height="15" viewBox="0 0 20 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.75 15C8.75 15 7.5 15 7.5 13.75C7.5 12.5 8.75 8.75 13.75 8.75C18.75 8.75 20 12.5 20 13.75C20 15 18.75 15 18.75 15H8.75ZM13.75 7.5C14.7446 7.5 15.6984 7.10491 16.4017 6.40165C17.1049 5.69839 17.5 4.74456 17.5 3.75C17.5 2.75544 17.1049 1.80161 16.4017 1.09835C15.6984 0.39509 14.7446 0 13.75 0C12.7554 0 11.8016 0.39509 11.0983 1.09835C10.3951 1.80161 10 2.75544 10 3.75C10 4.74456 10.3951 5.69839 11.0983 6.40165C11.8016 7.10491 12.7554 7.5 13.75 7.5Z" fill="#C0C0D1" />
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.52 15.0005C6.33469 14.6103 6.24228 14.1825 6.25 13.7505C6.25 12.0568 7.1 10.313 8.67 9.10053C7.88636 8.85913 7.06994 8.74103 6.25 8.75053C1.25 8.75053 0 12.5005 0 13.7505C0 15.0005 1.25 15.0005 1.25 15.0005H6.52Z" fill="#C0C0D1" />
+                                <path d="M5.625 7.5C6.4538 7.5 7.24866 7.17076 7.83471 6.58471C8.42076 5.99866 8.75 5.2038 8.75 4.375C8.75 3.5462 8.42076 2.75134 7.83471 2.16529C7.24866 1.57924 6.4538 1.25 5.625 1.25C4.7962 1.25 4.00134 1.57924 3.41529 2.16529C2.82924 2.75134 2.5 3.5462 2.5 4.375C2.5 5.2038 2.82924 5.99866 3.41529 6.58471C4.00134 7.17076 4.7962 7.5 5.625 7.5Z" fill="#C0C0D1" />
+                              </svg>                       
+                            <p>{{list_words.team}}: <b>{{user.profile.team}}</b></p>
+                        </div>
+                        {% endif %}
+
+                        <div class="following-modal-container">
+
+                            <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <div class="close-modal-button-container">
+
+                                    <button class="close-modal-button--following text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0.470429 0.470417C-0.15681 1.09766 -0.15681 2.11459 0.470429 2.74183L6.22859 8.49996L0.470429 14.2582C-0.15681 14.8854 -0.15681 15.9024 0.470429 16.5296C1.09765 17.1568 2.1146 17.1568 2.74182 16.5296L8.49997 10.7713L14.2582 16.5296C14.8854 17.1568 15.9024 17.1568 16.5296 16.5296C17.1568 15.9024 17.1568 14.8854 16.5296 14.2582L10.7713 8.49996L16.5296 2.74184C17.1568 2.11462 17.1568 1.09767 16.5296 0.470449C15.9023 -0.15679 14.8854 -0.15679 14.2582 0.470449L8.49997 6.22859L2.74182 0.470417C2.1146 -0.156806 1.09765 -0.156806 0.470429 0.470417Z" fill="#C0C0D1" />
+                                          </svg>
+                                    </button>
+
+                                </div>
+
+                                <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.following|capfirst}}</p>
+
+                                <span>
+                                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.3737 13.8876L18 18.5M15.3333 9.16667C15.3333 12.8485 12.3485 15.8333 8.66667 15.8333C4.98476 15.8333 2 12.8485 2 9.16667C2 5.48476 4.98476 2.5 8.66667 2.5C12.3485 2.5 15.3333 5.48476 15.3333 9.16667Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                      </svg>
+                                    <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search_user}}..." oninput="search_user(this, 'following');">
+                                </span>
+
+
+                                <div class="data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="user-container_following">
+
+                                    {% for following in user.profile.followings.all %}
+                                    <div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                        {% if following.picture %}
+                                        <img src="{{ request.global_context.MEDIA_URL }}{{ following.picture }}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% else %}
+                                        <img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="default-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% endif %}
+                                        <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' following.user.username %}">{{following}}</a>
+
+                                    </div>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="followers-modal-container">
+
+                            <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <div class="close-modal-button-container">
+
+                                    <button class="close-modal-button--followers text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0.470429 0.470417C-0.15681 1.09766 -0.15681 2.11459 0.470429 2.74183L6.22859 8.49996L0.470429 14.2582C-0.15681 14.8854 -0.15681 15.9024 0.470429 16.5296C1.09765 17.1568 2.1146 17.1568 2.74182 16.5296L8.49997 10.7713L14.2582 16.5296C14.8854 17.1568 15.9024 17.1568 16.5296 16.5296C17.1568 15.9024 17.1568 14.8854 16.5296 14.2582L10.7713 8.49996L16.5296 2.74184C17.1568 2.11462 17.1568 1.09767 16.5296 0.470449C15.9023 -0.15679 14.8854 -0.15679 14.2582 0.470449L8.49997 6.22859L2.74182 0.470417C2.1146 -0.156806 1.09765 -0.156806 0.470429 0.470417Z" fill="#C0C0D1" />
+                                          </svg>
+                                    </button>
+
+                                </div>
+
+                                <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.followers|capfirst}}</p>
+
+                                <span>
+                                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.3737 13.8876L18 18.5M15.3333 9.16667C15.3333 12.8485 12.3485 15.8333 8.66667 15.8333C4.98476 15.8333 2 12.8485 2 9.16667C2 5.48476 4.98476 2.5 8.66667 2.5C12.3485 2.5 15.3333 5.48476 15.3333 9.16667Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                      </svg>
+                                    <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search_user}}..." oninput="search_user(this, 'followers');">
+                                </span>
+
+
+                                <div class="data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="user-container_followers">
+
+                                    {% for follower in user.profile.followers.all %}
+                                    <div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                        {% if follower.picture %}
+                                        <img src="{{ request.global_context.MEDIA_URL }}{{ follower.picture }}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% else %}
+                                        <img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="default-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% endif %}
+                                        <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' follower.user.username %}">{{follower}}</a>
+
+                                    </div>
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="team-modal-container">
+
+                            <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                <div class="close-modal-button-container">
+
+                                    <button class="close-modal-button--team text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0.470429 0.470417C-0.15681 1.09766 -0.15681 2.11459 0.470429 2.74183L6.22859 8.49996L0.470429 14.2582C-0.15681 14.8854 -0.15681 15.9024 0.470429 16.5296C1.09765 17.1568 2.1146 17.1568 2.74182 16.5296L8.49997 10.7713L14.2582 16.5296C14.8854 17.1568 15.9024 17.1568 16.5296 16.5296C17.1568 15.9024 17.1568 14.8854 16.5296 14.2582L10.7713 8.49996L16.5296 2.74184C17.1568 2.11462 17.1568 1.09767 16.5296 0.470449C15.9023 -0.15679 14.8854 -0.15679 14.2582 0.470449L8.49997 6.22859L2.74182 0.470417C2.1146 -0.156806 1.09765 -0.156806 0.470429 0.470417Z" fill="#C0C0D1" />
+                                          </svg>
+                                    </button>
+
+                                </div>
+
+                                <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.members}}</p>
+
+                                <span>
+                                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.3737 13.8876L18 18.5M15.3333 9.16667C15.3333 12.8485 12.3485 15.8333 8.66667 15.8333C4.98476 15.8333 2 12.8485 2 9.16667C2 5.48476 4.98476 2.5 8.66667 2.5C12.3485 2.5 15.3333 5.48476 15.3333 9.16667Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                      </svg>
+                                    <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search_user}}..." oninput="search_user(this, 'members');">
+                                </span>
+
+
+                                <div class="data-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="user-container_members">
+
+                                    {% for member in team_members %}
+
+                                    <div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                        <img src="{% if member.picture %}{{member.picture.url}}{% else %}{% static 'img/default-profile.png' %}{% endif %}" alt="user-picture">
+                                        <a href="{% url 'demonlist:category_or_username' member.user.username %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{member.user.username}}</a>
+                                        {% if member.if_owner %}
+                                        <i class="fa-solid fa-crown ml-3 crown-icon"></i>
+                                        {% endif %}
+
+                                    </div>
+
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-secondary-options-container">
+
+                    <select name="list" id="list" class="rated-demons-selector card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onchange="change_list(this);">
+                        <option value="classic tiny" {% if user.profile.preferences == "classic tiny" %}selected{% elif mode == "classic" and category == "tiny" %}selected{% endif %}>Classic Tiny List</option>
+                        <option value="classic spam" {% if user.profile.preferences == "classic spam" %}selected{% elif mode == "classic" and category == "spam" %}selected{% endif %}>Classic Spam List</option>
+                        <option value="classic impossible_tiny" {% if user.profile.preferences == "classic impossible_tiny" %}selected{% elif mode == "classic" and category == "impossible_tiny" %}selected{% endif %}>Classic Impossible Tiny List</option>
+                        <option value="platformer rated" {% if user.profile.preferences == "platformer rated" %}selected{% elif mode == "platformer" and category == "rated" %}selected{% endif %}>Platformer Rated List</option>
+                        <option value="platformer all" {% if user.profile.preferences == "platformer all" %}selected{% endif %}>TPL</option>
+                        <option value="platformer challenge" {% if user.profile.preferences == "platformer challenge" %}selected{% elif mode == "platformer" and category == "challenge" %}selected{% endif %}>Platformer Challenge List</option>
+                        <option value="platformer deathless" {% if user.profile.preferences == "platformer deathless" %}selected{% elif mode == "platformer" and category == "deathless" %}selected{% endif %}>Platformer Deathless List</option>
+                        <option value="platformer impossible" {% if user.profile.preferences == "platformer impossible" %}selected{% elif mode == "platformer" and category == "impossible" %}selected{% endif %}>Platformer Impossible List</option>
+                        <option value="platformer tiny" {% if user.profile.preferences == "platformer tiny" %}selected{% elif mode == "platformer" and category == "tiny" %}selected{% endif %}>Platformer Tiny List</option>
+                    </select>
+
+                    {% if user == request.user %}
+
+                    <div class="profile-links">
+                        <a href="{% url 'users:update' %}" class="profile-follow-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.edit_profile}}</a>
+                        <a href="{% url 'users:records_status' %}" class="profile-follow-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.records_status}}</a>
+                        <a href="{% url 'users:teams' %}" class="profile-follow-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.team}}</a>
+                    </div>
+
+                    {% else %}
+
+                    <form method="POST" class="d-flex ">
+                        {% csrf_token %}
+                        {% if following %}
+                            <input type="hidden" name="action" value="unfollow">
+                            <button type="submit" class="profile-follow-button fixed-width button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.92389 2.08362C6.645 2.55109 5.21822 5.42603 5.95142 8.06724C6.5261 10.1475 7.79436 11.1993 9.71656 11.1993C11.5991 11.1993 12.8673 10.1709 13.442 8.18411C14.4527 4.72483 11.9954 1.42916 8.92389 2.08362Z" fill="black" />
+                                    <path d="M16.9689 7.60089C16.4933 8.13848 16.5726 8.44234 17.4445 9.4474L18.2372 10.3589L17.6625 10.9667C17.3454 11.2939 16.9887 11.8081 16.85 12.1119C16.632 12.6262 16.6518 12.743 17.1274 13.2339L17.6625 13.7715L18.4551 12.8365C18.8911 12.3224 19.3073 11.9016 19.3865 11.9016C19.4459 11.9016 19.8819 12.3224 20.3178 12.8365C21.2294 13.8884 21.7249 13.9117 21.923 12.9067C22.0221 12.4626 21.9032 12.1587 21.3285 11.4575C20.9322 10.99 20.6151 10.5226 20.6151 10.4524C20.6151 10.3823 20.9322 9.91487 21.3087 9.47077C22.0221 8.60595 22.2004 7.858 21.7644 7.53077C21.1898 7.13342 20.7737 7.27366 20.0603 8.16185L19.2874 9.07343L18.5344 8.16185C17.6822 7.13342 17.4246 7.03992 16.9689 7.60089Z" fill="black" />
+                                    <path d="M7.18004 12.8611C4.96059 13.3753 2.93931 15.0582 2.26555 16.9515C1.92867 17.9098 1.90886 19.6628 2.22592 20.0368C2.5628 20.4341 16.8703 20.4341 17.2071 20.0368C17.5242 19.6628 17.5044 17.9098 17.1676 16.9515C16.474 14.9881 14.4725 13.3753 12.0945 12.8377C10.8659 12.5572 8.38884 12.5806 7.18004 12.8611Z" fill="black" />
+                                  </svg>
+                                <p>{{list_words.unfollow}}</p>
+                            </button>
+                        {% else %}
+                            {% if request.user.is_anonymous %}
+                            <a href="{% url 'users:login' %}" class="profile-follow-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.05294 2.08048C6.73177 2.53043 5.27851 5.29765 6.02533 7.83987C6.61066 9.84217 7.90245 10.8546 9.86031 10.8546C11.7778 10.8546 13.0696 9.86467 13.6549 7.95236C14.6843 4.62272 12.1814 1.45055 9.05294 2.08048Z" fill="black" />
+                                    <path d="M19.1861 6.62489C19.065 6.75986 18.9439 7.4348 18.9439 8.08723V9.2571L17.8136 9.3246C16.6025 9.39209 16.1382 9.77455 16.3804 10.4944C16.4814 10.7644 16.7841 10.8544 17.7126 10.8544H18.9236L18.9842 12.2493C19.0447 13.6666 19.0447 13.6666 19.7109 13.7341L20.3567 13.8016V12.3393V10.8544H21.6889H23.0008L22.9402 10.112C22.8797 9.39209 22.8797 9.39209 21.6283 9.3246L20.3769 9.2571L20.3164 7.86225C20.2558 6.66987 20.1953 6.4674 19.8521 6.39991C19.6301 6.37741 19.3274 6.4674 19.1861 6.62489Z" fill="black" />
+                                    <path d="M7.27614 12.4523C5.01552 12.9473 2.95674 14.5671 2.27048 16.3894C1.92735 17.3119 1.90716 18.9992 2.23011 19.3592C2.57324 19.7416 17.1462 19.7416 17.4893 19.3592C17.8122 18.9992 17.792 17.3119 17.4489 16.3894C16.7425 14.4996 14.7038 12.9473 12.2818 12.4299C11.0304 12.1599 8.50737 12.1824 7.27614 12.4523Z" fill="black" />
+                                  </svg>
+                                <p>{{list_words.follow}}</p>
+                            </a>
+                            {% else %}
+                            <input type="hidden" name="action" value="follow">
+                            <button type="submit" class="profile-follow-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.05294 2.08048C6.73177 2.53043 5.27851 5.29765 6.02533 7.83987C6.61066 9.84217 7.90245 10.8546 9.86031 10.8546C11.7778 10.8546 13.0696 9.86467 13.6549 7.95236C14.6843 4.62272 12.1814 1.45055 9.05294 2.08048Z" fill="black" />
+                                    <path d="M19.1861 6.62489C19.065 6.75986 18.9439 7.4348 18.9439 8.08723V9.2571L17.8136 9.3246C16.6025 9.39209 16.1382 9.77455 16.3804 10.4944C16.4814 10.7644 16.7841 10.8544 17.7126 10.8544H18.9236L18.9842 12.2493C19.0447 13.6666 19.0447 13.6666 19.7109 13.7341L20.3567 13.8016V12.3393V10.8544H21.6889H23.0008L22.9402 10.112C22.8797 9.39209 22.8797 9.39209 21.6283 9.3246L20.3769 9.2571L20.3164 7.86225C20.2558 6.66987 20.1953 6.4674 19.8521 6.39991C19.6301 6.37741 19.3274 6.4674 19.1861 6.62489Z" fill="black" />
+                                    <path d="M7.27614 12.4523C5.01552 12.9473 2.95674 14.5671 2.27048 16.3894C1.92735 17.3119 1.90716 18.9992 2.23011 19.3592C2.57324 19.7416 17.1462 19.7416 17.4893 19.3592C17.8122 18.9992 17.792 17.3119 17.4489 16.3894C16.7425 14.4996 14.7038 12.9473 12.2818 12.4299C11.0304 12.1599 8.50737 12.1824 7.27614 12.4523Z" fill="black" />
+                                  </svg>
+                                <p>{{list_words.follow}}</p>
+                            </button>
+                            {% endif %}
+                        {% endif %}
+                    </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% comment %} Contenedor de la informacion del perfil (ahi hay algunas stats,el nombre y las redes)
+            {%endcomment %}
+            <div class="profile-info-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                <div class="profile-main-stats-container">
+
+                    <div class="profile-hardest-container profile-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <p>{{list_words.hardest}}</p>
+                        <p>{{hardest}}</p>
+                    </div>
+
+                    <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                    <div class="profile-points-container profile-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <p>{{list_words.list_points}}</p>
+                        <p>{{list_points}}</p>
+                    </div>
+
+                    <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                    <div class="profile-demons-container profile-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <p>{{list_words.demons_beaten}}</p>
+                        <p>{{demons_beaten}}</p>
+                    </div>
+
+                </div>
+
+                <div class="profile-name_icon-container">
+
+                    <img src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'img/default-profile.png' %}{% endif %}" alt="user-picture" class="profile-picture">
+                    <div class="name-verified">
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{user.username}}</p>
+                        {% if user.profile.verified %}
+                        <svg class="" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode-fill" d="M20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10Z" fill="#6875FF" />
+                            <path class="main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" d="M5.59961 9.8L8.47437 12.6L13.9996 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        {% endif %}
+                    </div>
+                    {% if user.profile.discord %}
+                    <div class="discord-button text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <svg width="21" height="21" viewBox="0 0 28 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M23.7393 1.77361C26.9016 6.35006 28.4632 11.5122 27.8794 17.455C27.877 17.4801 27.8637 17.5032 27.8427 17.5183C25.448 19.2492 23.1279 20.2996 20.8403 20.9962C20.8224 21.0015 20.8034 21.0012 20.7858 20.9953C20.7681 20.9895 20.7528 20.9783 20.7419 20.9634C20.2134 20.2396 19.7332 19.4765 19.3125 18.6752C19.2884 18.628 19.3104 18.5712 19.3601 18.5526C20.1228 18.2697 20.848 17.9307 21.5455 17.5294C21.6005 17.4977 21.604 17.4202 21.5532 17.383C21.4052 17.2748 21.2585 17.1611 21.1182 17.0474C21.0919 17.0264 21.0566 17.0223 21.0268 17.0364C16.4982 19.0948 11.5373 19.0948 6.95508 17.0364C6.92533 17.0233 6.88998 17.0278 6.86443 17.0484C6.72443 17.1621 6.57743 17.2748 6.43079 17.383C6.38004 17.4202 6.38424 17.4977 6.43954 17.5294C7.13708 17.9231 7.86228 18.2697 8.62388 18.5539C8.67323 18.5725 8.69668 18.628 8.67218 18.6752C8.26058 19.4776 7.78038 20.2407 7.24208 20.9645C7.21863 20.9938 7.18013 21.0072 7.14373 20.9962C4.86699 20.2996 2.54684 19.2492 0.152146 17.5183C0.132196 17.5032 0.117846 17.4791 0.115746 17.4539C-0.372153 12.3135 0.622195 7.10867 4.25204 1.77257C4.26079 1.75845 4.27409 1.74742 4.28949 1.74088C6.07554 0.934038 7.98898 0.340449 9.98888 0.00145228C10.0253 -0.00405986 10.0617 0.0124766 10.0806 0.0441714C10.3277 0.474807 10.6101 1.02706 10.8012 1.47836C12.9093 1.16141 15.0502 1.16141 17.2024 1.47836C17.3935 1.0367 17.6661 0.474807 17.9122 0.0441714C17.9209 0.0284479 17.9345 0.0158511 17.951 0.00817942C17.9674 0.000507709 17.986 -0.00184672 18.0039 0.00145228C20.0048 0.341483 21.9183 0.935071 23.7029 1.74088C23.7187 1.74742 23.7316 1.75845 23.7393 1.77361V1.77361ZM11.8729 11.5473C11.895 10.0277 10.7694 8.77024 9.35643 8.77024C7.95503 8.77024 6.84028 10.0167 6.84028 11.5473C6.84028 13.0776 7.97708 14.3241 9.35643 14.3241C10.7582 14.3241 11.8729 13.0776 11.8729 11.5473V11.5473ZM21.1766 11.5473C21.1987 10.0277 20.0731 8.77024 18.6605 8.77024C17.2587 8.77024 16.144 10.0167 16.144 11.5473C16.144 13.0776 17.2808 14.3241 18.6605 14.3241C20.0731 14.3241 21.1766 13.0776 21.1766 11.5473V11.5473Z" fill="white"/>
+                            </svg>                            
+                        {{user.profile.discord}}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="profile-personal-info-container">
+
+                    <div class="profile-ranking-container profile-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <p>{{list_words.ranking}}</p>
+                        <p>{{ranking}}</p>
+                    </div>
+
+                    <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                    <div class="profile-nation-container profile-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <p>{{list_words.country}}</p>
+                        <div class="nation-flag">
+                            {% if user.profile.country %}<img src="{{user.profile.country.picture.url}}" title="{% if request.user.is_anonymous %}{{user.profile.country}}{% elif request.user.profile.language == "English" %}{{user.profile.country}}{% elif request.user.profile.language == "Spanish" %}{{user.profile.country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{user.profile.country.country_russian}}{% elif request.user.profile.language == "German" %}{{user.profile.country.country_german}}{% elif request.user.profile.language == "Czech" %}{{user.profile.country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{user.profile.country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{user.profile.country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{user.profile.country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{user.profile.country.country_french}}{% endif %}" alt="country-flag">{% endif %}
+                            <p>{% if user.profile.country %}{{user.profile.country.abbreviation}}{% else %}-{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                    <div class="profile-social-container">
+                        {% if user.profile.youtube_channel %}
+                        <a href="{{user.profile.youtube_channel}}"><img src="{% static 'img/youtube-profile-icon.svg' %}" alt="youtube-profile-icon"></a>
+                        {% endif %}
+                        {% if user.profile.twitter %}
+                        <a href="{{user.profile.twitter}}"><img src="{% static 'img/twitter-profile-icon.svg' %}" alt="twitter-profile-icon"></a>
+                        {% endif %}
+                        {% if user.profile.twitch %}
+                        <a href="{{user.profile.twitch}}"><img src="{% static 'img/twitch-profile-icon.svg' %}" alt="twitch-profile-icon"></a>
+                        {% endif %}
+                        {% if user.profile.facebook %}
+                        <a href="{{user.profile.facebook}}"><img src="{% static 'img/facebook-profile-icon.svg' %}" alt="facebook-profile-icon"></a>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        {% comment %} Contenedor de la descripcion y el global rank {% endcomment %}
+        <section class="description_global_rank-container">
+
+            {% comment %} Contenedor de la descripcion {% endcomment %}
+            <div class="description-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                {% comment %} Contenedor del titulo del contenedor {% endcomment %}
+                <div class="description_icon-title">
+
+                    <svg class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.4997 7.2915C13.075 7.2915 13.5413 7.75788 13.5413 8.33317V13.5415C13.5413 14.1168 13.075 14.5832 12.4997 14.5832C11.9244 14.5832 11.458 14.1168 11.458 13.5415V8.33317C11.458 7.75788 11.9244 7.2915 12.4997 7.2915Z" fill="#C0C0D1"/>
+                        <path d="M12.4997 17.7083C13.075 17.7083 13.5413 17.242 13.5413 16.6667C13.5413 16.0914 13.075 15.625 12.4997 15.625C11.9244 15.625 11.458 16.0914 11.458 16.6667C11.458 17.242 11.9244 17.7083 12.4997 17.7083Z" fill="#C0C0D1"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12.4997 2.0835C6.74671 2.0835 2.08301 6.74719 2.08301 12.5002C2.08301 18.2531 6.74671 22.9168 12.4997 22.9168C18.2526 22.9168 22.9163 18.2531 22.9163 12.5002C22.9163 6.74719 18.2526 2.0835 12.4997 2.0835ZM4.16634 12.5002C4.16634 7.89779 7.8973 4.16683 12.4997 4.16683C17.1021 4.16683 20.833 7.89779 20.833 12.5002C20.833 17.1026 17.1021 20.8335 12.4997 20.8335C7.8973 20.8335 4.16634 17.1026 4.16634 12.5002Z" fill="#C0C0D1"/>
+                        </svg>                        
+                    {% if user.profile.claimable %}
+                    <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.information_about|upper}}</p>
+                    {% else %}
+                    <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.biography|upper}}</p>
+                    {% endif %}
+
+                </div>
+
+                {% comment %} Descripcion. Hay que cambiar el contenido de los P, el primero es la descripcion y el
+                segundo el jugador{% endcomment %}
+                <div class="description text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    {% if user.profile.claimable %}
+                    <p>This profile belongs to a well-known figure in the community and has not yet been claimed.</p>
+                    {% else %}
+                    <p>{{user.profile.bio}}</p>
+                    {% endif %}
+
+                </div>
+
+                {% if device %}
+                <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                {% comment %} Contenedor del titulo del contenedor {% endcomment %}
+                <div class="description_icon-title text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.875 11.9701V21.3451H17.7083V11.9701H21.875ZM22.9167 9.88672H16.6667C16.3904 9.88672 16.1254 9.99647 15.9301 10.1918C15.7347 10.3872 15.625 10.6521 15.625 10.9284V22.3867C15.625 22.663 15.7347 22.9279 15.9301 23.1233C16.1254 23.3186 16.3904 23.4284 16.6667 23.4284H22.9167C23.1929 23.4284 23.4579 23.3186 23.6532 23.1233C23.8486 22.9279 23.9583 22.663 23.9583 22.3867V10.9284C23.9583 10.6521 23.8486 10.3872 23.6532 10.1918C23.4579 9.99647 23.1929 9.88672 22.9167 9.88672Z" fill="#C0C0D1" />
+                        <path d="M19.8008 3.63672H3.65495C3.37868 3.63672 3.11373 3.74647 2.91838 3.94182C2.72303 4.13717 2.61328 4.40212 2.61328 4.67839V16.1367C2.61328 16.413 2.72303 16.6779 2.91838 16.8733C3.11373 17.0686 3.37868 17.1784 3.65495 17.1784H13.5508V15.0951H4.69662V5.72005H18.7591V7.80339H20.8425V4.67839C20.8425 4.40212 20.7327 4.13717 20.5374 3.94182C20.342 3.74647 20.0771 3.63672 19.8008 3.63672Z" fill="#C0C0D1" />
+                        <path d="M13.5508 19.2617V21.3451H2.09245C1.81618 21.3451 1.55123 21.2353 1.35588 21.04C1.16053 20.8446 1.05078 20.5797 1.05078 20.3034C1.05078 20.0271 1.16053 19.7622 1.35588 19.5668C1.55123 19.3715 1.81618 19.2617 2.09245 19.2617H13.5508Z" fill="#C0C0D1" />
+                      </svg>
+                    {% if user.profile.claimable %}
+                    <p>{{list_words.information_about|upper}}</p>
+                    {% else %}
+                    <p>{{list_words.device|upper}}</p>
+                    {% endif %}
+
+                </div>
+
+                <div class="devices-container">
+                    {% if "mouse" in device %}
+                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2.5V7.5M10 2.5C7.51543 2.5 5.95682 4.35193 5.32418 5.29503C5.24143 5.41838 5.20006 5.48007 5.14053 5.61567C5.0991 5.71009 5.0443 5.89016 5.02612 5.99164C5 6.13742 5 6.2459 5 6.46285V12.5C5 15.2614 7.23857 17.5 10 17.5C12.7614 17.5 15 15.2614 15 12.5V6.46285C15 6.2459 15 6.13742 14.9739 5.99164C14.9557 5.89016 14.9009 5.71009 14.8595 5.61567C14.7999 5.48007 14.7586 5.41838 14.6758 5.29503C14.0432 4.35193 12.4846 2.5 10 2.5Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>                        
+                    {% endif %}
+                    {% if "keyboard" in device %}
+                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.83317 11.6667H14.1665M4.99984 8.33333H5.00817M8.33317 8.33333H8.3415M11.6665 8.33333H11.6748M14.9998 8.33333H15.0082M4.33317 15H15.6665C16.5999 15 17.0667 15 17.4232 14.8183C17.7368 14.6586 17.9918 14.4036 18.1515 14.09C18.3332 13.7335 18.3332 13.2667 18.3332 12.3333V7.66667C18.3332 6.73325 18.3332 6.26653 18.1515 5.91002C17.9918 5.59641 17.7368 5.34144 17.4232 5.18166C17.0667 5 16.5999 5 15.6665 5H4.33317C3.39975 5 2.93304 5 2.57652 5.18166C2.26291 5.34144 2.00795 5.59641 1.84816 5.91002C1.6665 6.26653 1.6665 6.73324 1.6665 7.66667V12.3333C1.6665 13.2667 1.6665 13.7335 1.84816 14.09C2.00795 14.4036 2.26291 14.6586 2.57652 14.8183C2.93304 15 3.39975 15 4.33317 15Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    {% endif %}
+                    {% if "mobile" in device %}
+                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 15.0083V15M6.66667 2.5H13.3333C14.2538 2.5 15 3.24619 15 4.16667V15.8333C15 16.7538 14.2538 17.5 13.3333 17.5H6.66667C5.74619 17.5 5 16.7538 5 15.8333V4.16667C5 3.24619 5.74619 2.5 6.66667 2.5Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    {% endif %}
+                    {% if "controller" in device %}
+                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.66667 7.08333C6.66667 6.6231 6.29357 6.25 5.83333 6.25C5.37309 6.25 5 6.6231 5 7.08333V7.5H4.58333C4.12309 7.5 3.75 7.87309 3.75 8.33333C3.75 8.79358 4.12309 9.16667 4.58333 9.16667H5V9.58333C5 10.0436 5.37309 10.4167 5.83333 10.4167C6.29357 10.4167 6.66667 10.0436 6.66667 9.58333V9.16667H7.08333C7.54357 9.16667 7.91667 8.79358 7.91667 8.33333C7.91667 7.87309 7.54357 7.5 7.08333 7.5H6.66667V7.08333Z" fill="#C0C0D1"/>
+                        <path d="M15.0002 6.66683C15.0002 7.12707 14.6271 7.50016 14.1668 7.50016C13.7066 7.50016 13.3335 7.12707 13.3335 6.66683C13.3335 6.2066 13.7066 5.8335 14.1668 5.8335C14.6271 5.8335 15.0002 6.2066 15.0002 6.66683Z" fill="#C0C0D1"/>
+                        <path d="M14.1668 10.8332C14.6271 10.8332 15.0002 10.4601 15.0002 9.99984C15.0002 9.53959 14.6271 9.1665 14.1668 9.1665C13.7066 9.1665 13.3335 9.53959 13.3335 9.99984C13.3335 10.4601 13.7066 10.8332 14.1668 10.8332Z" fill="#C0C0D1"/>
+                        <path d="M13.3332 8.33333C13.3332 8.79358 12.9601 9.16667 12.4998 9.16667C12.0396 9.16667 11.6665 8.79358 11.6665 8.33333C11.6665 7.87309 12.0396 7.5 12.4998 7.5C12.9601 7.5 13.3332 7.87309 13.3332 8.33333Z" fill="#C0C0D1"/>
+                        <path d="M15.8333 9.16667C16.2936 9.16667 16.6667 8.79358 16.6667 8.33333C16.6667 7.87309 16.2936 7.5 15.8333 7.5C15.3731 7.5 15 7.87309 15 8.33333C15 8.79358 15.3731 9.16667 15.8333 9.16667Z" fill="#C0C0D1"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99992 2.5C8.48983 2.5 6.63523 2.71514 5.18144 2.92442C3.28579 3.1973 1.74239 4.59747 1.34153 6.49025C1.1172 7.54946 0.897369 8.80183 0.846994 9.85033C0.810874 10.6021 0.73157 11.6526 0.647548 12.6603C0.560132 13.7087 0.909486 14.7887 1.55058 15.5568C2.20478 16.3406 3.24088 16.8689 4.43629 16.5344C5.2017 16.3202 5.81332 15.7823 6.267 15.2522C6.73076 14.7104 7.09985 14.0937 7.36271 13.5919C7.56509 13.2056 7.92436 12.9879 8.26274 12.9879H11.7371C12.0754 12.9879 12.4348 13.2056 12.6371 13.5919C12.9 14.0937 13.2691 14.7104 13.7328 15.2522C14.1865 15.7823 14.7981 16.3202 15.5635 16.5344C16.7589 16.8689 17.795 16.3406 18.4493 15.5568C19.0903 14.7887 19.4397 13.7087 19.3523 12.6603C19.2683 11.6526 19.1889 10.6021 19.1528 9.85033C19.1024 8.80183 18.8826 7.54946 18.6583 6.49025C18.2574 4.59747 16.714 3.1973 14.8183 2.92442C13.3646 2.71514 11.51 2.5 9.99992 2.5ZM5.41891 4.57408C6.85612 4.36719 8.61392 4.16667 9.99992 4.16667C11.3859 4.16667 13.1437 4.36719 14.5809 4.57408C15.8041 4.75016 16.7758 5.64574 17.0278 6.83556C17.2472 7.87138 17.4443 9.01858 17.4881 9.93033C17.5257 10.7133 17.6072 11.7886 17.6913 12.7988C17.7426 13.413 17.5284 14.059 17.1697 14.4888C16.824 14.903 16.424 15.0445 16.0127 14.9294C15.708 14.8441 15.3605 14.5908 14.999 14.1684C14.6475 13.7578 14.3453 13.2609 14.1134 12.8185C13.6702 11.9723 12.7901 11.3213 11.7371 11.3213H8.26274C7.20974 11.3213 6.32968 11.9723 5.88637 12.8185C5.65457 13.2609 5.35229 13.7578 5.00083 14.1684C4.63928 14.5908 4.29181 14.8441 3.98711 14.9294C3.57583 15.0445 3.17577 14.903 2.83013 14.4888C2.47139 14.059 2.25724 13.413 2.30845 12.7988C2.39268 11.7886 2.47412 10.7133 2.51174 9.93033C2.55554 9.01858 2.75266 7.87138 2.97203 6.83556C3.22401 5.64574 4.19573 4.75016 5.41891 4.57408Z" fill="#C0C0D1"/>
+                        </svg>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+            </div>
+
+            {% comment %} Contenedor del ranking global {% endcomment %}
+
+                <div class="global_rank-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="global_rank-container">
+
+                    <div class="global_rank_text_button-container">
+
+                        <div class="global_rank_icon-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 20C4.5 20 0 15.5 0 10C0 4.5 4.5 0 10 0C15.5 0 20 4.5 20 10C20 15.5 15.5 20 10 20ZM7.91667 14.1667C8.41667 16.75 9.33333 18.3333 10 18.3333C10.6667 18.3333 11.5833 16.75 12.0833 14.1667H7.91667ZM13.8333 14.1667C13.5833 15.5833 13.1667 16.9167 12.6667 17.9167C14.5833 17.25 16.25 15.9167 17.25 14.1667H13.8333ZM2.75 14.1667C3.75 15.9167 5.41667 17.25 7.33333 17.9167C6.83333 16.9167 6.41667 15.5833 6.16667 14.1667H2.75ZM14.0833 12.5H18C18.1667 11.75 18.3333 10.8333 18.3333 10C18.3333 9.16667 18.1667 8.25 17.9167 7.5H14C14.1667 8.33333 14.1667 9.16667 14.1667 10C14.1667 10.8333 14.1667 11.6667 14.0833 12.5ZM7.66667 12.5H12.4167C12.5 11.75 12.5833 10.9167 12.5833 10C12.5833 9.08333 12.5 8.25 12.4167 7.5H7.66667C7.58333 8.25 7.5 9.08333 7.5 10C7.5 10.9167 7.58333 11.75 7.66667 12.5ZM2.08333 12.5H6C5.91667 11.6667 5.91667 10.8333 5.91667 10C5.91667 9.16667 5.91667 8.33333 6 7.5H2.08333C1.83333 8.25 1.66667 9.16667 1.66667 10C1.66667 10.8333 1.83333 11.75 2.08333 12.5ZM13.8333 5.83333H17.25C16.25 4.08333 14.5833 2.75 12.6667 2.08333C13.1667 3.08333 13.5833 4.41667 13.8333 5.83333ZM7.91667 5.83333H12.1667C11.6667 3.25 10.75 1.66667 10.0833 1.66667C9.41667 1.66667 8.41667 3.25 7.91667 5.83333ZM2.75 5.83333H6.16667C6.41667 4.41667 6.83333 3.08333 7.33333 2.08333C5.41667 2.75 3.83333 4.08333 2.75 5.83333Z" fill="#C0C0D1" />
+                              </svg>
+                            <p>{{list_words.global_rank}}</p>
+
+                        </div>
+
+                    </div>
+
+                    {% comment %} Contenedor de las posiciones {% endcomment %}
+                    <div class="positions-container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        {% comment %} Este bloque contiene la info del jugador dentro del ranking, este bloque se va a
+                        iterar varias veces por cada jugador{% endcomment %}
+                        {% if previous_player %}
+                        <div class="player-position card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <div class="flag_player">
+
+                                {% if previous_player.country %}
+                                <img src="{{ previous_player.country.picture.url }}" title="{{ previous_player.country }}" alt="country-flag">
+                                {% endif %}
+                                <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' previous_player.user.username %}">{{previous_player.user.username}}</a>
+
+                            </div>
+
+                            <p>#{{previous_ranking}}</p>
+
+                        </div>
+                        {% endif %}
+
+                        {% comment %} Este bloque corresponde al jugador (por eso la clase que lo diferencia es
+                        "profile-player") {% endcomment %}
+                        <div class="profile-player card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <div class="flag_player">
+
+                                {% if user.profile.country %}
+                                <img src="{{ user.profile.country.picture.url }}" title="{{ user.profile.country }}" alt="country-flag">
+                                {% endif %}
+                                <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' user.username %}">{{user.username}}</a>
+
+                            </div>
+
+                            <p>#{{ranking}}</p>
+
+                        </div>
+
+                        {% if next_player %}
+                        <div class="player-position card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <div class="flag_player">
+
+                                {% if next_player.country %}
+                                <img src="{{ next_player.country.picture.url }}" title="{{ next_player.country }}" alt="country-flag">
+                                {% endif %}
+                                <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' next_player.user.username %}">{{next_player.user.username}}</a>
+
+                            </div>
+
+                            <p>#{{next_ranking}}</p>
+
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+        </section>
+
+        {% if demons_created %}
+        <section class="created-levels-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.created_levels}}</h2>
+
+            <div class="created-levels">
+
+                {% for demon in demons_created %}
+                <div class="level-list card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    <a href="{% url 'demonlist:level_id_detail' demon.level_id %}">
+                        <div class="level_img-container">
+                            <img class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" src="{% if demon.photo %}{{demon.photo.url}}{% elif demon.type %}{% static 'img/Niveles_sin_miniatura/demon-'|add:demon.demon_difficulty|diff_string|add:'-'|add:demon.type|add:'.png' %}{% elif demon.demon_difficulty %}{% static 'img/Niveles_sin_miniatura/demon-'|add:demon.demon_difficulty|diff_string|add:'.png' %}{% endif %}" alt="demon-photo" />
+                        </div>
+
+                        <!-- Contenedor de los DATOS DEL NIVEL (rating / player / title) -->
+                        <div class="level-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <!-- Titulo de el NIVEL -->
+                            <p class="level-title">
+                            {{demon.level}}
+                            </p>
+                            {% if demon.type or demon.demon_difficulty %}<img src="{% if demon.type %}{% static 'img/demon-'|add:demon.demon_difficulty|diff_string|add:'-'|add:demon.type|add:'.png' %}{% else %}{% static 'img/demon-'|add:demon.demon_difficulty|diff_string|add:'.png' %}{% endif %}" alt="demon-difficulty" class="demon-img">{% endif %}
+
+                        </div>
+
+                        {% if demon.new %}
+                        <div class="new-text content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <p>NEW</p>
+                        </div>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </section>
+        {% endif %}
+
+        {% if demons_verified %}
+        <section class="verified-levels-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.verified_levels}}</h2>
+
+            <div class="verified-levels">
+
+                {% for demon in demons_verified %}
+                <div class="level-list card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    <a href="{% url 'demonlist:level_id_detail' demon.level_id %}">
+                        <div class="level_img-container">
+                            <img class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" src="{% if demon.photo %}{{demon.photo.url}}{% elif demon.type %}{% static 'img/Niveles_sin_miniatura/demon-'|add:demon.demon_difficulty|diff_string|add:'-'|add:demon.type|add:'.png' %}{% elif demon.demon_difficulty %}{% static 'img/Niveles_sin_miniatura/demon-'|add:demon.demon_difficulty|diff_string|add:'.png' %}{% endif %}" alt="demon-photo" />
+                        </div>
+
+                        <!-- Contenedor de los DATOS DEL NIVEL (rating / player / title) -->
+                        <div class="level-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <!-- Titulo de el NIVEL -->
+                            <p class="level-title">
+                            {{demon.level}}
+                            </p>
+                            {% if demon.type or demon.demon_difficulty %}<img src="{% if demon.type %}{% static 'img/demon-'|add:demon.demon_difficulty|diff_string|add:'-'|add:demon.type|add:'.png' %}{% else %}{% static 'img/demon-'|add:demon.demon_difficulty|diff_string|add:'.png' %}{% endif %}" alt="demon-difficulty" class="demon-img">{% endif %}
+
+                        </div>
+
+                        {% if demon.new %}
+                        <div class="new-text content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <p>NEW</p>
+                        </div>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+        </section>
+        {% endif %}
+
+        {% comment %} Contenedor de los demons {% endcomment %}
+        <section class="rated-demons-container">
+
+            <div class="rated-demons-title-button">
+
+                <p class="rated-demons-title text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.records|upper}}</p>
+
+            </div>
+
+            <table class="records-table card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                <thead class="card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    <tr class="records-header text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        <th>{{list_words.demon|upper}}</th>
+                        {% if mode == "classic" %}
+                        <th>{{list_words.percentage|upper}}</th>
+                        {% elif mode == "platformer" %}
+                        <th>{{list_words.best_time|upper}}</th>
+                        {% endif %}
+                        <th>{{list_words.top|upper}}</th>
+                        <th>{{list_words.video_proof|upper}}</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-records">
+                    {% for record in records %}
+                    <tr class="records-body">
+
+                        <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><a class="demon-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% if record.demon.category == "rated" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.rated_position %}{% elif record.demon.category == "unrated" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.unrated_position %}{% elif record.demon.category == "challenge" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.challenge_position %}{% elif record.demon.category == "shitty" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.shitty_position %}{% elif record.demon.category == "tiny" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.tiny_position %}{% elif record.demon.category == "deathless" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.deathless_position %}{% elif record.demon.category == "impossible" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.impossible_position %}{% elif record.demon.category == "spam" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.spam_position %}{% elif record.demon.category == "impossible_tiny" %}{% url 'demonlist:detail' record.demon.mode record.demon.category record.demon.impossible_tiny_position %}{% endif %}">#{% if record.demon.category == "rated" %}{{ record.demon.rated_position }}{% elif record.demon.category == "unrated" %}{{ record.demon.unrated_position }}{% elif record.demon.category == "challenge" %}{{ record.demon.challenge_position }}{% elif record.demon.category == "shitty" %}{{ record.demon.shitty_position }}{% elif record.demon.category == "tiny" %}{{ record.demon.tiny_position }}{% elif record.demon.category == "deathless" %}{{ record.demon.deathless_position }}{% elif record.demon.category == "impossible" %}{{ record.demon.impossible_position }}{% elif record.demon.category == "spam" %}{{ record.demon.spam_position }}{% elif record.demon.category == "impossible_tiny" %}{{ record.demon.impossible_tiny_position }}{% endif %} {{ record.demon }}</a></td>
+
+                        {% if mode == "classic" %}
+                        <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{ record.percentage }}%</td>
+                        {% elif mode == "platformer" %}
+                        <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{ record.best_time|date:"H" }}:{{ record.best_time|date:"i" }}:{{ record.best_time|date:"s" }}.{{ record.best_time|date:"u"|slice:":3" }}</td>
+                        {% endif %}
+
+                        <td class="records-top content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <p><b>#{{ record.top_order }}</b> ({{list_words.by_order}})</p>
+                            {% if record.mode.platformer %}
+                            <p><b>#{{ record.top_best_time }}</b> ({{list_words.by_best_time}})</p>
+                            {% endif %}
+                        </td>
+
+                        <td class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            {% if record.video_platform == "Drive" %}
+                            <a href="{{ record.video }}" class="drive-button">
+                                Drive
+                                <img src="{% static 'img/drive-icon--table.svg' %}" alt="drive-icon">
+                            </a>
+                            {% elif record.video_platform == "Facebook" %}
+                            <a href="{{ record.video }}" class="facebook-button">
+                                Facebook
+                                <img src="{% static 'img/facebook-icon--table.svg' %}" alt="facebook-icon">
+                            </a>
+                            {% elif record.video_platform == "YouTube" %}
+                            <a href="{{ record.video }}" class="youtube-button">
+                                YouTube
+                                <img src="{% static 'img/youtube-icon--table.svg' %}" alt="youtube-icon">
+                            </a>
+                            {% elif record.video_platform == "Twitch" %}
+                            <a href="{{ record.video }}" class="twitch-button">
+                                Twitch
+                                <img src="{% static 'img/twitch-icon--table.svg' %}" alt="twitch-icon">
+                            </a>
+                            {% else %}
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </section>
+
+        {% comment %} RESPONSIVE RESPONSIVE {% endcomment %}
+
+        <section class="profile-banner_data-container--responsive">
+
+            <div class="banner--responsive">
+                {% if user.profile.banner and request.global_context.is_subscriber %}
+                <img class="custom-banner--responsive" src="{{user.profile.banner.url}}" alt="profile-banner">
+                {% endif %}
+            </div>
+
+            <div class="profile-picture-data-container--responsive card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                <div class="profile-picture_name-container--responsive">
+
+                    <img src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'img/default-profile.png' %}{% endif %}" alt="user-picture">
+
+                    <p class="profile-name--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        {{user.username}}
+                        {% if user.profile.verified %}
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode-fill" d="M20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10Z" fill="#0000000" />
+                            <path class="main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" d="M5.59961 9.8L8.47437 12.6L13.9996 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+                <div class="profile-main-data-container--responsive">
+
+                    <div class="ranking-container--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p>{{list_words.ranking}}</p>
+                        <b>{{ranking}}</b>
+
+                    </div>
+
+                    <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                    <div class="country-container--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p>{{list_words.country}}</p>
+
+                        <div class="country-flag-container--responsive">
+
+                            <img src="{{user.profile.country.picture.url}}" alt="country-flag">
+                            <b>{% if request.user.is_anonymous %}{{user.profile.country}}{% elif request.user.profile.language == "English" %}{{user.profile.country}}{% elif request.user.profile.language == "Spanish" %}{{user.profile.country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{user.profile.country.country_russian}}{% elif request.user.profile.language == "German" %}{{user.profile.country.country_german}}{% elif request.user.profile.language == "Czech" %}{{user.profile.country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{user.profile.country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{user.profile.country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{user.profile.country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{user.profile.country.country_french}}{% endif %}</b>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="profile-links--responsive">
+
+            <select name="list" id="list" class="rated-demons-selector--responsive card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" onchange="change_list(this);">
+                <option value="classic tiny" {% if user.profile.preferences == "classic tiny" %}selected{% elif mode == "classic" and category == "tiny" %}selected{% endif %}>Classic Tiny List</option>
+                <option value="classic spam" {% if user.profile.preferences == "classic spam" %}selected{% elif mode == "classic" and category == "spam" %}selected{% endif %}>Classic Spam List</option>
+                <option value="classic impossible_tiny" {% if user.profile.preferences == "classic impossible_tiny" %}selected{% elif mode == "classic" and category == "impossible_tiny" %}selected{% endif %}>Classic Impossible Tiny List</option>
+                <option value="platformer rated" {% if user.profile.preferences == "platformer rated" %}selected{% elif mode == "platformer" and category == "rated" %}selected{% endif %}>Platformer Rated List</option>
+                <option value="platformer challenge" {% if user.profile.preferences == "platformer challenge" %}selected{% elif mode == "platformer" and category == "challenge" %}selected{% endif %}>Platformer Challenge List</option>
+                <option value="platformer deathless" {% if user.profile.preferences == "platformer deathless" %}selected{% elif mode == "platformer" and category == "deathless" %}selected{% endif %}>Platformer Deathless List</option>
+                <option value="platformer impossible" {% if user.profile.preferences == "platformer impossible" %}selected{% elif mode == "platformer" and category == "impossible" %}selected{% endif %}>Platformer Impossible List</option>
+                <option value="platformer tiny" {% if user.profile.preferences == "platformer tiny" %}selected{% elif mode == "platformer" and category == "tiny" %}selected{% endif %}>Platformer Tiny List</option>
+            </select>
+            {% if user == request.user %}
+
+            <div class="links-container">
+
+                <a href="{% url 'users:update' %}" class="profile-option-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.edit_profile}}</a>
+                <a href="{% url 'users:records_status' %}" class="profile-option-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.records_status}}</a>
+                <a href="{% url 'users:teams' %}" class="profile-option-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.team}}</a>
+
+            </div>
+            {% endif %}
+
+        </section>
+
+        <section class="profile-main-data_team_discord-container--responsive">
+
+            <div class="profile-main_team-data-container--responsive">
+
+                {% if not user.profile.claimable %}
+                <div class="icon-data">
+
+                    <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.125 6.375H14.875M4.95833 2.125V3.54167M12.0417 2.125V3.54167M4.25 8.5H5.66667M7.79167 8.5H9.20833M11.3333 8.5H12.75M4.25 10.625H5.66667M7.79167 10.625H9.20833M11.3333 10.625H12.75M4.25 12.75H5.66667M7.79167 12.75H9.20833M11.3333 12.75H12.75M4.39167 14.875H12.6083C13.4017 14.875 13.7985 14.875 14.1015 14.7206C14.368 14.5848 14.5848 14.368 14.7206 14.1015C14.875 13.7985 14.875 13.4017 14.875 12.6083V5.80833C14.875 5.01492 14.875 4.61822 14.7206 4.31518C14.5848 4.04861 14.368 3.83189 14.1015 3.69608C13.7985 3.54167 13.4017 3.54167 12.6083 3.54167H4.39167C3.59826 3.54167 3.20155 3.54167 2.89851 3.69608C2.63195 3.83189 2.41523 4.04861 2.27941 4.31518C2.125 4.61822 2.125 5.01492 2.125 5.80833V12.6083C2.125 13.4017 2.125 13.7985 2.27941 14.1015C2.41523 14.368 2.63195 14.5848 2.89851 14.7206C3.20155 14.875 3.59826 14.875 4.39167 14.875Z" stroke-linecap="round" />
+                      </svg>
+                    <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.joined_date}}: <b>{{ user.profile.created|date }}</b></p>
+
+                </div>
+                {% endif %}
+
+                {% if user.profile.team %}
+                <div class="icon-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.125 10.5C6.125 10.5 5.25 10.5 5.25 9.625C5.25 8.75 6.125 6.125 9.625 6.125C13.125 6.125 14 8.75 14 9.625C14 10.5 13.125 10.5 13.125 10.5H6.125ZM9.625 5.25C10.3212 5.25 10.9889 4.97344 11.4812 4.48116C11.9734 3.98887 12.25 3.32119 12.25 2.625C12.25 1.92881 11.9734 1.26113 11.4812 0.768845C10.9889 0.276563 10.3212 0 9.625 0C8.92878 0 8.26112 0.276563 7.76881 0.768845C7.27657 1.26113 7 1.92881 7 2.625C7 3.32119 7.27657 3.98887 7.76881 4.48116C8.26112 4.97344 8.92878 5.25 9.625 5.25Z" fill="#C0C0D1" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.564 10.5004C4.43428 10.2272 4.3696 9.92777 4.375 9.62537C4.375 8.43978 4.97 7.21912 6.069 6.37037C5.52045 6.20139 4.94896 6.11872 4.375 6.12537C0.875 6.12537 0 8.75037 0 9.62537C0 10.5004 0.875 10.5004 0.875 10.5004H4.564Z" fill="#C0C0D1" />
+                        <path d="M3.9375 5.25C4.51766 5.25 5.07406 5.01953 5.4843 4.6093C5.89453 4.19906 6.125 3.64266 6.125 3.0625C6.125 2.48234 5.89453 1.92594 5.4843 1.5157C5.07406 1.10547 4.51766 0.875 3.9375 0.875C3.35734 0.875 2.80094 1.10547 2.3907 1.5157C1.98047 1.92594 1.75 2.48234 1.75 3.0625C1.75 3.64266 1.98047 4.19906 2.3907 4.6093C2.80094 5.01953 3.35734 5.25 3.9375 5.25Z" fill="#C0C0D1" />
+                      </svg>
+                    <p id="team">{{list_words.team}}: <b>{{user.profile.team}}</b></p>
+                </div>
+                {% endif %}
+
+                <div class="icon-data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    {% if not user.profile.claimable %}
+                    <p id="following"><b>{{ user.profile.followings.count }}</b> {{list_words.following|capfirst}}</p>
+                    {% endif %}
+                    <p id="followers"><b>{{ user.profile.followers.count }}</b> {{list_words.followers|capfirst}}</p>
+
+                    <div class="following-modal-container--responsive">
+
+                        <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <div class="close-modal-button-container">
+
+                                <button id="close-following" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0.470429 0.470417C-0.15681 1.09766 -0.15681 2.11459 0.470429 2.74183L6.22859 8.49996L0.470429 14.2582C-0.15681 14.8854 -0.15681 15.9024 0.470429 16.5296C1.09765 17.1568 2.1146 17.1568 2.74182 16.5296L8.49997 10.7713L14.2582 16.5296C14.8854 17.1568 15.9024 17.1568 16.5296 16.5296C17.1568 15.9024 17.1568 14.8854 16.5296 14.2582L10.7713 8.49996L16.5296 2.74184C17.1568 2.11462 17.1568 1.09767 16.5296 0.470449C15.9023 -0.15679 14.8854 -0.15679 14.2582 0.470449L8.49997 6.22859L2.74182 0.470417C2.1146 -0.156806 1.09765 -0.156806 0.470429 0.470417Z" fill="#C0C0D1" />
+                                      </svg>
+                                </button>
+
+                            </div>
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.following|capfirst}}</p>
+
+                            <span>
+                                <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.1885 11.6995L14.875 15.375M12.75 7.9375C12.75 10.8715 10.3715 13.25 7.4375 13.25C4.50348 13.25 2.125 10.8715 2.125 7.9375C2.125 5.00348 4.50348 2.625 7.4375 2.625C10.3715 2.625 12.75 5.00348 12.75 7.9375Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                  </svg>
+                                <input class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search_user}}..." oninput="search_user(this, 'following');">
+                            </span>
+
+
+                            <div class="data-container">
+
+                                {% for following in user.profile.followings.all %}
+                                    <div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                        {% if following.picture %}
+                                        <img src="{{ request.global_context.MEDIA_URL }}{{ following.picture }}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% else %}
+                                        <img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% endif %}
+                                        <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' following.user.username %}">{{following}}</a>
+
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="followers-modal-container--responsive">
+
+                        <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <div class="close-modal-button-container">
+
+                                <button id="close-followers" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0.470429 0.470417C-0.15681 1.09766 -0.15681 2.11459 0.470429 2.74183L6.22859 8.49996L0.470429 14.2582C-0.15681 14.8854 -0.15681 15.9024 0.470429 16.5296C1.09765 17.1568 2.1146 17.1568 2.74182 16.5296L8.49997 10.7713L14.2582 16.5296C14.8854 17.1568 15.9024 17.1568 16.5296 16.5296C17.1568 15.9024 17.1568 14.8854 16.5296 14.2582L10.7713 8.49996L16.5296 2.74184C17.1568 2.11462 17.1568 1.09767 16.5296 0.470449C15.9023 -0.15679 14.8854 -0.15679 14.2582 0.470449L8.49997 6.22859L2.74182 0.470417C2.1146 -0.156806 1.09765 -0.156806 0.470429 0.470417Z" fill="#C0C0D1" />
+                                      </svg>
+                                </button>
+
+                            </div>
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.followers|capfirst}}</p>
+
+                            <span>
+                                <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.1885 11.6995L14.875 15.375M12.75 7.9375C12.75 10.8715 10.3715 13.25 7.4375 13.25C4.50348 13.25 2.125 10.8715 2.125 7.9375C2.125 5.00348 4.50348 2.625 7.4375 2.625C10.3715 2.625 12.75 5.00348 12.75 7.9375Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                  </svg>
+                                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search_user}}..." oninput="search_user(this, 'followers');">
+                            </span>
+
+
+                            <div class="data-container">
+
+                                {% for follower in user.profile.followers.all %}
+                                    <div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                        {% if follower.picture %}
+                                        <img src="{{ request.global_context.MEDIA_URL }}{{ follower.picture }}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% else %}
+                                        <img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>
+                                        {% endif %}
+                                        <a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' follower.user.username %}">{{follower}}</a>
+
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="team-modal-container--responsive">
+
+                        <div class="modal-data card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                            <div class="close-modal-button-container">
+
+                                <button id="close-team" class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0.470429 0.470417C-0.15681 1.09766 -0.15681 2.11459 0.470429 2.74183L6.22859 8.49996L0.470429 14.2582C-0.15681 14.8854 -0.15681 15.9024 0.470429 16.5296C1.09765 17.1568 2.1146 17.1568 2.74182 16.5296L8.49997 10.7713L14.2582 16.5296C14.8854 17.1568 15.9024 17.1568 16.5296 16.5296C17.1568 15.9024 17.1568 14.8854 16.5296 14.2582L10.7713 8.49996L16.5296 2.74184C17.1568 2.11462 17.1568 1.09767 16.5296 0.470449C15.9023 -0.15679 14.8854 -0.15679 14.2582 0.470449L8.49997 6.22859L2.74182 0.470417C2.1146 -0.156806 1.09765 -0.156806 0.470429 0.470417Z" fill="#C0C0D1" />
+                                      </svg>
+                                </button>
+
+                            </div>
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.members}}</p>
+
+                            <span>
+                                <svg class="stroke-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.1885 11.6995L14.875 15.375M12.75 7.9375C12.75 10.8715 10.3715 13.25 7.4375 13.25C4.50348 13.25 2.125 10.8715 2.125 7.9375C2.125 5.00348 4.50348 2.625 7.4375 2.625C10.3715 2.625 12.75 5.00348 12.75 7.9375Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                  </svg>
+                                <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="text" placeholder="{{list_words.search_user}}..." oninput="search_user(this, 'members');">
+                            </span>
+
+                            <div class="data-container">
+
+                                {% for member in team_members %}
+                                <div class="data text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                                    <img src="{% if member.picture %}{{member.picture.url}}{% else %}{% static 'img/default-profile.png' %}{% endif %}" alt="default-picture">
+                                    <a href="{% url 'demonlist:category_or_username' member.user.username %}" class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{member.user.username}}</a>
+                                    {% if member.if_owner %}
+                                    <i class="fa-solid fa-crown ml-3 crown-icon"></i>
+                                    {% endif %}
+
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="follow_discord-container--responsive">
+
+                {% if user == request.user %}
+
+                {% else %}
+                <form method="POST" class="d-flex ">
+                    {% csrf_token %}
+                    {% if following %}
+                        <input type="hidden" name="action" value="unfollow">
+                        <button type="submit" class="follow-button--responsive button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                            <svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.19277 1.06037C4.48371 1.39788 3.41368 3.47356 3.96356 5.3805C4.39454 6.88241 5.34567 7.6418 6.78723 7.6418C8.19907 7.6418 9.1502 6.89929 9.58119 5.46487C10.3391 2.9673 8.4963 0.587856 6.19277 1.06037Z" fill="black" />
+                                <path d="M12.2286 5.04511C11.8719 5.43326 11.9314 5.65263 12.5853 6.37828L13.1798 7.03643L12.7488 7.47518C12.511 7.71144 12.2435 8.0827 12.1394 8.30208C11.9759 8.67334 11.9909 8.75772 12.3475 9.1121L12.7488 9.50024L13.3432 8.82523C13.6702 8.45397 13.9822 8.1502 14.0417 8.1502C14.0863 8.1502 14.4133 8.45397 14.7402 8.82523C15.4238 9.58462 15.7953 9.6015 15.944 8.87585C16.0183 8.55522 15.9291 8.33583 15.4982 7.82957C15.2009 7.49206 14.9631 7.15455 14.9631 7.10392C14.9631 7.0533 15.2009 6.71579 15.4832 6.39516C16.0183 5.77076 16.152 5.23075 15.8251 4.99449C15.3941 4.7076 15.082 4.80886 14.547 5.45013L13.9674 6.10827L13.4027 5.45013C12.7636 4.7076 12.5705 4.6401 12.2286 5.04511Z" fill="black" />
+                                <path d="M4.88479 8.83832C3.22031 9.20958 1.70444 10.4246 1.19915 11.7916C0.946507 12.4834 0.931646 13.7491 1.16943 14.0191C1.42207 14.306 12.152 14.306 12.4047 14.0191C12.6424 13.7491 12.6276 12.4834 12.3749 11.7916C11.8548 10.374 10.3538 9.20958 8.57042 8.82144C7.64902 8.61894 5.79133 8.63581 4.88479 8.83832Z" fill="black" />
+                              </svg>
+                            {{list_words.unfollow}}
+                        </button>
+                    {% else %}
+                        {% if request.user.is_anonymous %}
+                            <a href="{% url 'users:login' %}" class="follow-button--responsive button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.67997 2.05928C4.14039 2.39072 3.17647 4.42906 3.67181 6.30169C4.06006 7.77659 4.91688 8.52233 6.21548 8.52233C7.48731 8.52233 8.34412 7.79316 8.73236 6.38455C9.41514 3.93191 7.75507 1.59527 5.67997 2.05928Z" fill="black" />
+                                    <path d="M12.8792 4.18164V6.3631H10.6426V7.45383H12.8792V9.63525H13.9908V7.45285H15.9997V6.3631H13.9908V4.18164H12.8792Z" fill="black" />
+                                    <path d="M4.49956 9.70063C3.00013 10.0653 1.63459 11.2584 1.1794 12.6008C0.951809 13.2802 0.938427 14.5231 1.15263 14.7883C1.38022 15.0699 11.0461 15.0699 11.2737 14.7883C11.4879 14.5231 11.4745 13.2802 11.2469 12.6008C10.7784 11.2087 9.42623 10.0653 7.81971 9.68405C6.98966 9.48524 5.31621 9.50181 4.49956 9.70063Z" fill="black" />
+                                  </svg>
+                                <p>{{list_words.follow}}</p>
+                            </a>
+                        {% else %}
+                            <input type="hidden" name="action" value="follow">
+                            <button type="submit" class="follow-button--responsive button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.67997 2.05928C4.14039 2.39072 3.17647 4.42906 3.67181 6.30169C4.06006 7.77659 4.91688 8.52233 6.21548 8.52233C7.48731 8.52233 8.34412 7.79316 8.73236 6.38455C9.41514 3.93191 7.75507 1.59527 5.67997 2.05928Z" fill="black" />
+                                    <path d="M12.8792 4.18164V6.3631H10.6426V7.45383H12.8792V9.63525H13.9908V7.45285H15.9997V6.3631H13.9908V4.18164H12.8792Z" fill="black" />
+                                    <path d="M4.49956 9.70063C3.00013 10.0653 1.63459 11.2584 1.1794 12.6008C0.951809 13.2802 0.938427 14.5231 1.15263 14.7883C1.38022 15.0699 11.0461 15.0699 11.2737 14.7883C11.4879 14.5231 11.4745 13.2802 11.2469 12.6008C10.7784 11.2087 9.42623 10.0653 7.81971 9.68405C6.98966 9.48524 5.31621 9.50181 4.49956 9.70063Z" fill="black" />
+                                  </svg>
+                                {{list_words.follow}}
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                </form>
+                {% endif %}
+
+                {% if user.profile.discord %}
+                <div class="discord-button--responsive">
+                    <img src="{% static 'img/discord-icon--button.svg' %}" alt="discord-icon">
+                    {{user.profile.discord}}
+                </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        {% if user.profile.youtube_channel or user.profile.twitter or user.profile.twitch or user.profile.facebook %}
+        <section class="social-media-icons-container--responsive">
+
+            <p class="social-title text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.social_media}}</p>
+
+            <div class="social-container--responsive card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                {% if user.profile.youtube_channel %}
+                <a href="{{user.profile.youtube_channel}}"><img src="{% static 'img/youtube-profile-icon.svg' %}" alt="youtube-profile-icon"></a>
+                {% endif %}
+                {% if user.profile.twitter %}
+                <a href="{{user.profile.twitter}}"><img src="{% static 'img/twitter-profile-icon.svg' %}" alt="twitter-profile-icon"></a>
+                {% endif %}
+                {% if user.profile.twitch %}
+                <a href="{{user.profile.twitch}}"><img src="{% static 'img/twitch-profile-icon.svg' %}" alt="twitch-profile-icon"></a>
+                {% endif %}
+                {% if user.profile.facebook %}
+                <a href="{{user.profile.facebook}}"><img src="{% static 'img/facebook-profile-icon.svg' %}" alt="facebook-profile-icon"></a>
+                {% endif %}
+
+            </div>
+
+        </section>
+        {% endif %}
+
+        <section class="profile-secondary-data-description-container--responsive">
+
+            <div class="secondary-data-container--responsive">
+
+                <div class="secondary-data--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <p>{{list_words.hardest}}</p>
+
+                    <p>{{hardest}}</p>
+
+                </div>
+
+                <div class="secondary-data--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <p>{{list_words.list_points}}</p>
+
+                    <p>{{list_points}}</p>
+
+                </div>
+
+                <div class="secondary-data--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <p>{{list_words.demons_beaten}}</p>
+
+                    <p>{{demons_beaten}}</p>
+
+                </div>
+
+            </div>
+
+            <div class="description-container--responsive card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                <div class="description-text_icon--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.50033 4.95898C8.89154 4.95898 9.20866 5.27612 9.20866 5.66732V9.20898C9.20866 9.6002 8.89154 9.91732 8.50033 9.91732C8.10911 9.91732 7.79199 9.6002 7.79199 9.20898V5.66732C7.79199 5.27612 8.10911 4.95898 8.50033 4.95898Z" fill="#1480FF" />
+                        <path d="M8.50033 12.0417C8.89154 12.0417 9.20866 11.7245 9.20866 11.3333C9.20866 10.9421 8.89154 10.625 8.50033 10.625C8.10911 10.625 7.79199 10.9421 7.79199 11.3333C7.79199 11.7245 8.10911 12.0417 8.50033 12.0417Z" fill="#1480FF" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8.50033 1.41602C4.58831 1.41602 1.41699 4.58733 1.41699 8.49935C1.41699 12.4113 4.58831 15.5827 8.50033 15.5827C12.4123 15.5827 15.5837 12.4113 15.5837 8.49935C15.5837 4.58733 12.4123 1.41602 8.50033 1.41602ZM2.83366 8.49935C2.83366 5.36973 5.37071 2.83268 8.50033 2.83268C11.63 2.83268 14.167 5.36973 14.167 8.49935C14.167 11.629 11.63 14.166 8.50033 14.166C5.37071 14.166 2.83366 11.629 2.83366 8.49935Z" fill="#1480FF" />
+                      </svg>
+                    {% if user.profile.claimable %}
+                    <p>{{list_words.information_about|upper}}</p>
+                    {% else %}
+                    <p>{{list_words.biography|upper}}</p>
+                    {% endif %}
+
+                </div>
+
+                <div class="description_aclaration--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    {% if user.profile.claimable %}
+                    <p>This profile belongs to a well-known figure in the community and has not yet been claimed.</p>
+                    {% else %}
+                    <p>{{user.profile.bio}}</p>
+                    {% endif %}
+
+                </div>
+
+                {% if device %}
+                <span class="line-span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"></span>
+
+                {% comment %} Contenedor del titulo del contenedor {% endcomment %}
+                <div class="description-text_icon--responsive text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.50033 4.95898C8.89154 4.95898 9.20866 5.27612 9.20866 5.66732V9.20898C9.20866 9.6002 8.89154 9.91732 8.50033 9.91732C8.10911 9.91732 7.79199 9.6002 7.79199 9.20898V5.66732C7.79199 5.27612 8.10911 4.95898 8.50033 4.95898Z" fill="#1480FF" />
+                        <path d="M8.50033 12.0417C8.89154 12.0417 9.20866 11.7245 9.20866 11.3333C9.20866 10.9421 8.89154 10.625 8.50033 10.625C8.10911 10.625 7.79199 10.9421 7.79199 11.3333C7.79199 11.7245 8.10911 12.0417 8.50033 12.0417Z" fill="#1480FF" />
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8.50033 1.41602C4.58831 1.41602 1.41699 4.58733 1.41699 8.49935C1.41699 12.4113 4.58831 15.5827 8.50033 15.5827C12.4123 15.5827 15.5837 12.4113 15.5837 8.49935C15.5837 4.58733 12.4123 1.41602 8.50033 1.41602ZM2.83366 8.49935C2.83366 5.36973 5.37071 2.83268 8.50033 2.83268C11.63 2.83268 14.167 5.36973 14.167 8.49935C14.167 11.629 11.63 14.166 8.50033 14.166C5.37071 14.166 2.83366 11.629 2.83366 8.49935Z" fill="#1480FF" />
+                      </svg>
+                    {% if user.profile.claimable %}
+                    <p>{{list_words.information_about|upper}}</p>
+                    {% else %}
+                    <p>{{list_words.device|upper}}</p>
+                    {% endif %}
+
+                </div>
+
+                <div class="devices-container">
+
+                    {% if "mouse" in device %}
+                    <svg class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2.5V7.5M10 2.5C7.51543 2.5 5.95682 4.35193 5.32418 5.29503C5.24143 5.41838 5.20006 5.48007 5.14053 5.61567C5.0991 5.71009 5.0443 5.89016 5.02612 5.99164C5 6.13742 5 6.2459 5 6.46285V12.5C5 15.2614 7.23857 17.5 10 17.5C12.7614 17.5 15 15.2614 15 12.5V6.46285C15 6.2459 15 6.13742 14.9739 5.99164C14.9557 5.89016 14.9009 5.71009 14.8595 5.61567C14.7999 5.48007 14.7586 5.41838 14.6758 5.29503C14.0432 4.35193 12.4846 2.5 10 2.5Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>    
+                    {% endif %}
+                    {% if "keyboard" in device %}
+                    <svg class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.83317 11.6667H14.1665M4.99984 8.33333H5.00817M8.33317 8.33333H8.3415M11.6665 8.33333H11.6748M14.9998 8.33333H15.0082M4.33317 15H15.6665C16.5999 15 17.0667 15 17.4232 14.8183C17.7368 14.6586 17.9918 14.4036 18.1515 14.09C18.3332 13.7335 18.3332 13.2667 18.3332 12.3333V7.66667C18.3332 6.73325 18.3332 6.26653 18.1515 5.91002C17.9918 5.59641 17.7368 5.34144 17.4232 5.18166C17.0667 5 16.5999 5 15.6665 5H4.33317C3.39975 5 2.93304 5 2.57652 5.18166C2.26291 5.34144 2.00795 5.59641 1.84816 5.91002C1.6665 6.26653 1.6665 6.73324 1.6665 7.66667V12.3333C1.6665 13.2667 1.6665 13.7335 1.84816 14.09C2.00795 14.4036 2.26291 14.6586 2.57652 14.8183C2.93304 15 3.39975 15 4.33317 15Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    {% endif %}
+                    {% if "mobile" in device %}
+                    <svg class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 15.0083V15M6.66667 2.5H13.3333C14.2538 2.5 15 3.24619 15 4.16667V15.8333C15 16.7538 14.2538 17.5 13.3333 17.5H6.66667C5.74619 17.5 5 16.7538 5 15.8333V4.16667C5 3.24619 5.74619 2.5 6.66667 2.5Z" stroke="#C0C0D1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    {% endif %}
+                    {% if "controller" in device %}
+                    <svg class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.66667 7.08333C6.66667 6.6231 6.29357 6.25 5.83333 6.25C5.37309 6.25 5 6.6231 5 7.08333V7.5H4.58333C4.12309 7.5 3.75 7.87309 3.75 8.33333C3.75 8.79358 4.12309 9.16667 4.58333 9.16667H5V9.58333C5 10.0436 5.37309 10.4167 5.83333 10.4167C6.29357 10.4167 6.66667 10.0436 6.66667 9.58333V9.16667H7.08333C7.54357 9.16667 7.91667 8.79358 7.91667 8.33333C7.91667 7.87309 7.54357 7.5 7.08333 7.5H6.66667V7.08333Z" fill="#C0C0D1"/>
+                        <path d="M15.0002 6.66683C15.0002 7.12707 14.6271 7.50016 14.1668 7.50016C13.7066 7.50016 13.3335 7.12707 13.3335 6.66683C13.3335 6.2066 13.7066 5.8335 14.1668 5.8335C14.6271 5.8335 15.0002 6.2066 15.0002 6.66683Z" fill="#C0C0D1"/>
+                        <path d="M14.1668 10.8332C14.6271 10.8332 15.0002 10.4601 15.0002 9.99984C15.0002 9.53959 14.6271 9.1665 14.1668 9.1665C13.7066 9.1665 13.3335 9.53959 13.3335 9.99984C13.3335 10.4601 13.7066 10.8332 14.1668 10.8332Z" fill="#C0C0D1"/>
+                        <path d="M13.3332 8.33333C13.3332 8.79358 12.9601 9.16667 12.4998 9.16667C12.0396 9.16667 11.6665 8.79358 11.6665 8.33333C11.6665 7.87309 12.0396 7.5 12.4998 7.5C12.9601 7.5 13.3332 7.87309 13.3332 8.33333Z" fill="#C0C0D1"/>
+                        <path d="M15.8333 9.16667C16.2936 9.16667 16.6667 8.79358 16.6667 8.33333C16.6667 7.87309 16.2936 7.5 15.8333 7.5C15.3731 7.5 15 7.87309 15 8.33333C15 8.79358 15.3731 9.16667 15.8333 9.16667Z" fill="#C0C0D1"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99992 2.5C8.48983 2.5 6.63523 2.71514 5.18144 2.92442C3.28579 3.1973 1.74239 4.59747 1.34153 6.49025C1.1172 7.54946 0.897369 8.80183 0.846994 9.85033C0.810874 10.6021 0.73157 11.6526 0.647548 12.6603C0.560132 13.7087 0.909486 14.7887 1.55058 15.5568C2.20478 16.3406 3.24088 16.8689 4.43629 16.5344C5.2017 16.3202 5.81332 15.7823 6.267 15.2522C6.73076 14.7104 7.09985 14.0937 7.36271 13.5919C7.56509 13.2056 7.92436 12.9879 8.26274 12.9879H11.7371C12.0754 12.9879 12.4348 13.2056 12.6371 13.5919C12.9 14.0937 13.2691 14.7104 13.7328 15.2522C14.1865 15.7823 14.7981 16.3202 15.5635 16.5344C16.7589 16.8689 17.795 16.3406 18.4493 15.5568C19.0903 14.7887 19.4397 13.7087 19.3523 12.6603C19.2683 11.6526 19.1889 10.6021 19.1528 9.85033C19.1024 8.80183 18.8826 7.54946 18.6583 6.49025C18.2574 4.59747 16.714 3.1973 14.8183 2.92442C13.3646 2.71514 11.51 2.5 9.99992 2.5ZM5.41891 4.57408C6.85612 4.36719 8.61392 4.16667 9.99992 4.16667C11.3859 4.16667 13.1437 4.36719 14.5809 4.57408C15.8041 4.75016 16.7758 5.64574 17.0278 6.83556C17.2472 7.87138 17.4443 9.01858 17.4881 9.93033C17.5257 10.7133 17.6072 11.7886 17.6913 12.7988C17.7426 13.413 17.5284 14.059 17.1697 14.4888C16.824 14.903 16.424 15.0445 16.0127 14.9294C15.708 14.8441 15.3605 14.5908 14.999 14.1684C14.6475 13.7578 14.3453 13.2609 14.1134 12.8185C13.6702 11.9723 12.7901 11.3213 11.7371 11.3213H8.26274C7.20974 11.3213 6.32968 11.9723 5.88637 12.8185C5.65457 13.2609 5.35229 13.7578 5.00083 14.1684C4.63928 14.5908 4.29181 14.8441 3.98711 14.9294C3.57583 15.0445 3.17577 14.903 2.83013 14.4888C2.47139 14.059 2.25724 13.413 2.30845 12.7988C2.39268 11.7886 2.47412 10.7133 2.51174 9.93033C2.55554 9.01858 2.75266 7.87138 2.97203 6.83556C3.22401 5.64574 4.19573 4.75016 5.41891 4.57408Z" fill="#C0C0D1"/>
+                        </svg>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        <section class="global_rank-container--gradient global--responsive">
+
+            <div class="global_rank-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="global_rank-container--responsive">
+
+                <div class="global_rank_text_button-container">
+
+                    <div class="global_rank_icon-container text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 20C4.5 20 0 15.5 0 10C0 4.5 4.5 0 10 0C15.5 0 20 4.5 20 10C20 15.5 15.5 20 10 20ZM7.91667 14.1667C8.41667 16.75 9.33333 18.3333 10 18.3333C10.6667 18.3333 11.5833 16.75 12.0833 14.1667H7.91667ZM13.8333 14.1667C13.5833 15.5833 13.1667 16.9167 12.6667 17.9167C14.5833 17.25 16.25 15.9167 17.25 14.1667H13.8333ZM2.75 14.1667C3.75 15.9167 5.41667 17.25 7.33333 17.9167C6.83333 16.9167 6.41667 15.5833 6.16667 14.1667H2.75ZM14.0833 12.5H18C18.1667 11.75 18.3333 10.8333 18.3333 10C18.3333 9.16667 18.1667 8.25 17.9167 7.5H14C14.1667 8.33333 14.1667 9.16667 14.1667 10C14.1667 10.8333 14.1667 11.6667 14.0833 12.5ZM7.66667 12.5H12.4167C12.5 11.75 12.5833 10.9167 12.5833 10C12.5833 9.08333 12.5 8.25 12.4167 7.5H7.66667C7.58333 8.25 7.5 9.08333 7.5 10C7.5 10.9167 7.58333 11.75 7.66667 12.5ZM2.08333 12.5H6C5.91667 11.6667 5.91667 10.8333 5.91667 10C5.91667 9.16667 5.91667 8.33333 6 7.5H2.08333C1.83333 8.25 1.66667 9.16667 1.66667 10C1.66667 10.8333 1.83333 11.75 2.08333 12.5ZM13.8333 5.83333H17.25C16.25 4.08333 14.5833 2.75 12.6667 2.08333C13.1667 3.08333 13.5833 4.41667 13.8333 5.83333ZM7.91667 5.83333H12.1667C11.6667 3.25 10.75 1.66667 10.0833 1.66667C9.41667 1.66667 8.41667 3.25 7.91667 5.83333ZM2.75 5.83333H6.16667C6.41667 4.41667 6.83333 3.08333 7.33333 2.08333C5.41667 2.75 3.83333 4.08333 2.75 5.83333Z" fill="#C0C0D1" />
+                          </svg>
+                        <p>{{list_words.global_rank}}</p>
+
+                    </div>
+
+                </div>
+
+                {% comment %} Contenedor de las posiciones {% endcomment %}
+                <div class="positions-container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    {% comment %} Este bloque contiene la info del jugador dentro del ranking, este bloque se va a
+                    iterar varias veces por cada jugador{% endcomment %}
+                    {% if previous_player %}
+                    <div class="player-position card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <div class="flag_player">
+
+                            {% if previous_player.country %}
+                            <img src="{{ previous_player.country.picture.url }}" title="{{ previous_player.country }}" alt="country-flag">
+                            {% endif %}
+                            <p>{{ previous_player }}</p>
+
+                        </div>
+
+                        <p>#{{previous_ranking}}</p>
+
+                    </div>
+                    {% endif %}
+
+                    {% comment %} Este bloque corresponde al jugador (por eso la clase que lo diferencia es
+                    "profile-player") {% endcomment %}
+                    <div class="profile-player card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <div class="flag_player">
+
+                            {% if user.profile.country %}
+                            <img src="{{ user.profile.country.picture.url }}" title="{{ user.profile.country }}" alt="country-flag">
+                            {% endif %}
+                            <p>{{ user.username }}</p>
+
+                        </div>
+
+                        <p>#{{ranking}}</p>
+
+                    </div>
+
+                    {% if next_player %}
+                    <div class="player-position card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <div class="flag_player">
+
+                            {% if next_player.country %}
+                            <img src="{{ next_player.country.picture.url }}" title="{{ next_player.country }}" alt="country-flag">
+                            {% endif %}
+                            <p>{{ next_player }}</p>
+
+                        </div>
+
+                        <p>#{{next_ranking}}</p>
+
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+<script>
+
+    function search_user(user, option)
+        {
+        data = {}
+        data.user = user.value;
+        data.option = option;
+        $.ajax({
+            type: "post", // "post" "get" "delete" "put"
+            data: data, // PREFERIBLEMENTE JSON
+            cache: false,
+            headers: {
+            "X-CSRFToken": Cookies.get("csrftoken")
+                    },
+                    success: function (response) {
+                    $("#user-container_" + option).empty();
+
+                    $(response).each(function (index, user) {
+                        fila=`<div class="data content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">`
+                        if (user.picture){
+                            fila+=`<img src="` + user.picture + `" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>`
+                        }
+                        else {
+                            fila+=`<img src="{% static 'img/default-profile.png' %}" width="50" height="50" alt="user-picture" class="d-inline-block align-top rounded-circle user-picture"/>`
+                        }
+                        fila+=`<a class="player-link text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{% url 'demonlist:category_or_username' 1234 %}">`.replace(/1234/, user.user__username) + user.user__username + `</a>`
+                        if (user.if_owner) {
+                            fila += `<i class="fa-solid fa-crown ml-3 crown-icon"></i>`
+                        }
+                        fila+=`</div>`
+                        $('#user-container_' + option).append(fila);
+
+                    })
+                }
+            })
+        }
+
+    function change_list(list)
+        {
+        data = {}
+        data.list = list.value;
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            data: data,
+            success: function (response) {
+                        $('.profile-info-container').html($(response).find('.profile-info-container').html());
+                        $('.profile-personal-info-container').html($(response).find('.profile-personal-info-container').html());
+                        $('#global_rank-container').html($(response).find('#global_rank-container').html());
+                        $('.records-table').html($(response).find('.records-table').html());
+                        $('.profile-main-data-container--responsive').html($(response).find('.profile-main-data-container--responsive').html());
+                        $('.secondary-data-container--responsive').html($(response).find('.secondary-data-container--responsive').html());
+                        $('#global_rank-container--responsive').html($(response).find('#global_rank-container--responsive').html());
+                }
+            })
+        }
+
+
+</script>
+<script src="{% static 'js/detail.js' %}?v=1.24"></script>
+
+{% endblock %}
+{% block footer_margin %}100{% endblock %}

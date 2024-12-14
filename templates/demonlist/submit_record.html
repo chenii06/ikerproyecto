@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<title>{{list_words.submit_record}}</title>
+<link rel="stylesheet" href="{% static 'css/submit_record.css' %}?v=1.24">
+{% endblock %}
+
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        {% comment %} Contenedor de el titulo y bloque de submit {% endcomment %}
+        <section class="submit-new-record-container">
+
+            {% comment %} TITULO {% endcomment %}
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.submit_record|upper}}</h2>
+
+            {% if request.user.profile %}
+                {% if not request.user.profile.verified %}
+                <p class="advertise-text text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> {{list_words.verify_account_1}}<a href="{% url "users:update" %}" class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.verify_account_2}}</a>{{list_words.verify_account_3}}</p>
+                {% endif %}
+            {% else %}
+            <p class="advertise-text text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"><i class="fas fa-exclamation-triangle"></i> {{list_words.register_account_1}}<a href="{% url "users:signup" %}" class="alt-text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.register_account_2}}</a>{{list_words.register_account_3}}</p>
+            {% endif %}
+
+            {% if user.profile.verified %}
+
+            <div class="filter-button-container">
+                <button class="filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="your_record" type="button">
+
+                    {{list_words.your_record}}
+
+                </button>
+                <button class="filter-button filter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="other_profile" type="button">
+
+                    {{list_words.other_profile}}
+
+                </button>
+            </div>
+
+            {% comment %} FORMULARIO {% endcomment %}
+            <form class="submit-new-record-form card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <input type="text" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="player" id="player" placeholder="{{list_words.player}}" style="display: none;"/>
+
+                {% comment %} Selector de categoria {% endcomment %}
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="category" id="category" required onchange="change_category(this);">
+                    <option value="category" selected>{{list_words.list}}</option>
+                    <option value="classic tiny" {% if request.user.profile.default_submit_record == "classic tiny" %}selected{% endif %}>Classic Tiny List</option>
+                    <option value="classic spam" {% if request.user.profile.default_submit_record == "classic spam" %}selected{% endif %}>Classic Spam List</option>
+                    <option value="classic impossible_tiny" {% if request.user.profile.default_submit_record == "classic impossible_tiny" %}selected{% endif %}>Classic Impossible Tiny List</option>
+                    <option value="platformer rated" {% if request.user.profile.default_submit_record == "platformer rated" %}selected{% endif %}>Platformer Rated List</option>
+                    <option value="platformer all" {% if request.user.profile.default_submit_record == "all" %}selected{% endif %}>TPL</option>
+                    <option value="platformer challenge" {% if request.user.profile.default_submit_record == "platformer challenge" %}selected{% endif %}>Platformer Challenge List</option>
+                    <option value="platformer deathless" {% if request.user.profile.default_submit_record == "platformer deathless" %}selected{% endif %}>Platformer Deathless List</option>
+                    <option value="platformer impossible" {% if request.user.profile.default_submit_record == "platformer impossible" %}selected{% endif %}>Platformer Impossible List</option>
+                    <option value="platformer tiny" {% if request.user.profile.default_submit_record == "platformer tiny" %}selected{% endif %}>Platformer Tiny List</option>
+                </select>
+
+                {% comment %} Selector de demon {% endcomment %}
+                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="demon" id="demon">
+                    <option value="" selected>{{list_words.level}}</option>
+                </select>
+
+                <div class="percentage-container" id="percentage-container" hidden>
+                    <input type="number" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="percentage" id="percentage" min="100" max="100" placeholder="{{list_words.percentage}}" required>
+                </div>
+
+                <div class="record-time-selector" id="times" style="display: none;">
+
+                    <div class="hours-container time-container">
+                        <label for="hours">{{list_words.hours}}:</label>
+                        <input type="number" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="hours" id="hours" placeholder="00" oninput="limitInput(this, 2)" required>
+                    </div>
+
+                    <div class="minutes-container time-container">
+                        <label for="minutes">{{list_words.minutes}}:</label>
+                        <input type="number" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="minutes" id="minutes" placeholder="00" oninput="limitInput(this, 2)" required>
+                    </div>
+
+                    <div class="seconds-container time-container">
+                        <label for="seconds">{{list_words.seconds}}:</label>
+                        <input type="number" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="seconds" id="seconds" placeholder="00" oninput="limitInput(this, 2)" required>
+                    </div>
+
+                    <div class="miliseconds-container time-container">
+                        <label for="milliseconds">{{list_words.milliseconds}}:</label>
+                        <input type="number" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="milliseconds" id="milliseconds" placeholder="000" oninput="limitInput(this, 3)" required>
+                    </div>
+
+                </div>
+
+                <input type="text" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="video" placeholder="{{list_words.video}}">
+                <input type="text" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="raw_footage" id="raw_footage" placeholder="{{list_words.raw_footage}}">
+                <input type="text" class="general-input content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="notes" placeholder="{{list_words.notes}}">
+                <input type="checkbox" class="mods-input span-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" name="mods" id="mods" value="click_between_frames">
+                <label for="click_between_frames text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">Click Between Frames</label>
+
+                <div class="submit-new-record-rating-container">
+                    
+                    <div class="new-record-enjoyment-container new-record-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.enjoyment}}:</p>
+                        <div class="rate1" style="display: table;">
+                            <input type="radio" id="enjoymentStar5" name="enjoyment_stars" value="5">
+                            <label for="enjoymentStar5">&#9733;</label>
+                            <input type="radio" id="enjoymentStar4" name="enjoyment_stars" value="4">
+                            <label for="enjoymentStar4">&#9733;</label>
+                            <input type="radio" id="enjoymentStar3" name="enjoyment_stars" value="3">
+                            <label for="enjoymentStar3">&#9733;</label>
+                            <input type="radio" id="enjoymentStar2" name="enjoyment_stars" value="2">
+                            <label for="enjoymentStar2">&#9733;</label>
+                            <input type="radio" id="enjoymentStar1" name="enjoyment_stars" value="1">
+                            <label for="enjoymentStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-gameplay-container new-record-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.gameplay}}:</p>
+
+                        <div class="rate1" style="display: table;">
+                            <input type="radio" id="gameplayStar5" name="gameplay_stars" value="5">
+                            <label for="gameplayStar5">&#9733;</label>
+                            <input type="radio" id="gameplayStar4" name="gameplay_stars" value="4">
+                            <label for="gameplayStar4">&#9733;</label>
+                            <input type="radio" id="gameplayStar3" name="gameplay_stars" value="3">
+                            <label for="gameplayStar3">&#9733;</label>
+                            <input type="radio" id="gameplayStar2" name="gameplay_stars" value="2">
+                            <label for="gameplayStar2">&#9733;</label>
+                            <input type="radio" id="gameplayStar1" name="gameplay_stars" value="1">
+                            <label for="gameplayStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-decoration-container new-record-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p>{{list_words.decoration}}:</p>
+                        <div class="rate1" style="display: table;">
+                            <input type="radio" id="decorationStar5" name="decoration_stars" value="5">
+                            <label for="decorationStar5">&#9733;</label>
+                            <input type="radio" id="decorationStar4" name="decoration_stars" value="4">
+                            <label for="decorationStar4">&#9733;</label>
+                            <input type="radio" id="decorationStar3" name="decoration_stars" value="3">
+                            <label for="decorationStar3">&#9733;</label>
+                            <input type="radio" id="decorationStar2" name="decoration_stars" value="2">
+                            <label for="decorationStar2">&#9733;</label>
+                            <input type="radio" id="decorationStar1" name="decoration_stars" value="1">
+                            <label for="decorationStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-balanced-container new-record-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p>{{list_words.balanced}}:</p>
+                        <div class="rate1" style="display: table;">
+                            <input type="radio" id="balancedStar5" name="balanced_stars" value="5">
+                            <label for="balancedStar5">&#9733;</label>
+                            <input type="radio" id="balancedStar4" name="balanced_stars" value="4">
+                            <label for="balancedStar4">&#9733;</label>
+                            <input type="radio" id="balancedStar3" name="balanced_stars" value="3">
+                            <label for="balancedStar3">&#9733;</label>
+                            <input type="radio" id="balancedStar2" name="balanced_stars" value="2">
+                            <label for="balancedStar2">&#9733;</label>
+                            <input type="radio" id="balancedStar1" name="balanced_stars" value="1">
+                            <label for="balancedStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                    <div class="new-record-atmosphere-container new-record-rating content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                        <p>{{list_words.atmosphere}}:</p>
+                        <div class="rate1" style="display: table;">
+                            <input type="radio" id="atmosphereStar5" name="atmosphere_stars" value="5">
+                            <label for="atmosphereStar5">&#9733;</label>
+                            <input type="radio" id="atmosphereStar4" name="atmosphere_stars" value="4">
+                            <label for="atmosphereStar4">&#9733;</label>
+                            <input type="radio" id="atmosphereStar3" name="atmosphere_stars" value="3">
+                            <label for="atmosphereStar3">&#9733;</label>
+                            <input type="radio" id="atmosphereStar2" name="atmosphere_stars" value="2">
+                            <label for="atmosphereStar2">&#9733;</label>
+                            <input type="radio" id="atmosphereStar1" name="atmosphere_stars" value="1">
+                            <label for="atmosphereStar1">&#9733;</label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <input class="card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="hidden" id="deathless" name="deathless" value="False">
+
+                <button type="submit" class="submit-new-record-button main-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                    {{list_words.submit}}
+                </button>
+
+            </form>
+
+            {% endif %}
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+    <script>
+
+        {% if request.user.profile.default_submit_record %}
+        $("#category").change()
+        {% endif %}
+
+        function without_space(e){
+            e.value = e.value.replace(/ /g, '')
+        }
+
+        function limitInput(element, maxLength) {
+            if (element.value.length > maxLength) {
+                element.value = element.value.slice(0, maxLength);
+            }
+        }
+
+        function define_vars(){
+            var yourRecordButton = document.getElementById('your_record');
+            var otherProfileButton = document.getElementById('other_profile');
+            var stars = document.querySelector('.submit-new-record-rating-container')
+            var player = document.getElementById('player')
+            
+            yourRecordButton.addEventListener('click', function() {
+                yourRecordButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+                otherProfileButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+                stars.style.display = 'flex';
+                player.style.display = 'none';
+                player.removeAttribute('required');
+            });
+        
+            otherProfileButton.addEventListener('click', function() {
+                otherProfileButton.classList.add("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+                yourRecordButton.classList.remove("filter-button-active-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode");
+                stars.style.display = 'none';
+                player.style.display = 'block';
+                player.setAttribute('required', 'required');
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            define_vars();
+        });
+
+        function change_category(text) {
+            $('#demon').empty()
+            $('#demon').append($('<option>', {
+                value: "",
+                text: "{{list_words.level}}",
+                disabled: true,
+                selected: true
+            }));
+            mode = text.value.split(' ')[0];
+            category = text.value.split(' ')[1];
+
+            data = {}
+            data.option = "filter_demons";
+            data.mode = mode;
+            data.category = category;
+
+            $.ajax({
+                type: "post", // "post" "get" "delete" "put"
+                data: data, // PREFERIBLEMENTE JSON
+                cache: false,
+                headers: {
+                "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                success: function (response) {
+                    $(response).each(function (index, demon) {
+                        $('#demon').append($('<option>', {
+                            value: demon.id,
+                            text: `#${demon.order_position} - ${demon.level}`
+                        }));
+                    })
+                    if (category == "deathless"){
+                        $("#deathless").val("True")
+                    }
+                    else {
+                        $("#deathless").val("False")
+                    }
+                }
+            })
+
+            if (mode == "classic"){
+                $('#times').hide()
+                $('#hours').attr("required", false);
+                $('#minutes').attr("required", false);
+                $('#seconds').attr("required", false);
+                $('#milliseconds').attr("required", false);
+                $('#percentage-container').attr("hidden", false);
+                $('#percentage').attr("required", true);
+            }
+            if (mode == "platformer"){
+                $('#times').show()
+                $('#hours').attr("required", true);
+                $('#minutes').attr("required", true);
+                $('#seconds').attr("required", true);
+                $('#milliseconds').attr("required", true);
+                $('#percentage-container').attr("hidden", true);
+                $('#percentage').attr("required", false);
+            }
+            if (mode == "classic" && category == "rated"){
+                $('#raw_footage').attr("required", true);
+            }
+            else {
+                $('#raw_footage').attr("required", false);
+            }
+        }
+
+        function change_demon(demon) {
+            category = $("category").val()
+            if (category == "challenge"){
+                $('#percentage').attr("min", 100);
+            }
+            else {
+                {% for demon in demons %}
+                if ("{{demon.id}}" == demon.value){
+                    $('#percentage').attr("min", {{demon.min_percentage}});
+                    $('#percentage').attr("placeholder", 'Min: {{demon.min_percentage}}%');
+                }
+                {% endfor %}
+            }
+        }
+
+
+    </script>
+
+{% endblock %}
+
+{% block footer_margin %}600{% endblock  %}
+

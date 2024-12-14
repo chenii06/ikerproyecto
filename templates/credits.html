@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <title>{{list_words.credits}}</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/credits.css' %}?v=1.24">
+{% endblock%}
+<!DOCTYPE html>
+{% block container %}
+
+<main class="bg-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+    <div id="cube-icon-container-left" class="left-bg"></div>
+    <article>
+
+        <section class="credits-container">
+
+            <h2 class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.credits|upper}}</h2>
+
+            <div class="credits-cards-container card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                {% for profile in profiles %}
+
+                <div class="credits-card content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+
+                    <div class="profile-picture_text-container">
+
+                        <img src="{% if profile.picture %}{{profile.picture.url}}{% else %}{% static 'img/default-profile.png' %}{% endif %}" alt="default-picture">
+
+                        <div class="name_role-container">
+
+                            <p class="profile-name text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{profile.user.username}}</p>
+
+                            {% if profile.id == 388 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.graphic_designer}}</p>
+                            {% elif profile.id == 6863 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.graphic_designer}}</p>
+                            {% elif profile.id == 3267 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.web_designer}}</p>
+                            {% elif profile.id == 4509 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.web_animator}}</p>
+                            {% elif profile.id == 6861 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.video_editor}}</p>
+                            {% elif profile.id == 6894 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.voice_actor}}</p>
+                            {% elif profile.id == 529 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.russian}})</p>
+                            {% elif profile.id == 378 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.german}})</p>
+                            {% elif profile.id == 1901 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.czech}})</p>
+                            {% elif profile.id == 5429 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.turkish}})</p>
+                            {% elif profile.id == 2706 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.danish}})</p>
+                            {% elif profile.id == 5522 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.portuguese}})</p>
+                            {% elif profile.id == 5503 %}
+                            <p class="profile-rol text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.list_translator}} ({{list_words.french}})</p>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-data_social-container">
+
+                        <div class="profile-ranking profile-data">
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.ranking}}</p>
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{profile.position}}</p>
+
+                        </div>
+
+                        <span></span>
+
+                        <div class="profile-nation profile-data">
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">{{list_words.country}}</p>
+
+                            <p class="text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                                <img src="{{profile.country.picture.url}}" alt="country-flag">
+                                {% if request.user.is_anonymous %}{{profile.country}}{% elif request.user.profile.language == "English" %}{{profile.country}}{% elif request.user.profile.language == "Spanish" %}{{profile.country.country_spanish}}{% elif request.user.profile.language == "Russian" %}{{profile.country.country_russian}}{% elif request.user.profile.language == "German" %}{{profile.country.country_german}}{% elif request.user.profile.language == "Czech" %}{{profile.country.country_czech}}{% elif request.user.profile.language == "Turkish" %}{{profile.country.country_turkish}}{% elif request.user.profile.language == "Danish" %}{{profile.country.country_danish}}{% elif request.user.profile.language == "Portuguese" %}{{profile.country.country_portuguese}}{% elif request.user.profile.language == "French" %}{{profile.country.country_french}}{% endif %}
+                            </p>
+
+                        </div>
+
+                        <span></span>
+
+                        <div class="profile-social profile-data">
+
+                            {% if profile.youtube_channel %}
+                            <a href="{{profile.youtube_channel}}"><img src="{% static 'img/youtube-profile-icon.svg' %}" alt="youtube-profile-icon"></a>
+                            {% endif %}
+                            {% if profile.twitter %}
+                            <a href="{{profile.twitter}}"><img src="{% static 'img/twitter-profile-icon.svg' %}" alt="twitter-profile-icon"></a>
+                            {% endif %}
+                            {% if profile.twitch %}
+                            <a href="{{profile.twitch}}"><img src="{% static 'img/twitch-profile-icon.svg' %}" alt="twitch-profile-icon"></a>
+                            {% endif %}
+                            {% if profile.facebook %}
+                            <a href="{{profile.facebook}}"><img src="{% static 'img/facebook-profile-icon.svg' %}" alt="facebook-profile-icon"></a>
+                            {% endif %}
+
+                        </div>
+                        
+
+                    </div>
+
+                    <a href="{% url 'demonlist:category_or_username' profile.user.username %}" class="view-profile-button button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
+                        {{list_words.view_profile}}
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+
+        </section>
+
+    </article>
+    <div id="cube-icon-container-right" class="right-bg"></div>
+</main>
+
+{% endblock %}
+{% block footer_margin %}100{% endblock  %}

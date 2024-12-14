@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock%}
+
+{% block container %}
+    <main>
+        <section class="content">
+            <h1 class="main-title">Welcome to PlatformerWorld</h1>
+            <div class="lists-container">
+                <a href="{% url 'demonlist:category_or_username' 'rated' %}" class="list-card">
+                    <h2>Rated List</h2>
+                    <p>All Platformer Demons list.</p>
+                    <span class="view-button">Ver Lista</span>
+                </a>
+                <a href="{% url 'demonlist:category_or_username' 'unrated' %}" class="list-card">
+                    <h2>Unrated List</h2>
+                    <p>Unrated levels that are very cool.</p>
+                    <span class="view-button">Ver Lista</span>
+                </a>
+                <a href="{% url 'demonlist:category_or_username' 'challenge' %}" class="list-card">
+                    <h2>Tiny List</h2>
+                    <p>Levels under 10 seconds.</p>
+                    <span class="view-button">Ver Lista</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock%}
