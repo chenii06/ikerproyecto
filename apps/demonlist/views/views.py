@@ -325,7 +325,10 @@ class DemonListView(CustomMethodsMixin, ListAPIView):
             "has_other_pages": paginator.num_pages > 1,
             "page_number": page_obj.number,
             "page_max": paginator.num_pages,
-            "view_name": "Collab"
+            "view_name": "Collab",
+            "users_count": User.objects.all().count(),
+            "staff_count": User.objects.filter(groups=Group.objects.get(name="List Admin")).count(),
+            "last_records": Record.objects.filter(demon__mode="platformer", demon__category=data["category"]).order_by("-id")[:3]
         })
 
         if "text/html" in self.request.accepted_media_type:
@@ -733,8 +736,8 @@ class StatsViewerView(CustomMethodsMixin, ListAPIView):
     def get_default_stats_viewer(self):
         """Obtiene lo que tenga el usuario en 'Default'."""
         if not self.request.user.is_anonymous:
-            return self.request.user.profile.default_stats_viewer
-        return None
+            return "platformer rated"
+        return "platformer rated"
 
     def get_mode_filter(self, mode, default_stats_viewer):
         """Obtiene el mode que se va a usar."""

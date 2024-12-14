@@ -49,9 +49,9 @@
         <div class="level-detail-container">
             <div class="level-header">
                 <div class="level-title-wrapper">
-                    <h1 class="level-title">#1 - Convolution</h1>
+                    <h1 class="level-title">#{% if category == "deathless" %}{{demon.deathless_position}}{% elif category == "impossible" %}{{demon.impossible_position}}{% elif category == "all" %}{{demon.all_position}}{% elif demon.rated_position %}{{demon.rated_position}}{% elif demon.unrated_position %}{{demon.unrated_position}}{% elif demon.challenge_position %}{{demon.challenge_position}}{% elif demon.easiest_position %}{{demon.easiest_position}}{% elif demon.shitty_position %}{{demon.shitty_position}}{% elif demon.tiny_position %}{{demon.tiny_position}}{% elif demon.deathless_position %}{{demon.deathless_position}}{% elif demon.impossible_position %}{{demon.impossible_position}}{% elif demon.spam_position %}{{demon.spam_position}}{% elif demon.impossible_tiny_position %}{{demon.impossible_tiny_position}}{% elif demon.all_position %}{{demon.all_position}}{% endif %} - {{demon.level}}</h1>
                     <div class="level-badges">
-                        <span class="badge extreme">Extreme Demon</span>
+                        <span class="badge extreme">{{demon.demon_difficulty}}</span>
                         <span class="badge featured">Top 1</span>
                         <span class="badge epic">Epic</span>
                     </div>
@@ -61,8 +61,8 @@
                         <img src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=100&h=100&auto=format&fit=crop" alt="KEaliTgeo">
                     </div>
                     <div class="creator-details">
-                        <p class="creator-name">by KEaliTgeo</p>
-                        <p class="verifier-name">Verified by GToast</p>
+                        <p class="creator-name">by {{demon.creator}}</p>
+                        <p class="verifier-name">Verified by {{demon.verifier}}</p>
                     </div>
                 </div>
             </div>
@@ -71,14 +71,14 @@
                 <div class="video-section">
                     <div class="video-container">
                         <iframe
-                            src="https://youtube.com/embed/2NlVf9vLAh4"
+                            src="{{demon.verification_video_embed}}"
                             title="Convolution Verification"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen>
                         </iframe>
                     </div>
                     <div class="video-actions">
-                        <button class="action-btn copy-id" onclick="copyToClipboard('105724358')">
+                        <button class="action-btn copy-id" onclick="copyToClipboard('{{demon.level_id}}')">
                             Copy Level ID
                         </button>
                         <button class="action-btn watch-raw">
@@ -93,23 +93,23 @@
                         <div class="info-grid">
                             <div class="info-item">
                                 <span class="info-label">Demonlist Score</span>
-                                <span class="info-value score">258</span>
+                                <span class="info-value score">{% if category == "deathless" %}{{demon.deathless_list_points}}{% elif category == "impossible" %}{{demon.impossible_list_points}}{% elif category == "all" %}{{demon.all_list_points}}{% else %}{{demon.list_points}}{% endif %}</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Level ID</span>
-                                <span class="info-value">105724358</span>
+                                <span class="info-value">{{demon.level_id}}</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Password</span>
-                                <span class="info-value">Free</span>
+                                <span class="info-value">{% if level.level_password %}{{level.level_password}}{% else %}Free{% endif %}</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Objects</span>
-                                <span class="info-value">11132</span>
+                                <span class="info-value">{{demon.object_count}}</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Version</span>
-                                <span class="info-value">2.2</span>
+                                <span class="info-value">{{demon.update_created}}</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Length</span>
@@ -132,18 +132,20 @@
 
                 <div class="records-list">
                     <div class="record-item diamond">
-                        <div class="record-rank">#1</div>
+                        {% for record in records %}
+                        <div class="record-rank">#{{forloop.counter}}</div>
                         <div class="record-player-info">
-                            <img src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?q=80&w=50&h=50&auto=format&fit=crop" alt="Player 1" class="player-avatar">
+                            <img src="{% if record.player.picture %}{{ record.player.picture.url }}{% else %}{% static 'img/default-profile.png' %}{% endif %}" alt="Player 1" class="player-avatar">
                             <div class="player-details">
-                                <span class="player-name">Ayumi</span>
+                                <span class="player-name">{{record.player}}</span>
                                 <span class="player-progress">100%</span>
                             </div>
                         </div>
-                        <div class="record-time">1:56.562</div>
+                        <div class="record-time">{{record.best_time|date:"H"}}:{{record.best_time|date:"i"}}:{{record.best_time|date:"s"}}.{{record.best_time|date:"u"|slice:":3"}}</div>
                         <div class="record-proof">
-                            <button class="proof-btn">Watch</button>
+                            <a class="proof-btn" href="{{record.video}}">Watch</a>
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
 

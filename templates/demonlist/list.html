@@ -12,7 +12,7 @@
                             <span>Total Users</span>
                             <div class="stat-value">
                                 <i class="fas fa-users stat-icon"></i>
-                                <strong>12,456</strong>
+                                <strong>{{users_count}}</strong>
                             </div>
                         </div>
                         <div class="stat-change">+5.2%</div>
@@ -24,7 +24,7 @@
                             <span>Online Users</span>
                             <div class="stat-value">
                                 <i class="fas fa-signal stat-icon"></i>
-                                <strong>387</strong>
+                                <strong>1</strong>
                             </div>
                         </div>
                         <div class="stat-change">+2.1%</div>
@@ -36,7 +36,7 @@
                             <span>Staff Members</span>
                             <div class="stat-value">
                                 <i class="fas fa-crown stat-icon"></i>
-                                <strong>25</strong>
+                                <strong>{{staff_count}}</strong>
                             </div>
                         </div>
                         <div class="stat-change">+1.4%</div>
@@ -47,42 +47,20 @@
 
             <div class="sidebar-content player-tracker">
                 <h3>Recent Completions</h3>
+                {% for record in last_records %}
                 <div class="update-item">
                     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
                         <div class="update-info">
-                            <span>IvanCrafter026</span>
+                            <span>{{record.player}}</span>
                             <div class="update-value">
                                 <i class="fas fa-trophy update-icon"></i>
-                                <strong>Null [2]</strong>
+                                <strong>{{record.demon.level}} [{% if category == "rated" %}{{record.demon.rated_position}}{% elif category == "unrated" %}{{record.demon.unrated_position}}{% elif category == "challenge" %}{{record.demon.challenge_position}}{% endif %}]</strong>
                             </div>
                         </div>
-                        <div class="update-change">+150 pts</div>
+                        <div class="update-change">+{{record.demon.list_points}} pts</div>
                     </a>
                 </div>
-                <div class="update-item">
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
-                        <div class="update-info">
-                            <span>Nubot</span>
-                            <div class="update-value">
-                                <i class="fas fa-trophy update-icon"></i>
-                                <strong>The Abyss [15]</strong>
-                            </div>
-                        </div>
-                        <div class="update-change">+80 pts</div>
-                    </a>
-                </div>
-                <div class="update-item">
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
-                        <div class="update-info">
-                            <span>MrNexis</span>
-                            <div class="update-value">
-                                <i class="fas fa-trophy update-icon"></i>
-                                <strong>Void World [7]</strong>
-                            </div>
-                        </div>
-                        <div class="update-change">+120 pts</div>
-                    </a>
-                </div>
+                {% endfor %}
             </div>
 
             <div class="sidebar-content social-links">
