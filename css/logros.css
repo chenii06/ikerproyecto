@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-color: #0a0a12;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --mythic-color: #9333ea;
+    --legendary-color: #f59e0b;
+    --epic-color: #3b82f6;
+    --rare-color: #10b981;
+    --common-color: #6b7280;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #00aeff, #a200ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(162, 0, 255, 0.3);
+}
+
+header h2 {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.achievement-tracker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.achievement {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 2rem 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.achievement::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    padding: 2px;
+    background: var(--gradient);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.achievement[data-rarity="mythic"] {
+    --gradient: linear-gradient(135deg, #9333ea 0%, #ff0080 100%);
+}
+
+.achievement[data-rarity="legendary"] {
+    --gradient: linear-gradient(135deg, #f59e0b 0%, #ff4d4d 100%);
+}
+
+.achievement[data-rarity="epic"] {
+    --gradient: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
+.achievement[data-rarity="rare"] {
+    --gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.achievement[data-rarity="common"] {
+    --gradient: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+}
+
+.achievement:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+
+.achievement:hover::before {
+    opacity: 1;
+}
+
+.achievement::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--gradient);
+    opacity: 0.15;
+    border-radius: 15px;
+}
+
+.achievement-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    background: var(--gradient);
+    color: white;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.achievement-icon::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    padding: 3px;
+    background: var(--gradient);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.achievement:hover .achievement-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+}
+
+.achievement-info {
+    position: relative;
+    z-index: 1;
+}
+
+.achievement-info h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.achievement-info p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+}
+
+.achievement[data-rarity="mythic"] .achievement-info h4 {
+    background: linear-gradient(135deg, #9333ea 0%, #ff0080 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.achievement[data-rarity="legendary"] .achievement-info h4 {
+    background: linear-gradient(135deg, #f59e0b 0%, #ff4d4d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Rarity Badge */
+.achievement::after {
+    content: attr(data-rarity);
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    background: var(--gradient);
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.achievement:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Shine effect */
+.achievement::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.achievement:hover::before {
+    left: 100%;
+}
+
+@media (max-width: 1024px) {
+    .achievement-tracker {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    header h2 {
+        font-size: 1.2rem;
+    }
+
+    .achievement-tracker {
+        grid-template-columns: 1fr;
+    }
+
+    .achievement {
+        padding: 1.5rem;
+    }
+}

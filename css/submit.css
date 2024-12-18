@@ -1,0 +1,382 @@
+/* General Styles */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    background: radial-gradient(circle at 50% -20%, #2d3748, #1a202c);
+    color: #ffffff;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header styles remain unchanged as requested */
+/* Modern Reset & Base Styles */
+:root {
+    --primary: #00aaff;
+    --primary-dark: #0088cc;
+    --bg-dark: #2d3748;
+    --bg-darker: #1a202c;
+    --text: #ffffff;
+    --text-secondary: #888;
+    --card-bg: #292929;
+    --header-bg: #222222;
+    --gradient: linear-gradient(135deg, var(--primary) 0%, #0099dd 100%);
+    --glow: 0 0 20px rgba(0, 170, 255, 0.3);
+    --card-border: 1px solid rgba(255, 255, 255, 0.1);
+    --card-hover-border: 1px solid var(--primary);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: radial-gradient(circle at 50% -20%, var(--bg-dark), var(--bg-darker));
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+header {
+    background: rgba(34, 34, 34, 0.8);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid var(--primary);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: var(--card-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+}
+
+.logo-container:hover::before {
+    left: 100%;
+}
+
+.logo-container:hover {
+    background: var(--gradient);
+    transform: translateY(-2px);
+    border-color: transparent;
+    box-shadow: var(--glow);
+}
+
+.logo-container img {
+    height: 40px;
+    margin-right: 1rem;
+    filter: drop-shadow(0 0 8px rgba(0, 170, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.logo-container:hover img {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.logo-container .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: var(--card-border);
+    position: relative;
+    overflow: hidden;
+}
+
+nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: 0.5s;
+}
+
+nav a:hover::before {
+    left: 100%;
+}
+
+nav a:hover {
+    background: var(--gradient);
+    color: var(--text);
+    transform: translateY(-2px);
+    border-color: transparent;
+    box-shadow: var(--glow);
+}
+
+/* Enhanced Main Form Styling */
+main {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px;
+    background: rgba(41, 41, 41, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 
+        0 8px 32px rgba(0, 170, 255, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-out;
+}
+
+main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00aaff, #00ff88, #00aaff);
+    background-size: 200% 100%;
+    animation: gradientMove 3s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #00aaff, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+    position: relative;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.form-group:hover {
+    transform: translateX(5px);
+}
+
+form label {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: #00aaff;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+form input, form select, form textarea {
+    padding: 14px;
+    font-size: 1.1em;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(30, 30, 30, 0.6);
+    color: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+form input:hover, form select:hover, form textarea:hover {
+    background: rgba(40, 40, 40, 0.6);
+    border-color: rgba(0, 170, 255, 0.3);
+}
+
+form input:focus, form select:focus, form textarea:focus {
+    outline: none;
+    border-color: #00aaff;
+    background: rgba(50, 50, 50, 0.6);
+    box-shadow: 
+        0 0 0 3px rgba(0, 170, 255, 0.2),
+        inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+form select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300aaff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+form textarea {
+    height: 120px;
+    resize: vertical;
+    min-height: 120px;
+    max-height: 300px;
+}
+
+form button.submit-btn {
+    padding: 16px 32px;
+    font-size: 1.2em;
+    font-weight: 600;
+    background: linear-gradient(135deg, #00aaff, #0088cc);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 170, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+form button.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 170, 255, 0.4);
+    background: linear-gradient(135deg, #00b8ff, #0099dd);
+}
+
+form button.submit-btn:active {
+    transform: translateY(1px);
+}
+
+form button.submit-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    transition: transform 0.6s ease;
+}
+
+form button.submit-btn:hover::after {
+    transform: rotate(45deg) translate(50%, 50%);
+}
+
+/* Enhanced Animations */
+@keyframes fadeIn {
+    0% { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Footer */
+footer {
+    background-color: rgba(34, 34, 34, 0.9);
+    text-align: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+footer p {
+    color: #888;
+    font-size: 1.1em;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        margin: 30px 20px;
+        padding: 30px 20px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+    }
+
+    form input, form select, form textarea {
+        font-size: 1em;
+        padding: 12px;
+    }
+
+    .form-group:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        margin: 20px 15px;
+        padding: 20px 15px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    form button.submit-btn {
+        padding: 14px 28px;
+        font-size: 1.1em;
+    }
+}
