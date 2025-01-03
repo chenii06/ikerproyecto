@@ -98,8 +98,6 @@
                         <th>Record Holder</th>
                         <th>Demon</th>
                         <th>Best time / Percentage</th>
-                        <th>Modifiers (CBF)</th>
-                        <th>Deathless</th>
                         <th>Video Proof</th>
                         <th>Raw Footage</th>
                         <th>Accept</th>
@@ -127,23 +125,6 @@
                                 <input type="number" class="card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode"  id="milliseconds_{{record.id}}" min="0" max="999" placeholder="MS" oninput="limitInput(this, 3)" value="{{record.best_time|time:'u'}}" maxlength="3">
                             </td>
                             {% endif %}
-                            <td class="button-table">
-                                {% if record.demon.mode == "classic" %}
-                                    <select class="mods-select card-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="mods_{{record.id}}" name="mods">
-                                        <option value="Yes" {% if record.mods %}selected{% endif %}>Yes</option>
-                                        <option value="No" {% if not record.mods %}selected{% endif %}>No</option>
-                                    </select>
-                                {% endif %}
-                            </td>
-                            <td class="button-table">
-                                {% if record.demon.mode == "platformer" %}
-                                    {% if record.deathless %}
-                                        <i class="fas fa-check-circle" style="font-size: 24px; color: green;" aria-hidden="true"></i>
-                                    {% else %}
-                                        <i class="fas fa-times-circle" style="font-size: 24px; color: red;" aria-hidden="true"></i>
-                                    {% endif %}
-                                {% endif %}
-                            </td>
                             <td class="button-table">
                                 <a class="alter-button-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" href="{{record.video}}" title="{{record.video}}" target="_blank">YouTube</a>
                             </td>

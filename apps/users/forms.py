@@ -57,7 +57,10 @@ class SignupForm(forms.Form):
     password = forms.CharField(label=False, max_length=70, widget = forms.PasswordInput(attrs={'placeholder':'Password'}))
     password_confirmation = forms.CharField(label=False, max_length=70, widget = forms.PasswordInput(attrs={'placeholder':'Password confirmation'}))
     email = forms.CharField(label=False, min_length=6, max_length=70, widget = forms.EmailInput(attrs={'placeholder':'Email'}))
+<<<<<<< HEAD
+=======
     captcha = ReCaptchaField(label=False)
+>>>>>>> 97e65ceb73f4d865259af3a426c3f521ef7f8265
 
     def clean_username(self):
         # Username must be unique
@@ -128,7 +131,10 @@ class SignupForm(forms.Form):
         # Create user and profile
         data = self.cleaned_data
         data.pop("password_confirmation")
+<<<<<<< HEAD
+=======
         data.pop("captcha")
+>>>>>>> 97e65ceb73f4d865259af3a426c3f521ef7f8265
 
         user = User.objects.create_user(**data)
         profile = Profile(user=user)

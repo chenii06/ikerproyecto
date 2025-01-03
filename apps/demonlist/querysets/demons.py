@@ -85,6 +85,11 @@ class DemonQuerySet(CustomQueryset):
             queryset = queryset.filter(mode=mode, category=category).exclude(rated_position__isnull=True).order_by("rated_position")
         elif category == "unrated":
             queryset = queryset.filter(mode=mode, category=category).exclude(unrated_position__isnull=True).order_by("unrated_position")
+<<<<<<< HEAD
+        else:
+            queryset = queryset.none()
+=======
+>>>>>>> 97e65ceb73f4d865259af3a426c3f521ef7f8265
         return queryset
 
     def filter_by_categories(self, AVAILABLE_CATEGORIES):

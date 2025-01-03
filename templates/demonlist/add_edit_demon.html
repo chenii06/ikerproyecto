@@ -53,18 +53,13 @@
 
                 {% endif %}
 
-                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="mode" name="mode" required {% if not request.global_context.is_list_leader %}hidden{% endif %} onchange="change_mode(this);">
-                    <option value="" selected>-- Mode --</option>
-                    {% if request.global_context.is_classic_list_leader %}
-                    <option value="classic">Classic</option>
-                    {% endif %}
-                    {% if request.global_context.is_platformer_list_leader %}
-                    <option value="platformer">Platformer</option>
-                    {% endif %}
-                </select>
+                <input type="hidden" id="mode" name="mode" value="platformer">
 
                 <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="list" name="list" hidden>
                     <option value="" selected>-- List --</option>
+                    <option value="rated">Rated</option>
+                    <option value="unrated">Unrated</option>
+                    <option value="tiny">Tiny</option>
                 </select>
 
                 <div id="edit_demon_container" class="edit_demon_container content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" hidden>
@@ -77,6 +72,9 @@
 
                 <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="category" name="category" onchange="change_category(this);" required>
                     <option value="" selected >-- Category --</option>
+                    <option value="rated">Rated</option>
+                    <option value="unrated">Unrated</option>
+                    <option value="tiny">Tiny</option>
                 </select>
                 {% endif %}
 
@@ -159,24 +157,6 @@
                     <option value="mythic">Mythic</option>
                 </select>
 
-                <select class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" id="version" name="version" required>
-                    <option value="" selected>-- Version --</option>
-                    <option value="2.2">2.2</option>
-                    <option value="2.1">2.1</option>
-                    <option value="2.0">2.0</option>
-                    <option value="1.9">1.9</option>
-                    <option value="1.8">1.8</option>
-                    <option value="1.7">1.7</option>
-                    <option value="1.6">1.6</option>
-                    <option value="1.5">1.5</option>
-                    <option value="1.4">1.4</option>
-                    <option value="1.3">1.3</option>
-                    <option value="1.2">1.2</option>
-                    <option value="1.1">1.1</option>
-                    <option value="1.0">1.0</option>
-
-                </select>
-
                 <input class="content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode" type="number" id="level_password" name="level_password" placeholder="Level Password (Optional)">
                 <div class="invalid-feedback content-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode text-{% if request.global_context.dark_mode %}dark{% else %}light{% endif %}mode">
                     {% for error in form.title.errors %}{{ error }}{% endfor %}
@@ -216,7 +196,7 @@
                     return {
                         option: "Filter",
                         action: $("#option").val(),
-                        mode: $("#mode").val(),
+                        mode: "platformer",
                         category: $("#list").val(),
                         search: params.term
                     };
@@ -254,7 +234,6 @@
         $('#demon_difficulty').val("");
         $('#level_password').val("");
         $('#type').val("");
-        $('#version').val("");
         if (option.value == "Add"){
             $('#edit_demon_container').attr("hidden", true);
             $('#edit_demon').attr("required", false);
@@ -262,8 +241,6 @@
             $('#level').attr("required", true);
             $('#list').attr("hidden", true);
             $('#list').attr("required", false);
-            $('#mode').val("");
-            $('#mode').attr("onchange", `change_mode(this);`);
             $('#list').val("");
             $('#list').attr("onchange", "");
             $('#category').val("");
@@ -278,8 +255,6 @@
             $('#list').attr("hidden", false);
             {% endif %}
             $('#list').attr("required", true);
-            $('#mode').val("");
-            $('#mode').attr("onchange", `change_mode(this);`);
             $('#list').val("");
             $('#list').attr("onchange", "change_list(this);");
         }
@@ -313,8 +288,6 @@
             $('#demon_difficulty').attr("hidden", false);
             $('#level_password').attr("hidden", false);
             $('#type').attr("hidden", false);
-            $('#version').attr("hidden", false);
-            $('#version').attr("required", true);
         }
         else if (option.value == "Remove" || option.value == "Recover"){
             $('#category').attr("hidden", true);
@@ -351,185 +324,15 @@
             $('#level_password').attr("hidden", true);
             $('#level_password').attr("required", false);
             $('#type').attr("hidden", true);
-            $('#version').attr("hidden", true);
-            $('#version').attr("required", false);
         }
         $('#edit_demon').val(null).trigger('change');
     }
 
-    function change_mode(mode) {
-        const modo = mode.value;
-        $("#option").change();
-        $("#mode").val(modo);
-        $('#category').empty()
-        $('#category').append($('<option>', {
-            value: "",
-            text: "-- Category --",
-            selected: true,
-            disabled: true
-        }));
-        if (modo == "classic"){
-            {% if request.global_context.is_tiny_list_leader %}
-            $('#category').append($('<option>', {
-                value: "tiny",
-                text: "Tiny"
-            }));
-            {% endif %}
-            {% if request.global_context.is_spam_list_leader %}
-            $('#category').append($('<option>', {
-                value: "spam",
-                text: "Spam"
-            }));
-            {% endif %}
-            {% if request.global_context.is_impossible_tiny_list_leader %}
-            $('#category').append($('<option>', {
-                value: "impossible_tiny",
-                text: "Impossible Tiny"
-            }));
-            {% endif %}
-        }
-        else if (modo == "platformer"){
-            {% if request.global_context.is_rated_list_leader %}
-            $('#category').append($('<option>', {
-                value: "rated",
-                text: "Rated"
-            }));
-            {% endif %}
-            {% if request.global_context.is_all_list_leader %}
-            $('#category').append($('<option>', {
-                value: "all",
-                text: "TPL"
-            }));
-            {% endif %}
-            {% if request.global_context.is_challenge_list_leader %}
-            $('#category').append($('<option>', {
-                value: "challenge",
-                text: "Challenge"
-            }));
-            {% endif %}
-            {% if request.global_context.is_deathless_list_leader %}
-            $('#category').append($('<option>', {
-                value: "deathless",
-                text: "Deathless"
-            }));
-            {% endif %}
-            {% if request.global_context.is_impossible_list_leader %}
-            $('#category').append($('<option>', {
-                value: "impossible",
-                text: "Impossible"
-            }));
-            {% endif %}
-            {% if request.global_context.is_tiny_list_leader %}
-            $('#category').append($('<option>', {
-                value: "tiny",
-                text: "Tiny"
-            }));
-            {% endif %}
-        }
-        if ($("#option").val() != "Add"){
-            $('#list').empty()
-            $('#edit_demon').empty()
-            $('#list').append($('<option>', {
-                value: "",
-                text: "-- List --",
-                selected: true,
-                disabled: true
-            }));
-            $('#list').attr("hidden", false);
-
-            $('#edit_demon').append($('<option>', {
-                value: "",
-                text: "-- Demon --",
-                selected: true,
-                disabled: true
-            }));
-            if (modo == "classic"){
-                {% if request.global_context.is_tiny_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "tiny",
-                    text: "Tiny List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_spam_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "spam",
-                    text: "Spam List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_impossible_tiny_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "impossible_tiny",
-                    text: "Impossible Tiny List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_list_leader %}
-                if (option.value == "Add" || option.value == "Edit"){
-                    $('#category').attr("hidden", false);
-                    $('#category').val("");
-                    $('#position').attr("required", true);
-                    $('#position').attr("hidden", false);
-                }
-                {% endif %}
-            }
-            else if (modo == "platformer"){
-                {% if request.global_context.is_rated_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "rated",
-                    text: "Rated List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_all_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "all",
-                    text: "TPL"
-                }));
-                {% endif %}
-                {% if request.global_context.is_challenge_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "challenge",
-                    text: "Challenge List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_deathless_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "deathless",
-                    text: "Deathless List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_impossible_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "impossible",
-                    text: "Impossible List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_tiny_list_leader %}
-                $('#list').append($('<option>', {
-                    value: "tiny",
-                    text: "Tiny List"
-                }));
-                {% endif %}
-                {% if request.global_context.is_list_leader %}
-                if (option.value == "Add" || option.value == "Edit"){
-                    $('#category').attr("hidden", false);
-                    $('#category').val("");
-                    $('#position').attr("required", true);
-                    $('#position').attr("hidden", false);
-                }
-                {% endif %}
-            }
-            {% if not request.global_context.is_list_leader %}
-            $('#list').val("rated");
-            $("#list").change();
-            {% endif %}
-        }
-    }
 
     function change_list(list){
-        const modo = $("#mode").val();
         const lista = list.value;
         $("#option").change();
         $("#list").val(lista);
-        $("#mode").val(modo);
         if (lista == "all_demonlist"){
             $('#category').attr("hidden", true);
             $('#category').val("rated");
@@ -545,7 +348,6 @@
     }
 
     function change_category(category){
-        const modo = $("#mode").val();
         const categoria = category.value;
         if (categoria == "future"){
             $('#verification_status').attr("required", true);
@@ -602,7 +404,6 @@
                     $('#demon_difficulty').val(response.results[0].demon_difficulty);
                     $('#level_password').val(response.results[0].level_password);
                     $('#type').val(response.results[0].type);
-                    $('#version').val(response.results[0].update_created);
                     if ($("#category").val() == "future") {
                         $('#object_count').attr("required", false);
                     }
