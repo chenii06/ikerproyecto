@@ -98,7 +98,14 @@ class LoginView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
+        discord_code = request.data.get("discord_code")  # Discord authorization code
+
+        if discord_code:
+            return self.login_with_discord(discord_code)
         
+        if username and password:
+            return self.login_with_credentials(username, password)
+
         if '@' in username:
             try:
                 user_obj = User.objects.get(email=username)

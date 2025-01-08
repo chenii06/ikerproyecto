@@ -1691,10 +1691,6 @@ class AddEditDemonView(CustomMethodsMixin, UpdateAPIView):
             "demon_difficulty": self.request.POST.get("demon_difficulty"),
             "level_password": self.request.POST.get("level_password") if self.request.POST.get("level_password") else None,
             "type": self.request.POST.get("type"),
-<<<<<<< HEAD
-=======
-            "version": self.request.POST.get("version"),
->>>>>>> 97e65ceb73f4d865259af3a426c3f521ef7f8265
         }
         data.update({
             "alternative_position_field": self.get_alternative_position_field(data["category"]),
